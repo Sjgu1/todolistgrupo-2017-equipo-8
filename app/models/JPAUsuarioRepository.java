@@ -3,6 +3,9 @@ package models;
 import javax.inject.Inject;
 import play.db.jpa.JPAApi;
 
+import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
+
 public class JPAUsuarioRepository implements UsuarioRepository {
     //Objeto definido por Play para acceder a la API de JPA
     // https://www.playframework.com/documentation/2.5.x/JavaJPA#Using-play.db.jpa.JPAApi
@@ -28,6 +31,20 @@ public class JPAUsuarioRepository implements UsuarioRepository {
     public Usuario findById(Long idUsuario){
       return jpaApi.withTransaction(entityManager -> {
         return entityManager.find(Usuario.class,idUsuario);
+      });
+    }
+
+    public Usuario findByLogin(String login){
+      return jpaApi.withTransaction(entityManager -> {
+        TypedQuery<Usuario> query= entityManager.createQuery(
+          "select u from Usuario u where u.login= :login",Usuario.class);
+
+          try{
+            Usuario usuario=query.setParameter("login",login).getSingleResult();
+            return usuario;
+          } catch(NoResultException ex){
+            return null;
+          }
       });
     }
 }
