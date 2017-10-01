@@ -1,6 +1,7 @@
 package services;
 
 import javax.inject.*;
+import java.util.regex.*;
 
 import models.Usuario;
 import models.UsuarioRepository;
@@ -18,6 +19,12 @@ public class UsuarioService{
   public Usuario creaUsuario(String login,String email, String password){
     if(repository.findByLogin(login)!=null){
       throw new UsuarioServiceException("Login ya existente");
+    }
+    Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    Matcher m=p.matcher(email);
+    if(!(m.matches())){
+        throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
     }
     Usuario usuario=new Usuario(login,email);
     usuario.setPassword(password);
