@@ -63,7 +63,7 @@ public class UsuarioController extends Controller {
       //la sesión de Play
       // https://www.playframework.com/documentation/2.5.x/JavaSessionFlash
       session("connected",usuario.getId().toString());
-      return redirect(controllers.routes.UsuarioController.loginUsuario());
+      return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId()));
     }
   }
 
