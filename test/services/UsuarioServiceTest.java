@@ -12,6 +12,9 @@ import org.dbunit.dataset.xml.*;
 import org.dbunit.operation.*;
 import java.io.FileInputStream;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 import models.Usuario;
 import models.UsuarioRepository;
 import models.JPAUsuarioRepository;
@@ -118,5 +121,39 @@ public class UsuarioServiceTest{
      UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
      UsuarioService usuarioService=new UsuarioService(repository);
      Usuario usuario=usuarioService.creaUsuario("eustaquio","eustaquio","123456");
+   }
+
+   //Test #25: modificaUsuarioDiferentesCasos
+   @Test
+   public void modificaUsuarioDiferentesCasos(){
+     try{
+       SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+       Date fecha=sdf.parse("01-12-1980");
+       UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+       UsuarioService usuarioService=new UsuarioService(repository);
+       Usuario usuario=usuarioService.creaUsuario("roberto","roberto@gmail.com","123456");
+       assertEquals("roberto",usuario.getLogin());
+       assertEquals("roberto@gmail.com",usuario.getEmail());
+       assertEquals("123456",usuario.getPassword());
+       assertNull(usuario.getNombre());
+       assertNull(usuario.getApellidos());
+       assertNull(usuario.getFechaNacimiento());
+       usuario=usuarioService.modificaUsuario("roberto","nuevo@gmail.com","654321","robert","Macia","01-12-1980");
+       assertEquals("roberto",usuario.getLogin());
+       assertEquals("nuevo@gmail.com",usuario.getEmail());
+       assertEquals("654321",usuario.getPassword());
+       assertEquals("robert",usuario.getNombre());
+       assertEquals("Macia",usuario.getApellidos());
+       assertEquals(fecha,usuario.getFechaNacimiento());
+       usuario=usuarioService.modificaUsuario("roberto","nuevo@gmail.com","654321",null,null,null);
+       assertEquals("roberto",usuario.getLogin());
+       assertEquals("nuevo@gmail.com",usuario.getEmail());
+       assertEquals("654321",usuario.getPassword());
+       assertEquals("robert",usuario.getNombre());
+       assertEquals("Macia",usuario.getApellidos());
+       assertEquals(fecha,usuario.getFechaNacimiento());
+     } catch (Exception e) {
+       e.printStackTrace();
+     }
    }
 }

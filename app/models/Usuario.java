@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 
+import play.data.format.*;
 
 @Entity
 public class Usuario{
@@ -20,6 +21,7 @@ public class Usuario{
   private String password;
   private String nombre;
   private String apellidos;
+  @Formats.DateTime(pattern="dd-MM-yyyy")
   @Temporal(TemporalType.DATE)
   private Date fechaNacimiento;
   //Relación uno-a-muchos entre usuario y tarea

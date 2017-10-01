@@ -31,6 +31,13 @@ public class JPAUsuarioRepository implements UsuarioRepository {
 
     }
 
+    public Usuario modify(Usuario usuario){
+      return jpaApi.withTransaction(entityManager -> {
+        entityManager.merge(usuario);
+        return usuario;
+      });
+    }
+
     public Usuario findById(Long idUsuario){
       return jpaApi.withTransaction(entityManager -> {
         return entityManager.find(Usuario.class,idUsuario);

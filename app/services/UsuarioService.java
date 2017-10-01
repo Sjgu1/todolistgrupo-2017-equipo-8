@@ -3,6 +3,9 @@ package services;
 import javax.inject.*;
 import java.util.regex.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import models.Usuario;
 import models.UsuarioRepository;
 
@@ -29,6 +32,36 @@ public class UsuarioService{
     Usuario usuario=new Usuario(login,email);
     usuario.setPassword(password);
     return repository.add(usuario);
+  }
+
+  public Usuario modificaUsuario(String login,String email, String password, String nombre, String apellidos, String fechaNacimiento){
+    Usuario usuario=repository.findByLogin(login);
+    if(usuario==null){
+      throw new UsuarioServiceException("Login no existente");
+    } else {
+      Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+              + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+      Matcher m=p.matcher(email);
+      if(!(m.matches())){
+          throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
+      }
+      usuario.setEmail(email);
+      usuario.setPassword(password);
+      if(nombre!=null)
+        usuario.setNombre(nombre);
+      if(apellidos!=null)
+        usuario.setApellidos(apellidos);
+      if(fechaNacimiento!=null){
+        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+        try{
+          Date fechaNac=sdf.parse(fechaNacimiento);
+          usuario.setFechaNacimiento(fechaNac);
+        } catch (Exception e){
+          throw new UsuarioServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
+        }
+      }
+    }
+    return repository.modify(usuario);
   }
 
   public Usuario findUsuarioPorLogin(String login){
