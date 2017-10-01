@@ -111,4 +111,12 @@ public class UsuarioServiceTest{
      assertNotNull(usuario);
      assertEquals("juangutierrez",usuario.getLogin());
    }
+
+   //Test #24: creaUsuarioEmailIncorrecto lanza excepción
+   @Test(expected = UsuarioServiceException.class)
+   public void creaUsuarioEmailIncorrecto(){
+     UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+     UsuarioService usuarioService=new UsuarioService(repository);
+     Usuario usuario=usuarioService.creaUsuario("eustaquio","eustaquio","123456");
+   }
 }
