@@ -23,10 +23,8 @@ public class UsuarioService{
     if(repository.findByLogin(login)!=null){
       throw new UsuarioServiceException("Login ya existente");
     }
-    Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-    Matcher m=p.matcher(email);
-    if(!(m.matches())){
+
+    if(!(validaEmail(email))){
         throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
     }
     Usuario usuario=new Usuario(login,email);
@@ -39,10 +37,7 @@ public class UsuarioService{
     if(usuario==null){
       throw new UsuarioServiceException("Login no existente");
     } else {
-      Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-              + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-      Matcher m=p.matcher(email);
-      if(!(m.matches())){
+      if(!(validaEmail(email))){
           throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
       }
       usuario.setEmail(email);
@@ -70,6 +65,15 @@ public class UsuarioService{
 
   public Usuario findUsuarioPorId(Long id){
     return repository.findById(id);
+  }
+
+  public boolean validaEmail(String email){
+    boolean valido;
+    Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    Matcher m=p.matcher(email);
+    valido=m.matches();
+    return valido;
   }
 
   public Usuario login(String login,String password){
