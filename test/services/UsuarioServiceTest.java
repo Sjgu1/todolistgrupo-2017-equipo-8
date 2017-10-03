@@ -194,4 +194,12 @@ public class UsuarioServiceTest{
       usuario=usuarioService.modificaPassword(usuario.getLogin(),"123456789","");
     }
 
+    //Test #30: modificaUsuarioFechaIncorrecta
+    @Test(expected=UsuarioServiceException.class)
+    public void modificaUsuarioFechaIncorrecta(){
+        UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+        UsuarioService usuarioService=new UsuarioService(repository);
+        Usuario usuario=usuarioService.creaUsuario("roberto","roberto@gmail.com","123456");
+        usuario=usuarioService.modificaUsuario("roberto","nuevo@gmail.com","654321","robert","Macia","01-13-1980");
+    }
 }

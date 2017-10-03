@@ -12,4 +12,8 @@
         @usuario.getFechaNacimiento().format("dd-MM-yyyy")
       }</li>
   </ul>
+  <p>
+    <a class="btn btn-primary" href="@routes.UsuarioController.formularioModificaUsu(usuario.getId())">Modificar datos perfil</a>
+    <a class="btn btn-primary" href="@routes.GestionTareasController.listaTareas(usuario.getId())">Ver lista tareas</a>
+  </p>
 }
