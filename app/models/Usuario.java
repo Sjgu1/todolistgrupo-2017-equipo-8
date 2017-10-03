@@ -103,6 +103,24 @@ public class Usuario{
      this.tareas=tareas;
    }
 
+   //método auxiliar para no devolver nulos en los campos y así poder mostrar formulario
+   //modifica usuario
+   public Usuario UsuarioSinNulos(){
+     Usuario usu=new Usuario();
+     try{
+       SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+       Date fechaaux=formateador.parse("01-01-1900");
+       usu.setId(this.id);
+       usu.setLogin(this.login);
+       usu.setEmail(this.email);
+       usu.setPassword(this.password);
+       usu.setNombre(this.nombre==null ? "** Sin asignar **" : this.nombre);
+       usu.setApellidos(this.apellidos==null ? "** Sin asignar **" : this.apellidos);
+       usu.setFechaNacimiento(this.fechaNacimiento==null ? fechaaux : this.fechaNacimiento);
+     }catch (Exception e) {}
+     return usu;
+   }
+
    public String toString(){
      String fechaStr=null;
      if(fechaNacimiento!=null){

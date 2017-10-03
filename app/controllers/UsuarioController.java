@@ -50,6 +50,53 @@ public class UsuarioController extends Controller {
     return redirect(controllers.routes.UsuarioController.formularioLogin());
   }
 
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result formularioModificaUsu(Long id){
+    String connectedUserStr=session("connected");
+    Long connectedUser=Long.valueOf(connectedUserStr);
+    if(connectedUser!=id){
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      Usuario usuario = usuarioService.findUsuarioPorId(id);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado");
+      } else {
+        usuario=usuario.UsuarioSinNulos();
+        return ok(formModificaUsuario.render(usuario,formFactory.form(ModificaUsu.class),""));
+      }
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result modificaUsuario(Long id){
+    String connectedUserStr=session("connected");
+    Long connectedUser=Long.valueOf(connectedUserStr);
+    if(connectedUser!=id){
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      Usuario usuario = usuarioService.findUsuarioPorId(id);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado");
+      } else {
+          Form<ModificaUsu> form=formFactory.form(ModificaUsu.class).bindFromRequest();
+          if(form.hasErrors()){
+            return badRequest(formModificaUsuario.render(usuario,form,"Hay errores en el formulario"));
+          }
+          ModificaUsu datosModificaUsu=form.get();
+
+          if(!datosModificaUsu.password.equals(datosModificaUsu.confirmacion)){
+            return badRequest(formModificaUsuario.render(usuario,form,"No coinciden la contraseña y la confirmación"));
+          }
+          try{
+            usuario=usuarioService.modificaUsuario(datosModificaUsu.login,datosModificaUsu.email,datosModificaUsu.password,datosModificaUsu.nombre,datosModificaUsu.apellidos,datosModificaUsu.fechaNacimiento);
+          } catch (services.UsuarioServiceException u){
+            return badRequest(formModificaUsuario.render(usuario,form,u.getMessage()));
+          }
+          return redirect(controllers.routes.UsuarioController.detalleUsuario(usuario.getId()));
+        }
+      }
+    }
+
   public Result formularioLogin(){
     return ok(formLogin.render(formFactory.form(Login.class),""));
   }
