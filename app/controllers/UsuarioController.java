@@ -61,6 +61,7 @@ public class UsuarioController extends Controller {
       if (usuario == null) {
         return notFound("Usuario no encontrado");
       } else {
+        //me apoyo en usuario sin nulos para poder cargar en formulario
         usuario=usuario.UsuarioSinNulos();
         return ok(formModificaUsuario.render(usuario,formFactory.form(ModificaUsu.class),""));
       }
@@ -83,14 +84,64 @@ public class UsuarioController extends Controller {
             return badRequest(formModificaUsuario.render(usuario,form,"Hay errores en el formulario"));
           }
           ModificaUsu datosModificaUsu=form.get();
-
-          if(!datosModificaUsu.password.equals(datosModificaUsu.confirmacion)){
-            return badRequest(formModificaUsuario.render(usuario,form,"No coinciden la contraseña y la confirmación"));
-          }
+          Logger.debug(datosModificaUsu.login+" "+datosModificaUsu.email+" "+usuario.getPassword()+" "+datosModificaUsu.nombre+" "+datosModificaUsu.apellidos+" "+datosModificaUsu.fechaNacimiento);
+          //si alguno de los datos no se ha tocado devuelvo valor null al predeterminado
+          datosModificaUsu.nombre=datosModificaUsu.nombre=="** Sin asignar **"?null:datosModificaUsu.nombre;
+          datosModificaUsu.apellidos=datosModificaUsu.apellidos=="** Sin asignar **"?null:datosModificaUsu.apellidos;
+          datosModificaUsu.fechaNacimiento=datosModificaUsu.fechaNacimiento=="Mon Jan 01 00:00:00 GMT"?null:datosModificaUsu.fechaNacimiento;
+          Logger.debug(datosModificaUsu.login+" "+datosModificaUsu.email+" "+usuario.getPassword()+" "+datosModificaUsu.nombre+" "+datosModificaUsu.apellidos+" "+datosModificaUsu.fechaNacimiento);
           try{
-            usuario=usuarioService.modificaUsuario(datosModificaUsu.login,datosModificaUsu.email,datosModificaUsu.password,datosModificaUsu.nombre,datosModificaUsu.apellidos,datosModificaUsu.fechaNacimiento);
+            usuario=usuarioService.modificaUsuario(datosModificaUsu.login,datosModificaUsu.email,usuario.getPassword(),datosModificaUsu.nombre,datosModificaUsu.apellidos,datosModificaUsu.fechaNacimiento);
           } catch (services.UsuarioServiceException u){
             return badRequest(formModificaUsuario.render(usuario,form,u.getMessage()));
+          }
+          return redirect(controllers.routes.UsuarioController.detalleUsuario(usuario.getId()));
+        }
+      }
+    }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result formularioCambioPassword(Long id){
+    String connectedUserStr=session("connected");
+    Long connectedUser=Long.valueOf(connectedUserStr);
+    if(connectedUser!=id){
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      Usuario usuario = usuarioService.findUsuarioPorId(id);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado");
+      } else {
+        return ok(formModificaPassword.render(usuario,formFactory.form(ModificaPassWordUsuario.class),""));
+      }
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result modificaPassword(Long id){
+    String connectedUserStr=session("connected");
+    Long connectedUser=Long.valueOf(connectedUserStr);
+    if(connectedUser!=id){
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      Usuario usuario = usuarioService.findUsuarioPorId(id);
+      if (usuario == null) {
+        return notFound("Usuario no encontrado");
+      } else {
+          Form<ModificaPassWordUsuario> form=formFactory.form(ModificaPassWordUsuario.class).bindFromRequest();
+          if(form.hasErrors()){
+            return badRequest(formModificaPassword.render(usuario,form,"Hay errores en el formulario"));
+          }
+          ModificaPassWordUsuario datosModificaPass=form.get();
+          if(!datosModificaPass.passold.equals(usuario.getPassword())){
+            return badRequest(formModificaPassword.render(usuario,form,"La contraseña actual es incorrecta"));
+          }
+          if(!datosModificaPass.passnew.equals(datosModificaPass.confirmacion)){
+            return badRequest(formModificaPassword.render(usuario,form,"No coinciden la contraseña y la confirmación"));
+          }
+          try{
+            usuario=usuarioService.modificaPassword(usuario.getLogin(),datosModificaPass.passold,datosModificaPass.passnew);
+          } catch (services.UsuarioServiceException u){
+            return badRequest(formModificaPassword.render(usuario,form,u.getMessage()));
           }
           return redirect(controllers.routes.UsuarioController.detalleUsuario(usuario.getId()));
         }

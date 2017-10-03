@@ -59,6 +59,25 @@ public class UsuarioService{
     return repository.modify(usuario);
   }
 
+  public Usuario modificaPassword(String login,String passold,String passnew){
+    Usuario usuario=repository.findByLogin(login);
+    if(usuario==null){
+      throw new UsuarioServiceException("Login no existente");
+    } else {
+      if (!(passold.equals(usuario.getPassword()))){
+        throw new UsuarioServiceException("La contraseña actual no es correcta");
+      }
+      if(passnew.equals(null) || passnew.equals("")){
+        throw new UsuarioServiceException("La contraseña no puede ser vacía");
+      }
+      if (passold.equals(passnew)){
+        throw new UsuarioServiceException("La contraseña nueva no puede coincidir con la antigua");
+      }
+      usuario.setPassword(passnew);
+      return repository.modify(usuario);
+    }
+  }
+
   public Usuario findUsuarioPorLogin(String login){
     return repository.findByLogin(login);
   }
