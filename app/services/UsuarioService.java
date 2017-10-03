@@ -5,6 +5,7 @@ import java.util.regex.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import play.Logger;
 
 import models.Usuario;
 import models.UsuarioRepository;
@@ -47,8 +48,9 @@ public class UsuarioService{
       if(apellidos!=null)
         usuario.setApellidos(apellidos);
       if(fechaNacimiento!=null){
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         try{
+          SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+          sdf.setLenient(false);
           Date fechaNac=sdf.parse(fechaNacimiento);
           usuario.setFechaNacimiento(fechaNac);
         } catch (Exception e){

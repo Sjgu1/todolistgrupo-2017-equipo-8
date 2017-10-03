@@ -12,11 +12,11 @@
       @helper.inputText(modificaUsuForm("email").copy(value=Some(usuario.getEmail())),'_label -> "Email")
       @helper.inputText(modificaUsuForm("nombre").copy(value=Some(usuario.getNombre())),'_label -> "Nombre")
       @helper.inputText(modificaUsuForm("apellidos").copy(value=Some(usuario.getApellidos())),'_label -> "Apellidos")
-      @helper.inputText(modificaUsuForm("fechaNacimiento").copy(value=Some(usuario.getFechaNacimiento().toString())),'_label -> "Fecha nacimiento")
+      @helper.inputText(modificaUsuForm("fechaNacimiento").copy(value=Some(usuario.getFechaNacimiento().format("dd-MM-yyyy").toString())),'_label -> "Fecha nacimiento")
     </fieldset>
     <p>
       <button type="submit" class="btn btn-primary">Modifica</button>
-      <a class="btn btn-danger" href="@routes.UsuarioController.detalleUsuario(usuario.getId())">Deshacer</a>
+      <a class="btn btn-warning" href="@routes.UsuarioController.detalleUsuario(usuario.getId())">Cancela</a>
     </p>
   }
 }

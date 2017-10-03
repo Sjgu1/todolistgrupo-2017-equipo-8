@@ -84,14 +84,12 @@ public class UsuarioController extends Controller {
             return badRequest(formModificaUsuario.render(usuario,form,"Hay errores en el formulario"));
           }
           ModificaUsu datosModificaUsu=form.get();
-          Logger.debug(datosModificaUsu.login+" "+datosModificaUsu.email+" "+usuario.getPassword()+" "+datosModificaUsu.nombre+" "+datosModificaUsu.apellidos+" "+datosModificaUsu.fechaNacimiento);
           //si alguno de los datos no se ha tocado devuelvo valor null al predeterminado
-          datosModificaUsu.nombre=datosModificaUsu.nombre=="** Sin asignar **"?null:datosModificaUsu.nombre;
-          datosModificaUsu.apellidos=datosModificaUsu.apellidos=="** Sin asignar **"?null:datosModificaUsu.apellidos;
-          datosModificaUsu.fechaNacimiento=datosModificaUsu.fechaNacimiento=="Mon Jan 01 00:00:00 GMT"?null:datosModificaUsu.fechaNacimiento;
-          Logger.debug(datosModificaUsu.login+" "+datosModificaUsu.email+" "+usuario.getPassword()+" "+datosModificaUsu.nombre+" "+datosModificaUsu.apellidos+" "+datosModificaUsu.fechaNacimiento);
+          datosModificaUsu.nombre=datosModificaUsu.nombre.equals("** Sin asignar **")?null:datosModificaUsu.nombre;
+          datosModificaUsu.apellidos=datosModificaUsu.apellidos.equals("** Sin asignar **")?null:datosModificaUsu.apellidos;
+          datosModificaUsu.fechaNacimiento=datosModificaUsu.fechaNacimiento.equals("Mon Jan 01 00:00:00 GMT 1900")?null:datosModificaUsu.fechaNacimiento;
           try{
-            usuario=usuarioService.modificaUsuario(datosModificaUsu.login,datosModificaUsu.email,usuario.getPassword(),datosModificaUsu.nombre,datosModificaUsu.apellidos,datosModificaUsu.fechaNacimiento);
+            usuario=usuarioService.modificaUsuario(usuario.getLogin(),datosModificaUsu.email,usuario.getPassword(),datosModificaUsu.nombre,datosModificaUsu.apellidos,datosModificaUsu.fechaNacimiento);
           } catch (services.UsuarioServiceException u){
             return badRequest(formModificaUsuario.render(usuario,form,u.getMessage()));
           }
