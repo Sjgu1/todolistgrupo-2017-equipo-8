@@ -5,6 +5,7 @@ import java.util.regex.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import play.Logger;
 
 import models.Usuario;
 import models.UsuarioRepository;
@@ -23,10 +24,8 @@ public class UsuarioService{
     if(repository.findByLogin(login)!=null){
       throw new UsuarioServiceException("Login ya existente");
     }
-    Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-    Matcher m=p.matcher(email);
-    if(!(m.matches())){
+
+    if(!(validaEmail(email))){
         throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
     }
     Usuario usuario=new Usuario(login,email);
@@ -39,10 +38,7 @@ public class UsuarioService{
     if(usuario==null){
       throw new UsuarioServiceException("Login no existente");
     } else {
-      Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-              + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
-      Matcher m=p.matcher(email);
-      if(!(m.matches())){
+      if(!(validaEmail(email))){
           throw new UsuarioServiceException("Email no válido, debe ser del tipo email@dominio.extension");
       }
       usuario.setEmail(email);
@@ -52,8 +48,9 @@ public class UsuarioService{
       if(apellidos!=null)
         usuario.setApellidos(apellidos);
       if(fechaNacimiento!=null){
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         try{
+          SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+          sdf.setLenient(false);
           Date fechaNac=sdf.parse(fechaNacimiento);
           usuario.setFechaNacimiento(fechaNac);
         } catch (Exception e){
@@ -64,12 +61,40 @@ public class UsuarioService{
     return repository.modify(usuario);
   }
 
+  public Usuario modificaPassword(String login,String passold,String passnew){
+    Usuario usuario=repository.findByLogin(login);
+    if(usuario==null){
+      throw new UsuarioServiceException("Login no existente");
+    } else {
+      if (!(passold.equals(usuario.getPassword()))){
+        throw new UsuarioServiceException("La contraseña actual no es correcta");
+      }
+      if(passnew.equals(null) || passnew.equals("")){
+        throw new UsuarioServiceException("La contraseña no puede ser vacía");
+      }
+      if (passold.equals(passnew)){
+        throw new UsuarioServiceException("La contraseña nueva no puede coincidir con la antigua");
+      }
+      usuario.setPassword(passnew);
+      return repository.modify(usuario);
+    }
+  }
+
   public Usuario findUsuarioPorLogin(String login){
     return repository.findByLogin(login);
   }
 
   public Usuario findUsuarioPorId(Long id){
     return repository.findById(id);
+  }
+
+  public boolean validaEmail(String email){
+    boolean valido;
+    Pattern p=Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    Matcher m=p.matcher(email);
+    valido=m.matches();
+    return valido;
   }
 
   public Usuario login(String login,String password){

@@ -156,4 +156,42 @@ public class UsuarioServiceTest{
        e.printStackTrace();
      }
    }
+
+   //Test #26: modificaContrasenaUsuario
+   @Test
+   public void modificaContrasenaUsuario(){
+     UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+     UsuarioService usuarioService=new UsuarioService(repository);
+     Usuario usuario=usuarioService.findUsuarioPorId(1000L);
+     usuario=usuarioService.modificaPassword(usuario.getLogin(),"123456789","654321");
+     assertEquals("654321",usuario.getPassword());
+   }
+
+    //Test #27: modificaContrasenaActualIncorrecta lanza excepción
+    @Test(expected = UsuarioServiceException.class)
+    public void modificaContrasenaActualIncorrecta(){
+      UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+      UsuarioService usuarioService=new UsuarioService(repository);
+      Usuario usuario=usuarioService.findUsuarioPorId(1000L);
+      usuario=usuarioService.modificaPassword(usuario.getLogin(),"12345","654321");
+    }
+
+    //Test #28: modificaContrasenaNuevaIgual lanza excepción
+    @Test(expected = UsuarioServiceException.class)
+    public void modificaContrasenaNuevaIgual(){
+      UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+      UsuarioService usuarioService=new UsuarioService(repository);
+      Usuario usuario=usuarioService.findUsuarioPorId(1000L);
+      usuario=usuarioService.modificaPassword(usuario.getLogin(),"123456789","123456789");
+    }
+
+    //Test #29: modificaContrasenaNuevaVacia lanza excepción
+    @Test(expected = UsuarioServiceException.class)
+    public void modificaContrasenaNuevaVacia(){
+      UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+      UsuarioService usuarioService=new UsuarioService(repository);
+      Usuario usuario=usuarioService.findUsuarioPorId(1000L);
+      usuario=usuarioService.modificaPassword(usuario.getLogin(),"123456789","");
+    }
+
 }
