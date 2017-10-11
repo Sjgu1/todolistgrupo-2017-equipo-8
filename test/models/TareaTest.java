@@ -127,9 +127,8 @@ public class TareaTest {
   // Test #18 testFindAllTareasUsuario
   @Test
   public void testFindAllTareasUsuario(){
-    TareaRepository repository=new JPATareaRepository(jpaApi);
-    Long idUsuario=1000L;
-    List<Tarea> tareas=repository.findAllTareas(idUsuario);
-    assertEquals(2,tareas.size());
+    UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
+    Usuario usuario=repository.findById(1000L);
+    assertEquals(2,usuario.getTareas().size());
   }
 }
