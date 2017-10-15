@@ -3,6 +3,8 @@
    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
    version="2.1">
 
+   <!-- Memory persistence Unit -->
+
    <persistence-unit name="memoryPersistenceUnit" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
       <non-jta-data-source>DBTest</non-jta-data-source>
@@ -10,5 +12,16 @@
          <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
          <property name="hibernate.hbm2ddl.auto" value="update"/>
       </properties>
+   </persistence-unit>
+
+   <!-- MySQL Persistence Unit -->
+
+   <persistence-unit name="mySqlPersistenceUnit" transaction-type="RESOURCE_LOCAL">
+     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <non-jta-data-source>DBTest</non-jta-data-source>
+        <properties>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+        </properties>
    </persistence-unit>
 </persistence>

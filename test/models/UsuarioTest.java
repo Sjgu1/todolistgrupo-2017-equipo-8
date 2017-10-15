@@ -104,7 +104,7 @@ public class UsuarioTest{
 
   private String getNombreFromUsuarioDB(Long usuarioId){
     String nombre=db.withConnection(connection -> {
-      String selectStatement="SELECT NOMBRE FROM USUARIO WHERE ID=?";
+      String selectStatement="SELECT NOMBRE FROM Usuario WHERE ID=?";
       PreparedStatement prepSmt=connection.prepareStatement(selectStatement);
       prepSmt.setLong(1,usuarioId);
       ResultSet rs=prepSmt.executeQuery();
