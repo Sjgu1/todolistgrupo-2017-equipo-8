@@ -8,6 +8,8 @@
    <persistence-unit name="memoryPersistenceUnit" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
       <non-jta-data-source>DBTest</non-jta-data-source>
+      <class>models.Usuario</class>
+      <class>models.Tarea</class>
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
          <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -19,6 +21,8 @@
    <persistence-unit name="mySqlPersistenceUnit" transaction-type="RESOURCE_LOCAL">
      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <non-jta-data-source>DBTest</non-jta-data-source>
+        <class>models.Usuario</class>
+        <class>models.Tarea</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
