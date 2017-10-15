@@ -12,15 +12,18 @@ import org.dbunit.dataset.xml.*;
 import org.dbunit.operation.*;
 import java.io.FileInputStream;
 
+import play.inject.guice.GuiceApplicationBuilder;
+import play.inject.Injector;
+import play.inject.guice.GuiceInjectorBuilder;
+import play.Environment;
+
+import play.db.jpa.JPAApi;
+
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import models.Usuario;
 import models.Tarea;
-import models.UsuarioRepository;
-import models.TareaRepository;
-import models.JPAUsuarioRepository;
-import models.JPATareaRepository;
 
 import services.UsuarioService;
 import services.TareaService;
@@ -29,23 +32,15 @@ import services.TareaServiceException;
 
 
 public class Practica2Test{
-  static Database db;
-  static JPAApi jpaApi;
+  static private Injector injector;
 
   //Se ejecuta  sólo una vez, al princiio de todos los tests
   @BeforeClass
   static public void initDatabase(){
-    //Inicializamos la BD en memoria y su nombre JNDI
-    db=Databases.inMemoryWith("jndiName","DBTest");
-    db.getConnection();
-    //Se activa la compatibilidad MySQL en la BD H2
-    db.withConnection(connection -> {
-      connection.createStatement().execute("SET MODE MySQL");
-    });
-    //Activamos en JPA la unidad de persistencia "memoryPersistenceUnit"
-    //declarada en META-INF/persistence.xml y obtenemos el objeto
-    //JPAApi
-    jpaApi=JPA.createFor("memoryPersistenceUnit");
+    GuiceApplicationBuilder guiceApplicationBuilder =
+      new GuiceApplicationBuilder().in(Environment.simple());
+    injector=guiceApplicationBuilder.injector();
+    injector.instanceOf(JPAApi.class);
   }
 
   @Before
@@ -57,17 +52,18 @@ public class Practica2Test{
     databaseTester.onSetup();
   }
 
+  private UsuarioService newUsuarioService(){
+    return injector.instanceOf(UsuarioService.class);
+  }
+
   private TareaService newTareaService() {
-    UsuarioRepository usuarioRepository = new JPAUsuarioRepository(jpaApi);
-    TareaRepository tareaRepository = new JPATareaRepository(jpaApi);
-    return new TareaService(usuarioRepository, tareaRepository);
+    return injector.instanceOf(TareaService.class);
   }
 
   // Test #31: findUsuarioPorIdNoExisteNullTest
   @Test
   public void findUsuarioPorIdNoExisteNullTest(){
-    UsuarioRepository repository=new JPAUsuarioRepository(jpaApi);
-    UsuarioService usuarioService=new UsuarioService(repository);
+    UsuarioService usuarioService=newUsuarioService();
     Usuario usuario=usuarioService.findUsuarioPorId(5000L);
     assertNull(usuario);
   }
@@ -95,6 +91,5 @@ public class Practica2Test{
     long idUsuario=5000L;
     tareaService.nuevaTarea(idUsuario,"Descripción tarea");
   }
-
 
 }
