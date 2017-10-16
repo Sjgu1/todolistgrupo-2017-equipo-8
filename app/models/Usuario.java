@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -27,6 +28,8 @@ public class Usuario{
   //Relación uno-a-muchos entre usuario y tarea
   @OneToMany(mappedBy="usuario", fetch=FetchType.EAGER)
   public Set<Tarea> tareas=new HashSet<Tarea>();
+  @OneToMany(mappedBy="administrador", fetch=FetchType.EAGER)
+  private Set<Tablero> administrados = new HashSet<Tablero>();
 
   //Un constructor vacío necesario para JPA
   public Usuario(){}
@@ -102,6 +105,14 @@ public class Usuario{
    public void setTareas(Set<Tarea> tareas){
      this.tareas=tareas;
    }
+
+  public Set<Tablero> getAdministrados() {
+     return administrados;
+   }
+
+  public void setAdministrados(Set<Tablero> administrados) {
+    this.administrados = administrados;
+  }
 
    //método auxiliar para no devolver nulos en los campos y así poder mostrar formulario
    //modifica usuario
