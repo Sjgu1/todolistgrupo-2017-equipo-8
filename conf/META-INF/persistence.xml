@@ -10,6 +10,7 @@
       <non-jta-data-source>DBTest</non-jta-data-source>
       <class>models.Usuario</class>
       <class>models.Tarea</class>
+      <class>models.Tablero</class>
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
          <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -23,6 +24,7 @@
         <non-jta-data-source>DBTest</non-jta-data-source>
         <class>models.Usuario</class>
         <class>models.Tarea</class>
+        <class>models.Tablero</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -36,6 +38,7 @@
      <non-jta-data-source>DBTest</non-jta-data-source>
      <class>models.Usuario</class>
      <class>models.Tarea</class>
+     <class>models.Tablero</class>
      <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
       <property name="hibernate.hbm2ddl.auto" value="validate"/>
