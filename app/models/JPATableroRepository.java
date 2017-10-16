@@ -14,4 +14,13 @@ public class JPATableroRepository implements TableroRepository {
    public JPATableroRepository(JPAApi api) {
       this.jpaApi = api;
    }
+
+   public Tablero add(Tablero tablero) {
+     return jpaApi.withTransaction(entityManager -> {
+       entityManager.persist(tablero);
+       entityManager.flush();
+       entityManager.refresh(tablero);
+       return tablero;
+     });
+  }
 }
