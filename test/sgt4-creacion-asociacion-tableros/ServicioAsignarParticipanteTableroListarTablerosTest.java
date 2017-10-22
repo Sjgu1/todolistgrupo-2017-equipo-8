@@ -84,7 +84,7 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
 
   //comprueba listado tableros en los que un usuario es participante, están ordenados
   @Test
-  public void devuelveTablerosParticipanteUsuario(){
+  public void devuelveTablerosParticipanteUsuarioTest(){
     long idUsuario=1000L;
     long idUsuario2=1001L;
     String tituloTablero="Tablero urgente";
@@ -95,5 +95,13 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     assertEquals(0,nombreTableros.size());
     nombreTableros=tableroService.allTablerosParticipanteUsuario(idUsuario2);
     assertEquals(1,nombreTableros.size());
-    }
+  }
+
+  //comprueba listar tableros usuario no existente genera excepción
+  @Test(expected=TableroServiceException.class)
+  public void devuelveTablerosParticipanteNoExisteExcepcionTest(){
+    long idUsuario=5000L;
+    TableroService tableroService=newTableroService();
+    List<Tablero> tablero=tableroService.allTablerosParticipanteUsuario(idUsuario);
+  }
 }
