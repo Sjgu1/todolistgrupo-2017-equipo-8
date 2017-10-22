@@ -40,6 +40,9 @@ public class TableroService{
   //(equivalente al orden de creación)
   public List<Tablero> allTablerosAdministradosUsuario(Long idUsuario){
     Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TableroServiceException("Usuario no existente");
+    }
     List<Tablero> tableros=new ArrayList<Tablero>(usuario.getAdministrados());
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;

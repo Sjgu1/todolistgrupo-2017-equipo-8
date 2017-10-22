@@ -90,4 +90,12 @@ public class ServicioCrearListarTablerosTest{
     assertEquals("Tablero test 1",nombreTableros.get(1).getNombre());
     assertEquals("Tablero test 2",nombreTableros.get(2).getNombre());
     }
+
+    //comprueba excepción si se piden tableros de un usuario no existente
+    @Test(expected=TableroServiceException.class)
+    public void devuelveTablerosAdministradosUsuarioNoExisteCausaExcepcion(){
+      long idUsuario=5000L;
+      TableroService tableroService=newTableroService();
+      List<Tablero> nombreTableros=tableroService.allTablerosAdministradosUsuario(idUsuario);
+    }
 }
