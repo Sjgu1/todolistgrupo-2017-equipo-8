@@ -47,11 +47,15 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     databaseTester.onSetup();
   }
 
+  private TableroService newTableroService(){
+    return injector.instanceOf(TableroService.class);
+  }
+
   //comprueba asignación participante a tablero
   @Test
   public void asignarParticipanteTableroTest(){
     long idUsuario=1001L;
-    TableroService tableroService=injector.instanceOf(TableroService.class);
+    TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
     tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario);
     assertEquals(1,tablero.getParticipantes().size());
@@ -62,7 +66,7 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
   public void asignarParticipanteNoExisteTableroExcepcionTest(){
     long idUsuario=1000L;
     long idUsuario2=5000L;
-    TableroService tableroService=injector.instanceOf(TableroService.class);
+    TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
     tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario2);
   }
