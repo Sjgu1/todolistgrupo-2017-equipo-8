@@ -1,0 +1,29 @@
+@(tableros: List[Tablero], usuario: Usuario, mensaje: String)
+@main("Tableros administrados por el usuario @usuario.getLogin()") {
+
+  <h2> Listado de tableros administrados por @usuario.getLogin()</h2>
+
+  <table class="table table-striped">
+    <tr>
+      <th>Tableros</th>
+    </tr>
+    @for(tablero <- tableros) {
+      <tr>
+        <td>@tablero.getNombre()</td>
+      </tr>
+    }
+
+    <tr>
+      <td><a href="@routes.GestionTablerosController.formularioNuevoTablero(usuario.getId())">
+            <span class="glyphicon glyphicon-plus"/></a></td>
+            <td><a href="@routes.GestionTareasController.listaTareas(usuario.getId())">Volver a tareas</a></td>
+    </tr>
+
+  </table>
+
+  @if(mensaje != null) {
+    <div class="alert alert-success">
+      @mensaje
+    </div>
+ }
+}
