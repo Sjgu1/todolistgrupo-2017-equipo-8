@@ -70,4 +70,13 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
     tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario2);
   }
+
+  //comprueba excepción asignar participante a tablero no existente
+  @Test(expected=TableroServiceException.class)
+  public void asignarParticipanteTableroNoExisteExcepcionTest(){
+    long idUsuario=1000L;
+    long idTablero=5000L;
+    TableroService tableroService=newTableroService();
+    Tablero tablero=tableroService.addParticipanteaTablero(idTablero,idUsuario);
+  }
 }
