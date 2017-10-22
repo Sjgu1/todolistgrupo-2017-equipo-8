@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import models.Usuario;
 import models.UsuarioRepository;
 
@@ -36,6 +39,15 @@ public class TableroService{
     return tableroRepository.add(tablero);
   }
 
+  public Tablero addParticipanteaTablero(Long idTablero,Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    Tablero tablero=tableroRepository.findById(idTablero);
+    Set<Usuario> participantes=tablero.getParticipantes();
+    participantes.add(usuario);
+    tablero.setParticipantes(participantes);
+    return tablero;
+  }
+
   //Devuelve la lista de tableros administrados por un usuario, ordenadas por su id
   //(equivalente al orden de creación)
   public List<Tablero> allTablerosAdministradosUsuario(Long idUsuario){
@@ -47,6 +59,5 @@ public class TableroService{
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;
   }
-
 
 }
