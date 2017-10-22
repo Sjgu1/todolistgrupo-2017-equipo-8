@@ -25,6 +25,9 @@ public class TableroService{
 
   public Tablero creaTablero(long idUsuario, String titulo){
     Usuario usuario= usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TableroServiceException("Usuario no existente");
+    }
     Tablero tablero=new Tablero(usuario,titulo);
     return tableroRepository.add(tablero);
   }

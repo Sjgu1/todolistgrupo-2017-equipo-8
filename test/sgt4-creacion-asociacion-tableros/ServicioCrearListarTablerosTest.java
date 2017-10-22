@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import models.Tablero;
 
 import services.TableroService;
+import services.TableroServiceException;
 
 public class ServicioCrearListarTablerosTest{
   static private Injector injector;
@@ -45,6 +46,7 @@ public class ServicioCrearListarTablerosTest{
     databaseTester.onSetup();
   }
 
+  //comprueba creación tablero correcta
   @Test
   public void crearNuevoTableroCorrectoTest(){
     long idUsuario=1000L;
@@ -54,4 +56,12 @@ public class ServicioCrearListarTablerosTest{
     assertEquals((long)idUsuario,(long)tablero.getAdministrador().getId());
     assertEquals("tablero 1",tablero.getNombre());
   }
+
+  //comprueba excepción si usuario no existe para asignar como administrador
+  @Test(expected=TableroServiceException.class)
+  public void crearTableroUsuarioNoExisteCausaExcepcion(){
+    long idUsuario=5000L;
+    TableroService tableroService=injector.instanceOf(TableroService.class);
+    Tablero tablero=tableroService.creaTablero(idUsuario,"tablero erróneo");
+    }
 }
