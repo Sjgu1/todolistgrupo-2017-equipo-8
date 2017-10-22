@@ -48,6 +48,9 @@ public class TableroService{
     if(tablero==null){
       throw new TableroServiceException("Tablero no existente");
     }
+    if ((long)idUsuario==(long)tableroRepository.findById(idTablero).getAdministrador().getId()){
+      throw new TableroServiceException("El administrador del tablero no puede a la vez participar");
+    }
     Set<Usuario> participantes=tablero.getParticipantes();
     participantes.add(usuario);
     tablero.setParticipantes(participantes);

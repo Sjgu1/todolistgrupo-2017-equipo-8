@@ -57,8 +57,9 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
   @Test
   public void asignarParticipanteTableroTest(){
     long idUsuario=1001L;
+    long idUsuario2=1000L;
     TableroService tableroService=newTableroService();
-    Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
+    Tablero tablero=tableroService.creaTablero(idUsuario2,"tablero 1");
     tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario);
     assertEquals(1,tablero.getParticipantes().size());
   }
@@ -120,5 +121,14 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario);
     listadoTableros=tableroService.allTablerosNoUsuario(idUsuario);
     assertEquals(0,listadoTableros.size());
+  }
+
+  //usuario no puede participar en tablero que administra, genera excepción
+  @Test(expected=TableroServiceException.class)
+  public void administradorTableroNoPuedeParticiparGeneraExcepcionTest(){
+    long idUsuario=1000L;
+    TableroService tableroService=newTableroService();
+    Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
+    tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario);
   }
 }
