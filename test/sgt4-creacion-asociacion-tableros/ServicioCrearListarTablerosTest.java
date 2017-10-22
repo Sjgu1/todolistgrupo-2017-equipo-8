@@ -19,10 +19,15 @@ import play.db.jpa.JPAApi;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import models.Tablero;
 
 import services.TableroService;
 import services.TableroServiceException;
+import services.UsuarioService;
 
 public class ServicioCrearListarTablerosTest{
   static private Injector injector;
@@ -67,5 +72,22 @@ public class ServicioCrearListarTablerosTest{
     long idUsuario=5000L;
     TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero erróneo");
+    }
+
+  //comprueba listado tableros administrados por un usuario están ordenados
+  //se da la peculiaridad en test que el tablero que inserto tiene un id inferior a los ya existentes
+  @Test
+  public void devuelveTablerosAdministradosUsuario(){
+    long idUsuario=1000L;
+    String tituloTablero="Tablero urgente";
+    TableroService tableroService=newTableroService();
+    List<Tablero> nombreTableros=tableroService.allTablerosAdministradosUsuario(idUsuario);
+    assertEquals(2,nombreTableros.size());
+    Tablero tablero=tableroService.creaTablero(idUsuario,tituloTablero);
+    nombreTableros=tableroService.allTablerosAdministradosUsuario(idUsuario);
+    assertEquals(3,nombreTableros.size());
+    assertEquals(tituloTablero,nombreTableros.get(0).getNombre());
+    assertEquals("Tablero test 1",nombreTableros.get(1).getNombre());
+    assertEquals("Tablero test 2",nombreTableros.get(2).getNombre());
     }
 }
