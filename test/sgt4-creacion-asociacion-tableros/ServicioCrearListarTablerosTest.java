@@ -46,11 +46,15 @@ public class ServicioCrearListarTablerosTest{
     databaseTester.onSetup();
   }
 
+  private TableroService newTableroService(){
+    return injector.instanceOf(TableroService.class);
+  }
+
   //comprueba creación tablero correcta
   @Test
   public void crearNuevoTableroCorrectoTest(){
     long idUsuario=1000L;
-    TableroService tableroService=injector.instanceOf(TableroService.class);
+    TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
     assertNotNull(tablero.getId());
     assertEquals((long)idUsuario,(long)tablero.getAdministrador().getId());
@@ -61,7 +65,7 @@ public class ServicioCrearListarTablerosTest{
   @Test(expected=TableroServiceException.class)
   public void crearTableroUsuarioNoExisteCausaExcepcion(){
     long idUsuario=5000L;
-    TableroService tableroService=injector.instanceOf(TableroService.class);
+    TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero erróneo");
     }
 }
