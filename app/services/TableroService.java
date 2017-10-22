@@ -51,6 +51,7 @@ public class TableroService{
     Set<Usuario> participantes=tablero.getParticipantes();
     participantes.add(usuario);
     tablero.setParticipantes(participantes);
+    tablero=tableroRepository.update(tablero);
     return tablero;
   }
 
@@ -66,4 +67,12 @@ public class TableroService{
     return tableros;
   }
 
+  //Devuelve la lista de tableros en los que el usuario es participante, ordenados por su id
+  //(equivalente al orden de creación)
+  public List<Tablero> allTablerosParticipanteUsuario(Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    List<Tablero> tableros=new ArrayList<Tablero>(usuario.getTableros());
+    Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tableros;
+  }
 }

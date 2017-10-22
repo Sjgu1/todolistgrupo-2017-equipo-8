@@ -19,6 +19,8 @@ import play.db.jpa.JPAApi;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import java.util.List;
+
 import models.Tablero;
 
 import services.TableroService;
@@ -79,4 +81,19 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     TableroService tableroService=newTableroService();
     Tablero tablero=tableroService.addParticipanteaTablero(idTablero,idUsuario);
   }
+
+  //comprueba listado tableros en los que un usuario es participante, están ordenados
+  @Test
+  public void devuelveTablerosParticipanteUsuario(){
+    long idUsuario=1000L;
+    long idUsuario2=1001L;
+    String tituloTablero="Tablero urgente";
+    TableroService tableroService=newTableroService();
+    Tablero tablero=tableroService.creaTablero(idUsuario,tituloTablero);
+    tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario2);
+    List<Tablero> nombreTableros=tableroService.allTablerosParticipanteUsuario(idUsuario);
+    assertEquals(0,nombreTableros.size());
+    nombreTableros=tableroService.allTablerosParticipanteUsuario(idUsuario2);
+    assertEquals(1,nombreTableros.size());
+    }
 }
