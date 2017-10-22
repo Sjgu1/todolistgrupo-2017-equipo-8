@@ -78,4 +78,15 @@ public class TableroService{
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;
   }
+
+  //Devuelve la lista de tableros en los que el usuario ni administra ni participa, ordenados por su id
+  //(equivalente al orden de creación)
+  public List<Tablero> allTablerosNoUsuario(Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    List<Tablero> tableros=new ArrayList<Tablero>(tableroRepository.allTableros());
+    tableros.removeAll(this.allTablerosAdministradosUsuario(idUsuario));
+    tableros.removeAll(this.allTablerosParticipanteUsuario(idUsuario));
+    Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tableros;
+  }
 }

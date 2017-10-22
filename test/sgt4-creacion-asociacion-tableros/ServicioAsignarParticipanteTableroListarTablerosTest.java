@@ -104,4 +104,21 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     TableroService tableroService=newTableroService();
     List<Tablero> tablero=tableroService.allTablerosParticipanteUsuario(idUsuario);
   }
+
+  //comprueba listado tableros que no administra ni participa usuario concreto
+  @Test
+  public void devuelveTablerosNoParticipaNiAdministraTest(){
+    long idUsuario=1000L;
+    long idUsuario2=1001L;
+    String tituloTablero="Tablero urgente";
+    TableroService tableroService=newTableroService();
+    List<Tablero> listadoTableros=tableroService.allTablerosNoUsuario(idUsuario);
+    assertEquals(0,listadoTableros.size());
+    Tablero tablero=tableroService.creaTablero(idUsuario2,tituloTablero);
+    listadoTableros=tableroService.allTablerosNoUsuario(idUsuario);
+    assertEquals(1,listadoTableros.size());
+    tablero=tableroService.addParticipanteaTablero(tablero.getId(),idUsuario);
+    listadoTableros=tableroService.allTablerosNoUsuario(idUsuario);
+    assertEquals(0,listadoTableros.size());
+  }
 }
