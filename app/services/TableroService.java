@@ -41,6 +41,9 @@ public class TableroService{
 
   public Tablero addParticipanteaTablero(Long idTablero,Long idUsuario){
     Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TableroServiceException("Usuario no existente");
+    }
     Tablero tablero=tableroRepository.findById(idTablero);
     Set<Usuario> participantes=tablero.getParticipantes();
     participantes.add(usuario);
