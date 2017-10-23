@@ -63,8 +63,10 @@ public class GestionTablerosController extends Controller {
     } else {
       String aviso = flash("aviso");
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
-      List<Tablero> tableros = tableroService.allTablerosAdministradosUsuario(idUsuario);
-      return ok(listaTableros.render(tableros, usuario, aviso));
+      List<Tablero> tablerosAdministrados = tableroService.allTablerosAdministradosUsuario(idUsuario);
+      List<Tablero> tablerosParticipa = tableroService.allTablerosParticipanteUsuario(idUsuario);
+      List<Tablero> tablerosResto = tableroService.allTablerosNoUsuario(idUsuario);
+      return ok(listaTableros.render(tablerosAdministrados,tablerosParticipa,tablerosResto, usuario, aviso));
        }
     }
 }
