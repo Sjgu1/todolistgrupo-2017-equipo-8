@@ -3,7 +3,7 @@
 @main("Detalle de tablero"){
   <h1>Detalle del tablero @tablero.getId()</h1>
   <div class="table-responsive">
-    <table class="table ">
+    <table class="table">
       <tr>
         <th>Nombre</th>
         <th>Administrador</th>
@@ -27,6 +27,6 @@
     </table>
   </div>
   <p>
-    <a class="btn btn-primary" href="@routes.GestionTablerosController.listaTableros(usuarioSesion)">Volver lista tableros</a>
+    <a class="btn btn-primary" href="@routes.GestionTablerosController.listaTableros(usuarioSesion)"><span class="glyphicon glyphicon-list"/> Volver lista tableros</a>
   </p>
 }

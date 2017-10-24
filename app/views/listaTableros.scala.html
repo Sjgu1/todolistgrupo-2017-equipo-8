@@ -28,7 +28,7 @@
       } else{
       @for(tablero <- tablerosAdministra) {
         <tr>
-          <td>@tablero.getNombre()</td>
+          <td><a href="@routes.GestionTablerosController.detalleTablero(tablero.getId(),usuario.getId())">@tablero.getNombre()</a></td>
         </tr>
       }
     }
@@ -51,7 +51,7 @@
       } else{
       @for(tablero <- tablerosParticipa) {
         <tr>
-          <td>@tablero.getNombre()</td>
+            <td><a href="@routes.GestionTablerosController.detalleTablero(tablero.getId(),usuario.getId())">@tablero.getNombre()</a></td>
         </tr>
           }
       }
@@ -71,7 +71,7 @@
       } else{
       @for(tablero <- tablerosNoUsa) {
         <tr>
-          <td>@tablero.getNombre()</td>
+            <td><a href="@routes.GestionTablerosController.detalleTablero(tablero.getId(),usuario.getId())">@tablero.getNombre()</a></td>
           <td><a onmouseover="" style="cursor: pointer;"
           onclick="upd('@routes.GestionTablerosController.asignaParticipanteTablero(tablero.getId(),usuario.getId())')">
           <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></td>
@@ -82,7 +82,7 @@
   </div>
 
   <div id="mas_opciones">
-  <a href="@routes.GestionTareasController.listaTareas(usuario.getId())">Volver a tareas</a>
+  <a class="btn btn-primary" href="@routes.GestionTareasController.listaTareas(usuario.getId())"><span class="glyphicon glyphicon-tasks"/> Ver lista tareas</a>
   </div>
   @if(mensaje != null) {
     <div class="alert alert-success">
