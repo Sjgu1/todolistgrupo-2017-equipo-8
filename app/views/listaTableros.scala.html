@@ -15,7 +15,6 @@
 }
 @main("Tableros administrados por el usuario @usuario.getLogin()",scripts) {
 
-
   <h2> Listado de Tableros</h2>
   <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#tab_administrados">Tableros administrados por @usuario.getLogin()</button>
   <div id="tab_administrados" class="collapse in">
@@ -71,7 +70,7 @@
       } else{
       @for(tablero <- tablerosNoUsa) {
         <tr>
-            <td><a href="@routes.GestionTablerosController.detalleTablero(tablero.getId(),usuario.getId())">@tablero.getNombre()</a></td>
+            <td>@tablero.getNombre()</td>
           <td><a onmouseover="" style="cursor: pointer;"
           onclick="upd('@routes.GestionTablerosController.asignaParticipanteTablero(tablero.getId(),usuario.getId())')">
           <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></td>
@@ -84,9 +83,19 @@
   <div id="mas_opciones">
   <a class="btn btn-primary" href="@routes.GestionTareasController.listaTareas(usuario.getId())"><span class="glyphicon glyphicon-tasks"/> Ver lista tareas</a>
   </div>
+
+
   @if(mensaje != null) {
-    <div class="alert alert-success">
-      @mensaje
-    </div>
+    @if(flash.containsKey("aviso")) {
+      <div class="alert alert-success">
+        @mensaje
+      </div>
+  } else {
+    @if(flash.containsKey("error")){
+      <div class="alert alert-danger">
+        @mensaje
+      </div>
+    }
+  }
  }
 }
