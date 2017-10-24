@@ -29,7 +29,7 @@ public class GestionTablerosController extends Controller {
   public Result formularioNuevoTablero(Long idUsuario) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
@@ -41,7 +41,7 @@ public class GestionTablerosController extends Controller {
   public Result creaNuevoTablero(Long idUsuario) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
      return unauthorized("Lo siento, no estás autorizado");
     } else {
      Form<Tablero> tableroForm = formFactory.form(Tablero.class).bindFromRequest();
@@ -61,7 +61,7 @@ public class GestionTablerosController extends Controller {
   public Result listaTableros(Long idUsuario) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       String aviso = flash("aviso");
@@ -77,7 +77,7 @@ public class GestionTablerosController extends Controller {
   public Result asignaParticipanteTablero(Long idTablero,Long idUsuario){
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       tableroService.addParticipanteaTablero(idTablero,idUsuario);
@@ -91,7 +91,7 @@ public class GestionTablerosController extends Controller {
   public Result detalleTablero(Long idTablero, Long idUsuario){
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Tablero tablero = tableroRepository.findById(idTablero);
