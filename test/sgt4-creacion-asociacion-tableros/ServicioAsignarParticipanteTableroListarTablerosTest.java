@@ -123,6 +123,15 @@ public class ServicioAsignarParticipanteTableroListarTablerosTest{
     assertEquals(0,listadoTableros.size());
   }
 
+  //solicitar listado tableros no administra ni participa con usuario no existente
+  //genera excepción
+  @Test(expected=TableroServiceException.class)
+  public void devuelveTablerosNoParticipaNiAdministraUsuarioNoExisteExcepcionTest(){
+    long idUsuario=5000L;
+    TableroService tableroService=newTableroService();
+    List<Tablero> listadoTableros=tableroService.allTablerosNoUsuario(idUsuario);
+  }
+
   //usuario no puede participar en tablero que administra, genera excepción
   @Test(expected=TableroServiceException.class)
   public void administradorTableroNoPuedeParticiparGeneraExcepcionTest(){

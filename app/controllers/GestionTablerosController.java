@@ -12,6 +12,7 @@ import java.util.List;
 
 import services.UsuarioService;
 import services.TableroService;
+import services.TableroServiceException;
 import models.Usuario;
 import models.Tablero;
 import models.TableroRepository;
@@ -50,10 +51,15 @@ public class GestionTablerosController extends Controller {
       return badRequest(formNuevoTablero.render(usuario, formFactory.form(Tablero.class), "Hay errores en el formulario"));
      }
      Tablero tablero = tableroForm.get();
-     tablero=tableroService.creaTablero(idUsuario, tablero.getNombre());
-     Logger.debug("Creado tablero: "+tablero.getId());
-     flash("aviso", "El tablero se ha grabado correctamente");
-     return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+     try{
+       tablero=tableroService.creaTablero(idUsuario, tablero.getNombre());
+       Logger.debug("Creado tablero: "+tablero.getId());
+       flash("aviso", "El tablero se ha grabado correctamente");
+       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+     }catch (TableroServiceException t){
+       flash("aviso", "El nombre del tablero está repetido");
+       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+     }
     }
   }
 
