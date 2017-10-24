@@ -10,4 +10,5 @@ public interface TableroRepository {
   public Tablero update(Tablero tablero);
   public Tablero findById(Long idTablero);
   public List<Tablero> allTableros();
+  public Tablero findByNombre(String nombre);
 }

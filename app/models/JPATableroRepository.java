@@ -52,4 +52,18 @@ public class JPATableroRepository implements TableroRepository {
         }
     });
   }
+
+  public Tablero findByNombre(String nombre){
+    return jpaApi.withTransaction(entityManager -> {
+      TypedQuery<Tablero> query= entityManager.createQuery(
+        "select t from Tablero t where t.nombre= :nombre",Tablero.class);
+
+        try{
+          Tablero tablero=query.setParameter("nombre",nombre).getSingleResult();
+          return tablero;
+        } catch(NoResultException ex){
+          return null;
+        }
+    });
+  }
 }
