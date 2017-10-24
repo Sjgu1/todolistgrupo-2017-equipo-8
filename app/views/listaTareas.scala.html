@@ -15,8 +15,8 @@
 }
 @main("Tareas del usuario @usuario.getLogin()",scripts) {
 
-    <h2> Listado de tareas de @usuario.getLogin()</h2> <a class="btn btn-primary btn-lg" href="@routes.UsuarioController.detalleUsuario(usuario.getId())">Perfil @usuario.getLogin()</a>
-    <a class="btn btn-primary btn-lg" href="@routes.GestionTablerosController.listaTableros(usuario.getId())">Tableros @usuario.getLogin()</a>
+    <h2> Listado de tareas de @usuario.getLogin()</h2> <a class="btn btn-primary btn-lg" href="@routes.UsuarioController.detalleUsuario(usuario.getId())"><span class="glyphicon glyphicon-user"/> Perfil @usuario.getLogin()</a>
+    <a class="btn btn-primary btn-lg" href="@routes.GestionTablerosController.listaTableros(usuario.getId())"><span class="glyphicon glyphicon-list"/> Tableros @usuario.getLogin()</a>
     </br>
 
 

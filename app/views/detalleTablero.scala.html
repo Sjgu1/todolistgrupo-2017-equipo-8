@@ -1,0 +1,32 @@
+@(tablero: Tablero, usuarioSesion: Long)
+
+@main("Detalle de tablero"){
+  <h1>Detalle del tablero @tablero.getId()</h1>
+  <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <th>Nombre</th>
+        <th>Administrador</th>
+        <th>Participantes</th>
+      </tr>
+      <tr>
+        <td>@tablero.getNombre()</td>
+        <td>@tablero.getAdministrador().getLogin()</td>
+        <td>
+          @if(tablero.getParticipantes().isEmpty()){
+              <td class="text-muted">Este tablero todavía no tiene participantes</td>
+          } else{
+            <ul>
+            @for(participante <- tablero.getParticipantes()) {
+              <li>@participante.getLogin()</li>
+            }
+          </ul>
+        }
+        </td>
+      </tr>
+    </table>
+  </div>
+  <p>
+    <a class="btn btn-primary" href="@routes.GestionTablerosController.listaTableros(usuarioSesion)"><span class="glyphicon glyphicon-list"/> Volver lista tableros</a>
+  </p>
+}

@@ -29,7 +29,7 @@ public class GestionTareasController extends Controller{
   public Result formularioNuevaTarea(Long idUsuario) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
@@ -41,7 +41,7 @@ public class GestionTareasController extends Controller{
   public Result creaNuevaTarea(Long idUsuario) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Form<Tarea> tareaForm = formFactory.form(Tarea.class).bindFromRequest();
@@ -58,9 +58,11 @@ public class GestionTareasController extends Controller{
 
   @Security.Authenticated(ActionAuthenticator.class)
   public Result listaTareas(Long idUsuario) {
+    Logger.debug("Login con usuario:"+idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    if (connectedUser != idUsuario) {
+    Logger.debug("Usuario sesion:"+connectedUser);
+    if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       String aviso = flash("aviso");
@@ -78,7 +80,7 @@ public class GestionTareasController extends Controller{
     } else {
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
-      if (connectedUser != tarea.getUsuario().getId()) {
+      if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
         return unauthorized("Lo siento, no estás autorizado");
       } else {
         return ok(formModificacionTarea.render(tarea.getUsuario().getId(),

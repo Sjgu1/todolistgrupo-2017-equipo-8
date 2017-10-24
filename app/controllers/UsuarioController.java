@@ -54,7 +54,7 @@ public class UsuarioController extends Controller {
   public Result formularioModificaUsu(Long id){
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
-    if(connectedUser!=id){
+    if((long)connectedUser!=(long)id){
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(id);
@@ -72,7 +72,7 @@ public class UsuarioController extends Controller {
   public Result modificaUsuario(Long id){
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
-    if(connectedUser!=id){
+    if((long)connectedUser!=(long)id){
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(id);
@@ -102,7 +102,7 @@ public class UsuarioController extends Controller {
   public Result formularioCambioPassword(Long id){
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
-    if(connectedUser!=id){
+    if((long)connectedUser!=(long)id){
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(id);
@@ -118,7 +118,7 @@ public class UsuarioController extends Controller {
   public Result modificaPassword(Long id){
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
-    if(connectedUser!=id){
+    if((long)connectedUser!=(long)id){
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(id);
@@ -181,7 +181,7 @@ public class UsuarioController extends Controller {
   public Result detalleUsuario(Long id){
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
-    if(connectedUser!=id){
+    if((long)connectedUser!=(long)id){
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(id);
