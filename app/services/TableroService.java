@@ -35,6 +35,9 @@ public class TableroService{
     if(usuario==null){
       throw new TableroServiceException("Usuario no existente");
     }
+    if(nombreTableroDuplicado(titulo)){
+      throw new TableroServiceException("Nombre de tablero duplicado");
+    }
     Tablero tablero=new Tablero(usuario,titulo);
     return tableroRepository.add(tablero);
   }
@@ -91,5 +94,10 @@ public class TableroService{
     tableros.removeAll(this.allTablerosParticipanteUsuario(idUsuario));
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;
+  }
+
+  public boolean nombreTableroDuplicado(String nombreTablero){
+    List<Tablero> tableros=new ArrayList<Tablero>(tableroRepository.allTableros());
+    return (int)tableros.stream().filter(tablero -> tablero.getNombre().equals(nombreTablero)).count() > 0 ? true : false;
   }
 }

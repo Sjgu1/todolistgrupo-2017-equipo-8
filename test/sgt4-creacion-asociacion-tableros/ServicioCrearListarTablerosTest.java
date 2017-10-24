@@ -74,6 +74,15 @@ public class ServicioCrearListarTablerosTest{
     Tablero tablero=tableroService.creaTablero(idUsuario,"tablero erróneo");
     }
 
+    // si intentamos generar un tablero con un nombre existente debe generar error
+    @Test(expected=TableroServiceException.class)
+    public void crearTableroConNombreDuplicadoGeneraExcepcionTest(){
+      long idUsuario=1000L;
+      TableroService tableroService=newTableroService();
+      Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
+      tablero=tableroService.creaTablero(idUsuario,"tablero 1");
+    }
+
   //comprueba listado tableros administrados por un usuario están ordenados
   //se da la peculiaridad en test que el tablero que inserto tiene un id inferior a los ya existentes
   @Test
