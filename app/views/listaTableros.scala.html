@@ -1,26 +1,89 @@
-@(tableros: List[Tablero], usuario: Usuario, mensaje: String)
-@main("Tableros administrados por el usuario @usuario.getLogin()") {
+@(tablerosAdministra: List[Tablero],tablerosParticipa: List[Tablero],tablerosNoUsa: List[Tablero], usuario: Usuario, mensaje: String)
+@scripts = {
+    <script type="text/javascript">
+        function upd(urlActualizar) {
+            $.ajax({
+                url: urlActualizar,
+                type: 'PUT',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}
+@main("Tableros administrados por el usuario @usuario.getLogin()",scripts) {
 
-  <h2> Listado de tableros administrados por @usuario.getLogin()</h2>
 
-  <table class="table table-striped">
-    <tr>
-      <th>Tableros</th>
-    </tr>
-    @for(tablero <- tableros) {
+  <h2> Listado de Tableros</h2>
+  <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#tab_administrados">Tableros administrados por @usuario.getLogin()</button>
+  <div id="tab_administrados" cls="collapse in">
+    <table class="table table-striped">
       <tr>
-        <td>@tablero.getNombre()</td>
+        <th>Tableros eres administrador <span class="glyphicon glyphicon-briefcase"/></th>
       </tr>
+      @if(tablerosAdministra.isEmpty()){
+          <td class="text-muted">Todavía no eres administrador de ningún tablero cree uno pulsando icono +</td>
+      } else{
+      @for(tablero <- tablerosAdministra) {
+        <tr>
+          <td>@tablero.getNombre()</td>
+        </tr>
+      }
     }
+      <tr>
+        <td><a href="@routes.GestionTablerosController.formularioNuevoTablero(usuario.getId())">
+              <span class="glyphicon glyphicon-plus"/></a></td>
+      </tr>
+    </table>
+  </div>
+  <div>
+    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#tab_participa">Tableros en los que participa @usuario.getLogin()</button>
+  </div>
+  <div id="tab_participa" class="collapse in">
+    <table class="table table-striped">
+      <tr>
+        <th>Tableros eres participante <span class="glyphicon glyphicon-pushpin"/></th>
+      </tr>
+      @if(tablerosParticipa.isEmpty()){
+          <td class="text-muted">Todavía no participa en ningún tablero, únase a uno de ellos</td>
+      } else{
+      @for(tablero <- tablerosParticipa) {
+        <tr>
+          <td>@tablero.getNombre()</td>
+        </tr>
+          }
+      }
+    </table>
+  </div>
+  <div>
+    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#tab_nousa">Tableros no participa @usuario.getLogin()</button>
+  </div>
+  <div id="tab_nousa" class="collapse in">
+    <table class="table table-striped">
+      <tr>
+        <th>Tableros no participas <span class="glyphicon glyphicon-ban-circle"/></th>
+        <th> Acciones</th>
+      </tr>
+      @if(tablerosNoUsa.isEmpty()){
+          <td class="text-muted">¡Enhorabuena! Usted administra o participa en todos los tableros</td>
+      } else{
+      @for(tablero <- tablerosNoUsa) {
+        <tr>
+          <td>@tablero.getNombre()</td>
+          <td><a onmouseover="" style="cursor: pointer;"
+          onclick="upd('@routes.GestionTablerosController.asignaParticipanteTablero(tablero.getId(),usuario.getId())')">
+          <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span></a></td>
+        </tr>
+      }
+    }
+    </table>
+  </div>
 
-    <tr>
-      <td><a href="@routes.GestionTablerosController.formularioNuevoTablero(usuario.getId())">
-            <span class="glyphicon glyphicon-plus"/></a></td>
-            <td><a href="@routes.GestionTareasController.listaTareas(usuario.getId())">Volver a tareas</a></td>
-    </tr>
-
-  </table>
-
+  <div id="mas_opciones">
+  <a href="@routes.GestionTareasController.listaTareas(usuario.getId())">Volver a tareas</a>
+  </div>
   @if(mensaje != null) {
     <div class="alert alert-success">
       @mensaje

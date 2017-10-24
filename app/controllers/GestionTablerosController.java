@@ -63,8 +63,26 @@ public class GestionTablerosController extends Controller {
     } else {
       String aviso = flash("aviso");
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
-      List<Tablero> tableros = tableroService.allTablerosAdministradosUsuario(idUsuario);
-      return ok(listaTableros.render(tableros, usuario, aviso));
+      List<Tablero> tablerosAdministrados = tableroService.allTablerosAdministradosUsuario(idUsuario);
+      List<Tablero> tablerosParticipa = tableroService.allTablerosParticipanteUsuario(idUsuario);
+      List<Tablero> tablerosResto = tableroService.allTablerosNoUsuario(idUsuario);
+      return ok(listaTableros.render(tablerosAdministrados,tablerosParticipa,tablerosResto, usuario, aviso));
        }
     }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result asignaParticipanteTablero(Long idTablero,Long idUsuario){
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    if (connectedUser != idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      Logger.debug("tablero:"+idTablero);
+      Logger.debug("usuari:"+idUsuario);
+      tableroService.addParticipanteaTablero(idTablero,idUsuario);
+      flash("aviso", "Se ha unido al tablero con éxito");
+      //return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+      return ok();
+    }
+  }
 }
