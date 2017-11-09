@@ -12,4 +12,4 @@ before_install:
 
 script:
    - docker run --rm sergiojuliogu/mads-todolist-2017:0.2 /bin/bash -c "sbt test"
-   - docker run --link play-mysql:mysql --rm -e DB_URL="jdbc:mysql://play-mysql:3306/mads" -e DB_USER_NAME="root" -e DB_USER_PASSWD="mads" sergiojuliogu/mads-todolist-2017:0.2 /bin/bash -c "sbt '; set javaOptions += \"-Dconfig.file=conf/integration.conf\"; test'"
+   - docker run --link play-mysql:mysql --rm -it -e DB_URL="jdbc:mysql://play-mysql:3306/mads" -e DB_USER_NAME="root" -e DB_USER_PASSWD="mads" -v${PWD}:/code sergiojuliogu/mads-todolist-2017:0.2 /bin/bash sbt '; set javaOptions += "-Dconfig.file=conf/integration.conf"; test'
