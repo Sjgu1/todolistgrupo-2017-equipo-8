@@ -8,6 +8,7 @@ services:
 before_install:
    - docker build -t sergiojuliogu/mads-todolist-2017:0.2 .
    - docker run -d --rm -p 3306:3306 --name play-mysql -e MYSQL_ROOT_PASSWORD=mads -e MYSQL_DATABASE=mads mysql
+   
 
 script:
    - docker run --rm sergiojuliogu/mads-todolist-2017:0.2 /bin/bash -c "sbt test"
