@@ -137,6 +137,6 @@ public class TareaTest {
     UsuarioRepository repository=newUsuarioRepository();
     Long idUsuario=1000L;
     Usuario usuario=repository.findById(idUsuario);
-    assertEquals(2,usuario.getTareas().size());
+    assertEquals(1,usuario.getTareas().size());
   }
 }
