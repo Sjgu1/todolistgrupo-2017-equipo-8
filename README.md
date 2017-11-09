@@ -1,5 +1,7 @@
 # Play Java Starter
 
+[![Build Status](https://travis-ci.com/mads-ua/todolistgrupo-2017-equipo-8.svg?token=ERc648bU9tHF4do3ut5p&branch=master)](https://travis-ci.com/mads-ua/todolistgrupo-2017-equipo-8)
+
 This is a starter application that shows how Play works.  Please see the documentation at https://www.playframework.com/documentation/latest/Home for more details.
 
 ## Running
