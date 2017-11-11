@@ -20,6 +20,10 @@ public class UsuarioController extends Controller {
   //UsuarioRepository y JPAApi
   @Inject UsuarioService usuarioService;
 
+  public Result acercaDe(){
+    return ok(acercaDe.render());
+  }
+
   public Result saludo(String mensaje){
     return ok(saludo.render("El mensaje que he recibido es: "+mensaje));
   }
