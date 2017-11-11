@@ -15,7 +15,7 @@ script:
    - docker run --link play-mysql:mysql --rm -e DB_URL="jdbc:mysql://play-mysql:3306/mads" -e DB_USER_NAME="root" -e DB_USER_PASSWD="mads" sergiojuliogu/mads-todolist-2017:$TRAVIS_BUILD_NUMBER /bin/bash -c "sbt '; set javaOptions += \"-Dconfig.file=conf/integration.conf\"; test'"
 
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "version-docker" ]; then
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u sergiojuliogu -p sergiojuliogu;
     docker push sergiojuliogu/mads-todolist-2017:$TRAVIS_BUILD_NUMBER ;
     fi
