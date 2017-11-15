@@ -23,4 +23,5 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u sergiojuliogu -p sergiojuliogu;
     docker push sergiojuliogu/mads-todolist-2017:$TRAVIS_BUILD_NUMBER ;
+    docker push sergiojuliogu/mads-todolist-2017:latest ;
     fi
