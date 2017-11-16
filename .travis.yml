@@ -23,5 +23,6 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD;
     docker push sergiojuliogu/mads-todolist-2017:$TRAVIS_BUILD_NUMBER ;
+    docker tag sergiojuliogu/mads-todolist-2017:$TRAVIS_BUILD_NUMBER  sergiojuliogu/mads-todolist-2017:latest;
     docker push sergiojuliogu/mads-todolist-2017:latest ;
     fi
