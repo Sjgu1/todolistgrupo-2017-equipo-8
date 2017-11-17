@@ -17,6 +17,10 @@ import java.io.FileInputStream;
 
 import java.util.List;
 
+import java.time.LocalDateTime;
+import java.lang.Thread;
+import java.lang.Exception;
+
 import play.inject.guice.GuiceApplicationBuilder;
 import play.inject.Injector;
 import play.inject.guice.GuiceInjectorBuilder;
@@ -139,4 +143,25 @@ public class TareaTest {
     Usuario usuario=repository.findById(idUsuario);
     assertEquals(2,usuario.getTareas().size());
   }
+
+  // Tests testCrearTareaCompruebaFechaCreacion
+  @Test
+  public void testCrearTareaCompruebaFechaCreacion() throws IllegalArgumentException, InterruptedException {
+    UsuarioRepository repository=newUsuarioRepository();
+    Long idUsuario=1000L;
+    Usuario usuario=repository.findById(idUsuario);
+
+    LocalDateTime antesTarea=LocalDateTime.now();
+    //Pausamos para forzar fechas diferentes
+    Thread.sleep(100);
+    Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+
+    //Pausamos para forzar fechas diferentes
+    Thread.sleep(100);
+    LocalDateTime despuesTarea=LocalDateTime.now();
+
+    assertNotNull(tarea.getFechaCreacion());
+    assertTrue(antesTarea.isBefore(tarea.getFechaCreacion()));
+    assertTrue(despuesTarea.isAfter(tarea.getFechaCreacion()));
+    }
 }
