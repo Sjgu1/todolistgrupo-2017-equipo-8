@@ -2,6 +2,8 @@ package models;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Tarea{
   @Id
@@ -15,11 +17,15 @@ public class Tarea{
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
 
+  // Variable para guardar fecha creación tarea
+  private LocalDateTime fechaCreacion;
+
   public Tarea() {}
 
   public Tarea(Usuario usuario,String titulo){
     this.usuario=usuario;
     this.titulo=titulo;
+    this.fechaCreacion=LocalDateTime.now();
   }
 
   //Getters y setters necesarios para JPA
@@ -46,6 +52,10 @@ public class Tarea{
 
   public void setUsuario(Usuario usuario){
     this.usuario=usuario;
+  }
+
+  public LocalDateTime getFechaCreacion(){
+    return fechaCreacion;
   }
 
   public String toString(){
