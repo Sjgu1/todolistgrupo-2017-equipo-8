@@ -139,4 +139,15 @@ public class TareaTest {
     Usuario usuario=repository.findById(idUsuario);
     assertEquals(2,usuario.getTareas().size());
   }
+
+  //test para comprobar que una tarea esta en no terminada cuando se crea
+  @Test
+  public void testTareaNoTerminada(){
+    Usuario usuario = new Usuario("juangutierrez", "juangutierrez@gmail.com");
+    Tarea tarea = new Tarea(usuario, "Práctica 3 de MADS");
+
+    assertEquals("Práctica 3 de MADS", tarea.getTitulo());
+    assertFalse(tarea.getTerminada());
+
+  }
 }

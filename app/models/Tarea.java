@@ -8,7 +8,7 @@ public class Tarea{
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Long id;
   private String titulo;
-  private boolean terminada;
+  private Boolean terminada;
   //Relación muchos-a-uno entre tareas y usuario
   @ManyToOne
   //Nombre de la columna en la BD que guarda físicamente
@@ -21,6 +21,7 @@ public class Tarea{
   public Tarea(Usuario usuario,String titulo){
     this.usuario=usuario;
     this.titulo=titulo;
+    this.terminada=false;
   }
 
   //Getters y setters necesarios para JPA
@@ -53,7 +54,7 @@ public class Tarea{
     return terminada;
   }
 
-  public void setTerminada(boolean ter){
+  public void setTerminada(Boolean ter){
     this.terminada=ter;
   }
 
