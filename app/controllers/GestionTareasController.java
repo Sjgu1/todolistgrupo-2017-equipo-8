@@ -64,12 +64,13 @@ public class GestionTareasController extends Controller{
         }
       }
       flash("aviso", "La tarea se ha grabado correctamente");
-      return redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario));
+      return redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString()));
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result listaTareas(Long idUsuario) {
+  public Result listaTareas(String idUsuarioRecibida) {
+    Long idUsuario = Long.parseLong(idUsuarioRecibida);
     Logger.debug("Login con usuario:"+idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
@@ -119,7 +120,7 @@ public class GestionTareasController extends Controller{
         return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(), tarea, e.getMessage()));
       }
     }
-    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId()));
+    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString()));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
