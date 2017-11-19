@@ -25,6 +25,8 @@ import play.inject.Injector;
 import play.inject.guice.GuiceInjectorBuilder;
 import play.Environment;
 
+import play.Logger;
+
 import services.UsuarioService;
 import services.UsuarioServiceException;
 import services.TareaService;
@@ -83,7 +85,10 @@ public class TareaServiceTest {
   @Test
   public void nuevaTareaUsuarioConFechaLimite(){
     TareaService tareaService=newTareaService();
-    String fechaLimite="25-12-2018";
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    Date fecha=new Date();
+    String fechaLimite=sdf.format(fecha).toString();
+    Logger.info("fecha limite: "+fechaLimite);
     long idUsuario=1000L;
     tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
@@ -107,6 +112,15 @@ public class TareaServiceTest {
     tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
   }
 
+  // Test : nuevaTareaUsuarioConFechaLimiteAnteriorExcepcion
+  @Test(expected=TareaServiceException.class)
+  public void nuevaTareaUsuarioConFechaLimiteAnteriorExcepcion(){
+    TareaService tareaService=newTareaService();
+    String fechaLimite="25-10-2010";
+    long idUsuario=1000L;
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
+  }
+
   // Test #22: modificación de tareas
   @Test
   public void modificacionTarea(){
@@ -122,15 +136,14 @@ public class TareaServiceTest {
   public void modificacionFechaLimiteTarea(){
     TareaService tareaService=newTareaService();
     SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-    Date fecha;
-    String fechaLimite="28-12-2018";
     try{
-      fecha=sdf.parse(fechaLimite);
+      Date fecha=new Date();
+      String fechaLimite=sdf.format(fecha).toString();
       long idTarea=1000L;
       tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
       Tarea tarea=tareaService.obtenerTarea(idTarea);
       assertEquals("Pagar el alquiler",tarea.getTitulo());
-      assertEquals(fecha,tarea.getFechaLimite());
+      assertEquals(fechaLimite,sdf.format(tarea.getFechaLimite()).toString());
     } catch (Exception e) {}
   }
 
@@ -153,6 +166,15 @@ public class TareaServiceTest {
   public void modificacionFechaLimiteIncorrectaTareaExcepcion(){
     TareaService tareaService=newTareaService();
     String fechaLimite="28-13-2018";
+    long idTarea=1000L;
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+  }
+
+  // Test: modificación fechaLimite anterior en Tarea excepcion
+  @Test(expected=TareaServiceException.class)
+  public void modificacionFechaLimiteAnteriorTareaExcepcion(){
+    TareaService tareaService=newTareaService();
+    String fechaLimite="28-10-2010";
     long idTarea=1000L;
     tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
   }

@@ -11,11 +11,14 @@ import java.text.SimpleDateFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Calendar;
 
 import models.Usuario;
 import models.UsuarioRepository;
 import models.Tarea;
 import models.TareaRepository;
+
+import play.Logger;
 
 
 public class TareaService{
@@ -52,6 +55,7 @@ public class TareaService{
   public Tarea nuevaTarea(Long idUsuario, String titulo,String fechaLimite){
     Usuario usuario= usuarioRepository.findById(idUsuario);
     Tarea tarea;
+
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
@@ -63,6 +67,13 @@ public class TareaService{
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         sdf.setLenient(false);
         Date fechaLim=sdf.parse(fechaLimite);
+        Date fecdefecto=sdf.parse("01-01-1900");
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.DATE,-1);
+        Date fechaAyer= cal.getTime();
+        if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
+          throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
+        }
         tarea=new Tarea(usuario,titulo,fechaLim);
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
@@ -94,6 +105,13 @@ public class TareaService{
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         sdf.setLenient(false);
         Date fechaLim=sdf.parse(fechaLimite);
+        Date fecdefecto=sdf.parse("01-01-1900");
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.DATE,-1);
+        Date fechaAyer= cal.getTime();
+        if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
+          throw new TareaServiceException("La fecha introducida es incorrecta, debe ser como mínimo igual al día de hoy");
+        }
         tarea.setFechaLimite(fechaLim);
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
