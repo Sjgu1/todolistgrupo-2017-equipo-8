@@ -67,8 +67,7 @@ public class TareaService{
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)
       throw new TareaServiceException("No existe tarea");
-    String nuevo = "true";
-    tarea.setTerminada(nuevo);
+    tarea.setTerminada(true);
     tareaRepository.update(tarea);
   }
 }

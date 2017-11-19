@@ -101,7 +101,13 @@ public class TareaServiceTest {
     long idTarea =1000L;
     tareaService.tareaTerminada(idTarea);
     Tarea tarea=tareaService.obtenerTarea(idTarea);
-    assertEquals("true",tarea.getTerminada());
+    assertTrue(tarea.getTerminada());
+  }
 
+  @Test(expected = TareaServiceException.class)
+  public void ponerTareaNoexisteTerminada(){
+    TareaService tareaService=newTareaService();
+    long idTarea =8000L;
+    tareaService.tareaTerminada(idTarea);
   }
 }
