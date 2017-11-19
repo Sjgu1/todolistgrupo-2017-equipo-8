@@ -21,12 +21,11 @@
            <nav class="navbar navbar-inverse">
             <div class="container-fluid">
               <div class="navbar-header">
-                <a class="navbar-brand" href="#">TodoList</a>
+                <a class="navbar-brand" href="@routes.UsuarioController.acercaDe()">TodoList</a>
               </div>
               <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#">Mis Tareas</a></li>
-                <li><a href="#">Mis Tableros</a></li>
+                <li><a href='@routes.GestionTareasController.listaTareas(session.get("connected"))'>Mis Tareas</a></li>
+                <li><a href='@routes.GestionTablerosController.listaTableros(session.get("connected"))'>Mis Tableros</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -41,14 +40,13 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                       <p>
-                                        <li><a href="#"> <span class="glyphicon glyphicon-user"></span> Perfil</a></li>
+                                        <li><a href='@routes.UsuarioController.detalleUsuario(session.get("connected"))'> <span class="glyphicon glyphicon-user"></span> Perfil</a></li>
                                       </p>
                                       <p>
-                                        <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                                        <li><a href="@routes.UsuarioController.logout()"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
                                       </p>
                                     </div>
                                 </div>
-
                           </div>
                         </li>
                     </ul>
@@ -60,11 +58,11 @@
            <nav class="navbar navbar-inverse">
             <div class="container-fluid">
               <div class="navbar-header">
-                <a class="navbar-brand" href="#">TodoList</a>
+                <a class="navbar-brand" href="@routes.UsuarioController.acercaDe()">TodoList</a>
               </div>
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                <li><a href="@routes.UsuarioController.registroUsuario()"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="@routes.UsuarioController.loginUsuario()"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
               </ul>
             </div>
           </nav>

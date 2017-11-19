@@ -99,7 +99,7 @@ public class UsuarioController extends Controller {
           } catch (services.UsuarioServiceException u){
             return badRequest(formModificaUsuario.render(usuario,form,u.getMessage()));
           }
-          return redirect(controllers.routes.UsuarioController.detalleUsuario(usuario.getId()));
+          return redirect(controllers.routes.UsuarioController.detalleUsuario(Long.toString(usuario.getId())));
         }
       }
     }
@@ -147,7 +147,7 @@ public class UsuarioController extends Controller {
           } catch (services.UsuarioServiceException u){
             return badRequest(formModificaPassword.render(usuario,form,u.getMessage()));
           }
-          return redirect(controllers.routes.UsuarioController.detalleUsuario(usuario.getId()));
+          return redirect(controllers.routes.UsuarioController.detalleUsuario(Long.toString(usuario.getId())));
         }
       }
     }
@@ -174,7 +174,7 @@ public class UsuarioController extends Controller {
       session("connected",usuario.getId().toString());
       session("username",usuario.getLogin().toString());
       //session("connected", usuario.getLogin().toString());
-      return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId()));
+      return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId().toString()));
     }
   }
 
@@ -188,7 +188,8 @@ public class UsuarioController extends Controller {
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result detalleUsuario(Long id){
+  public Result detalleUsuario(String idRecibido){
+    Long id = Long.parseLong(idRecibido);
     String connectedUserStr=session("connected");
     Long connectedUser=Long.valueOf(connectedUserStr);
     if((long)connectedUser!=(long)id){
