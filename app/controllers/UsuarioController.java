@@ -184,7 +184,7 @@ public class UsuarioController extends Controller {
   public Result logout(){
     String connectedUserStr=session("connected");
     session().clear();
-    return ok(saludo.render("Adios usuario " + connectedUserStr));
+    return ok(saludo.render("Adiós usuario " + connectedUserStr));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
