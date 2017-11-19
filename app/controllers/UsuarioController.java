@@ -29,10 +29,12 @@ public class UsuarioController extends Controller {
   }
 
   public Result formularioRegistro(){
+    session().clear();
     return ok(formRegistro.render(formFactory.form(Registro.class),""));
   }
 
   public Result registroUsuario(){
+    session().clear();
     Form<Registro> form=formFactory.form(Registro.class).bindFromRequest();
     if(form.hasErrors()){
       return badRequest(formRegistro.render(form,"Hay errores en el formulario"));
@@ -151,6 +153,7 @@ public class UsuarioController extends Controller {
     }
 
   public Result formularioLogin(){
+    session().clear();
     return ok(formLogin.render(formFactory.form(Login.class),""));
   }
 
@@ -167,7 +170,10 @@ public class UsuarioController extends Controller {
       //Añadimos el id del usuario a la clve 'connected' de
       //la sesión de Play
       // https://www.playframework.com/documentation/2.5.x/JavaSessionFlash
+      session().clear();
       session("connected",usuario.getId().toString());
+      session("username",usuario.getLogin().toString());
+      //session("connected", usuario.getLogin().toString());
       return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId()));
     }
   }
@@ -177,7 +183,7 @@ public class UsuarioController extends Controller {
   @Security.Authenticated(ActionAuthenticator.class)
   public Result logout(){
     String connectedUserStr=session("connected");
-    session().remove("connected");
+    session().clear();
     return ok(saludo.render("Adios usuario " + connectedUserStr));
   }
 
