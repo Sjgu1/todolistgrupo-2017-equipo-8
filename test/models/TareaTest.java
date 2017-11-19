@@ -147,7 +147,8 @@ public class TareaTest {
     Tarea tarea = new Tarea(usuario, "Práctica 3 de MADS");
 
     assertEquals("Práctica 3 de MADS", tarea.getTitulo());
-    assertFalse(tarea.getTerminada());
+    //assertEquals(Integer.valueOf(1),tarea.getTerminada());
+    assertEquals("false",tarea.getTerminada());
 
   }
 }

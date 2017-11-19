@@ -2,13 +2,14 @@ package models;
 
 import javax.persistence.*;
 
+
 @Entity
 public class Tarea{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
   private Long id;
   private String titulo;
-  private Boolean terminada;
+  private String terminada;
   //Relación muchos-a-uno entre tareas y usuario
   @ManyToOne
   //Nombre de la columna en la BD que guarda físicamente
@@ -21,7 +22,7 @@ public class Tarea{
   public Tarea(Usuario usuario,String titulo){
     this.usuario=usuario;
     this.titulo=titulo;
-    this.terminada=false;
+    this.terminada="false";
   }
 
   //Getters y setters necesarios para JPA
@@ -50,12 +51,12 @@ public class Tarea{
     this.usuario=usuario;
   }
 
-  public boolean getTerminada(){
+  public String getTerminada(){
     return terminada;
   }
 
-  public void setTerminada(Boolean ter){
-    this.terminada=ter;
+  public void setTerminada(String terminada){
+    this.terminada=terminada;
   }
 
   public String toString(){
