@@ -80,11 +80,6 @@
     </table>
   </div>
 
-  <div id="mas_opciones">
-  <a class="btn btn-primary" href="@routes.GestionTareasController.listaTareas(usuario.getId())"><span class="glyphicon glyphicon-tasks"/> Ver lista tareas</a>
-  </div>
-
-
   @if(mensaje != null) {
     @if(flash.containsKey("aviso")) {
       <div class="alert alert-success">
