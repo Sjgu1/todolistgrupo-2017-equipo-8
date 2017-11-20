@@ -35,6 +35,8 @@
         }
     </table>
 
+    <p><a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Volver a tareas pendientes</a></p>
+
     @if(mensaje != null) {
       <div class="alert alert-success">
         @mensaje
