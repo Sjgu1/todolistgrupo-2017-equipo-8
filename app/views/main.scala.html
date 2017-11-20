@@ -17,6 +17,56 @@
         <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
     </head>
     <body>
+         @if(session.get("connected")) {
+           <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="@routes.UsuarioController.acercaDe()">TodoList</a>
+              </div>
+              <ul class="nav navbar-nav">
+                <li><a href='@routes.GestionTareasController.listaTareas(session.get("connected"))'>Mis Tareas</a></li>
+                <li><a href='@routes.GestionTablerosController.listaTableros(session.get("connected"))'>Mis Tableros</a></li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="glyphicon glyphicon-user"></span>&nbsp;
+                        <strong>@session.get("username")</strong>
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <div class="navbar-login">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                      <p>
+                                        <li><a href='@routes.UsuarioController.detalleUsuario(session.get("connected"))'> <span class="glyphicon glyphicon-user"></span> Perfil</a></li>
+                                      </p>
+                                      <p>
+                                        <li><a href="@routes.UsuarioController.logout()"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+                                      </p>
+                                    </div>
+                                </div>
+                          </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            </div>
+          </nav>
+         }else{
+           <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="@routes.UsuarioController.acercaDe()">TodoList</a>
+              </div>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="@routes.UsuarioController.registroUsuario()"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                <li><a href="@routes.UsuarioController.loginUsuario()"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+              </ul>
+            </div>
+          </nav>
+         }
       <div class="container">
         @content
       </div>

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.19, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
 --
 -- Host: localhost    Database: mads
 -- ------------------------------------------------------
--- Server version	5.7.19
+-- Server version	5.7.20
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -59,6 +59,8 @@ DROP TABLE IF EXISTS `Tarea`;
 CREATE TABLE `Tarea` (
   `id` bigint(20) NOT NULL,
   `terminada` bit(1) DEFAULT NULL,
+  `fechaCreacion` datetime DEFAULT NULL,
+  `fechaLimite` date DEFAULT NULL,
   `titulo` varchar(255) DEFAULT NULL,
   `usuarioId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),

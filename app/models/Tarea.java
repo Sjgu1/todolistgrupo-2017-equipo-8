@@ -2,6 +2,13 @@ package models;
 
 import javax.persistence.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+
+import play.data.format.*;
 
 @Entity
 public class Tarea{
@@ -17,12 +24,30 @@ public class Tarea{
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
 
+  // Variable para guardar fecha creación tarea
+  private LocalDateTime fechaCreacion;
+  @Formats.DateTime(pattern="dd-MM-yyyy")
+  @Temporal(TemporalType.DATE)
+  private Date fechaLimite;
   public Tarea() {}
 
   public Tarea(Usuario usuario,String titulo){
+    try{
+      SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+      Date fechaaux=formateador.parse("01-01-1900");
+      this.usuario=usuario;
+      this.titulo=titulo;
+      this.fechaCreacion=LocalDateTime.now();
+      this.fechaLimite=fechaaux;
+    }catch (Exception e) {}
+  }
+
+  public Tarea(Usuario usuario,String titulo,Date fechaLimite){
     this.usuario=usuario;
     this.titulo=titulo;
     this.terminada=false;
+    this.fechaCreacion=LocalDateTime.now();
+    this.fechaLimite=fechaLimite;
   }
 
   //Getters y setters necesarios para JPA
@@ -59,6 +84,18 @@ public class Tarea{
     this.terminada=terminada;
   }
 
+  public LocalDateTime getFechaCreacion(){
+    return fechaCreacion;
+  }
+
+  public Date getFechaLimite(){
+    return fechaLimite;
+  }
+
+  public void setFechaLimite(Date fechaLimite){
+    this.fechaLimite=fechaLimite;
+  }
+
   public String toString(){
     return String.format("Tarea id: %s titulo: %s usuario:%s",
                     id,titulo,usuario.toString());
@@ -88,6 +125,10 @@ public class Tarea{
         if (other.usuario != null) return false;
         else if (!usuario.equals(other.usuario)) return false;
         }
+        if (fechaCreacion == null) {
+         if (other.fechaCreacion != null) return false;
+         else if (!fechaCreacion.equals(other.fechaCreacion)) return false;
+         }
       }
       return true;
    }
