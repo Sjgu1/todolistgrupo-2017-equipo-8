@@ -1,0 +1,43 @@
+@(tareas: List[Tarea], usuario: Usuario, mensaje: String)
+
+@scripts = {
+    <script type="text/javascript">
+        function del(urlBorrar) {
+            $.ajax({
+                url: urlBorrar,
+                type: 'DELETE',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}
+
+@main("Tareas terminadas del usuario @usuario.getLogin()",scripts) {
+    <h2> Listado de tareas terminadas de @usuario.getLogin()</h2>
+    </br>
+
+    <table class="table table-striped">
+        <tr>
+            <th>Título</th>
+            <th>Acción</th>
+        </tr>
+
+        @for(tarea <- tareas) {
+            <tr>
+                <td>@tarea.getTitulo()</td>
+                <td><a onmouseover="" style="cursor: pointer;"
+                onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+            </tr>
+        }
+    </table>
+
+    @if(mensaje != null) {
+      <div class="alert alert-success">
+        @mensaje
+      </div>
+    }
+}

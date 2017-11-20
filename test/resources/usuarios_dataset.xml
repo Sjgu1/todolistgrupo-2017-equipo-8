@@ -6,8 +6,8 @@
          password="123456789" eMail="juan.gutierrez@gmail.com" fechaNacimiento="1993-12-10"/>
     <Usuario id="1002" login="juangutierrez3" nombre="Juan" apellidos="Gutierrez Tres"
          password="123456789" eMail="juan.gutierrez@gmail.com" fechaNacimiento="1993-12-10"/>
-    <Tarea id="1000" titulo="Renovar DNI" usuarioId="1000"/>
-    <Tarea id="1001" titulo="Práctica 1 MADS" usuarioId="1000"/>
+    <Tarea id="1000" titulo="Renovar DNI" terminada="false" usuarioId="1000"/>
+    <Tarea id="1001" titulo="Práctica 1 MADS" terminada="false" usuarioId="1000"/>
     <Usuario id="1003" login="eidal" nombre="Adel" apellidos="Zarrouk"
          password="eidal" eMail="azarrouk00@gmail.com" fechaNacimiento="1980-12-01"/>
     <Tarea id="1002" titulo="Hacer tests práctica 2" usuarioId="1003"/>

@@ -39,8 +39,30 @@ public class TareaService{
       throw new TareaServiceException("Usuario no existente");
     }
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
-    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
-    return tareas;
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(!task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
+  }
+
+  public List<Tarea> tareasTerminadas(Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TareaServiceException("Usuario no existente");
+    }
+    List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() > b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
   }
 
   //Devuelve la lista de tareas de un usuario, ordenadas por su fecha límite

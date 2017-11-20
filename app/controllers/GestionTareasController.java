@@ -91,6 +91,23 @@ public class GestionTareasController extends Controller{
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
+  public Result listaTareasTerminadas(Long idUsuario) {
+    //Long idUsuario = Long.parseLong(idUsuarioRecibida);
+    Logger.debug("Login con usuario:"+idUsuario);
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    Logger.debug("Usuario sesion:"+connectedUser);
+    if ((long)connectedUser != (long)idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      String aviso = flash("aviso");
+      Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+      List<Tarea> tareas = tareaService.tareasTerminadas(idUsuario);
+      return ok(listaTareasTerminadas.render(tareas, usuario, aviso));
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
   public Result formularioEditaTarea(Long idTarea){
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     if(tarea==null){
@@ -132,6 +149,13 @@ public class GestionTareasController extends Controller{
   public Result borraTarea(Long idTarea){
     tareaService.borraTarea(idTarea);
     flash("aviso","Tarea borrada correctamente");
+    return ok();
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result terminarTarea(Long idTarea){
+    tareaService.tareaTerminada(idTarea);
+    flash("aviso","La tarea se ha puesto a terminada correctamente");
     return ok();
   }
 }
