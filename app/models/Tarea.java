@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import java.text.SimpleDateFormat;
+
 import play.data.format.*;
 
 @Entity
@@ -90,7 +92,12 @@ public class Tarea{
   }
 
   public Date getFechaLimite(){
-    return fechaLimite;
+    Date fecdefecto=new Date();
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    try{
+      fecdefecto=sdf.parse("01-01-1900");
+      return fechaLimite==null ? fecdefecto: fechaLimite;
+    }catch (Exception e) { return fecdefecto;}
   }
 
   public void setFechaLimite(Date fechaLimite){

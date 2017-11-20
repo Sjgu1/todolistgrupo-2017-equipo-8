@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Calendar;
 
 import models.Usuario;
 import models.Tarea;
@@ -66,6 +67,25 @@ public class TareaServiceTest {
     List<Tarea> tareas = tareaService.allTareasUsuario(1000L);
     assertEquals("Renovar DNI", tareas.get(0).getTitulo());
     assertEquals("Práctica 1 MADS", tareas.get(1).getTitulo());
+  }
+
+  // Test #19: allTareasUsuarioOrdenadasFechaLimite
+  @Test
+  public void allTareasUsuarioEstanOrdenadasFechaLimite() {
+    TareaService tareaService = newTareaService();
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    long idUsuario=1000L;
+    Calendar cal=Calendar.getInstance();
+    cal.add(Calendar.DATE,1);
+    Date fechaManana= cal.getTime();
+    Date fechaHoy=new Date();
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler2",sdf.format(fechaManana).toString());
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler3",sdf.format(fechaHoy).toString());
+    List<Tarea> tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
+    assertEquals("Renovar DNI", tareas.get(0).getTitulo());
+    assertEquals("Práctica 1 MADS", tareas.get(1).getTitulo());
+    assertEquals("Pagar el alquiler3", tareas.get(2).getTitulo());
+    assertEquals("Pagar el alquiler2", tareas.get(3).getTitulo());
   }
 
   // Test #20: exceptionSiUsuarioNoExisteRecuperandoSusTareas
