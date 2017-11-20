@@ -58,6 +58,7 @@ DROP TABLE IF EXISTS `Tarea`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Tarea` (
   `id` bigint(20) NOT NULL,
+  `terminada` bit(1) DEFAULT NULL,
   `fechaCreacion` datetime DEFAULT NULL,
   `fechaLimite` date DEFAULT NULL,
   `titulo` varchar(255) DEFAULT NULL,

@@ -55,6 +55,9 @@ public class TareaServiceTest {
   private TareaService newTareaService() {
     return injector.instanceOf(TareaService.class);
   }
+  private UsuarioService newUsuarioService() {
+    return injector.instanceOf(UsuarioService.class);
+  }
 
   // Test #19: allTareasUsuarioEstanOrdenadas
   @Test
@@ -186,5 +189,21 @@ public class TareaServiceTest {
     long idTarea=1000L;
     tareaService.borraTarea(idTarea);
     assertNull(tareaService.obtenerTarea(idTarea));
+  }
+
+  @Test
+  public void ponerTareaTerminada(){
+    TareaService tareaService=newTareaService();
+    long idTarea =1000L;
+    tareaService.tareaTerminada(idTarea);
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    assertTrue(tarea.getTerminada());
+  }
+
+  @Test(expected = TareaServiceException.class)
+  public void ponerTareaNoexisteTerminada(){
+    TareaService tareaService=newTareaService();
+    long idTarea =8000L;
+    tareaService.tareaTerminada(idTarea);
   }
 }
