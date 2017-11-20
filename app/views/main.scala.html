@@ -24,7 +24,7 @@
                 <a class="navbar-brand" href="@routes.UsuarioController.acercaDe()">TodoList</a>
               </div>
               <ul class="nav navbar-nav">
-                <li><a href='@routes.GestionTareasController.listaTareas(session.get("connected"))'>Mis Tareas</a></li>
+                <li><a href='@routes.GestionTareasController.listaTareas(session.get("connected"),0)'>Mis Tareas</a></li>
                 <li><a href='@routes.GestionTablerosController.listaTableros(session.get("connected"))'>Mis Tableros</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">

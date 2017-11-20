@@ -17,7 +17,10 @@
 @main("Tareas del usuario @usuario.getLogin()",scripts) {
     <h2> Listado de tareas de @usuario.getLogin()</h2>
     </br>
-
+    <p>
+      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
+      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),1)">Tareas ordenadas fecha límite</a>
+    </p>
     <table class="table table-striped">
         <tr>
             <th>Título</th>

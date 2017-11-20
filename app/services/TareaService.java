@@ -43,6 +43,17 @@ public class TareaService{
     return tareas;
   }
 
+  //Devuelve la lista de tareas de un usuario, ordenadas por su fecha límite
+  public List<Tarea> allTareasUsuarioOrdenadasFechaLimite(Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TareaServiceException("Usuario no existente");
+    }
+    List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
+    Collections.sort(tareas,(a,b) -> a.getFechaLimite().before(b.getFechaLimite()) ? -1 : a.getFechaLimite().equals(b.getFechaLimite()) ? 0 : 1);
+    return tareas;
+  }
+
   public Tarea nuevaTarea(Long idUsuario, String titulo){
     Usuario usuario= usuarioRepository.findById(idUsuario);
     if(usuario==null){
