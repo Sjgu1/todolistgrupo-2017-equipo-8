@@ -206,4 +206,16 @@ public class TareaServiceTest {
     long idTarea =8000L;
     tareaService.tareaTerminada(idTarea);
   }
+
+  @Test
+  public void listarTareasNoTerminadasUsuario(){
+    TareaService tareaService=newTareaService();
+    long idUsuario=1000L;
+    long idTarea =1001L;
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler");
+    tareaService.nuevaTarea(idUsuario,"Pagar la coca");
+    tareaService.tareaTerminada(idTarea);
+    assertEquals(1,tareaService.tareasTerminadas(1000L).size());
+    assertEquals(3,tareaService.allTareasUsuario(1000L).size());
+  }
 }

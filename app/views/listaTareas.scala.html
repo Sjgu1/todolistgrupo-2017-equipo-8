@@ -11,6 +11,16 @@
                 }
             });
         }
+        function ter(urlTer) {
+            $.ajax({
+                url: urlTer,
+                type: 'PUT',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
     </script>
 }
 
@@ -33,10 +43,13 @@
               <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
             }
             <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId())">
-              <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+              <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
               <a onmouseover="" style="cursor: pointer;"
               onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+              <a onmouseover="" style="cursor: pointer;"
+              onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+              <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
         </tr>
       }
 
@@ -46,6 +59,9 @@
     </tr>
 
   </table>
+
+  <p><a href="@routes.GestionTareasController.listaTareasTerminadas(usuario.getId())">Tareas terminadas</a></p>
+
 
   @if(mensaje != null) {
       <div class="alert alert-success">
