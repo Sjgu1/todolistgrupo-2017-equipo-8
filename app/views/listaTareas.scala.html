@@ -38,7 +38,11 @@
             <th>Acción</th>
         </tr>
     @for(tarea <- tareas) {
+      @if(tarea.tareaCaducada()){
+        <tr class="danger">
+      } else {
         <tr>
+        }
             <td>@tarea.getTitulo()</td>
             @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
               <td>Sin fecha límite</td>
