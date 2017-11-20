@@ -1,4 +1,4 @@
-@(usuario: Usuario, tareaForm: Form[Tarea], mensaje: String)
+@(usuario: Usuario, tareaForm: Form[Tareas], mensaje: String)
 @main("Nueva tarea") {
   @if(mensaje != "") {
     <div class="alert alert-danger">
@@ -10,6 +10,7 @@
     <fieldset>
       <legend>Nueva tarea</legend>
       @helper.inputText(tareaForm("titulo"), '_label -> "Titulo", 'size -> 70)
+      @helper.inputText(tareaForm("fechaLimite"), '_label -> "Fecha límite")
     </fieldset>
     <p>
       <input type="submit" class="btn btn-primary" value="Guardar">
