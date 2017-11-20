@@ -174,7 +174,7 @@ public class UsuarioController extends Controller {
       session("connected",usuario.getId().toString());
       session("username",usuario.getLogin().toString());
       //session("connected", usuario.getLogin().toString());
-      return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId().toString()));
+      return redirect(controllers.routes.GestionTareasController.listaTareas(usuario.getId().toString(),0));
     }
   }
 

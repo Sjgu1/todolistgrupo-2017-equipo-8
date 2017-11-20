@@ -64,13 +64,15 @@ public class GestionTareasController extends Controller{
         }
       }
       flash("aviso", "La tarea se ha grabado correctamente");
-      return redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString()));
+      return redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0));
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result listaTareas(String idUsuarioRecibida) {
+  //public Result listaTareas(String idUsuarioRecibida) {
+  public Result listaTareas(String idUsuarioRecibida,Long ordenFecLimite) {
     Long idUsuario = Long.parseLong(idUsuarioRecibida);
+    List<Tarea> tareas;
     Logger.debug("Login con usuario:"+idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
@@ -80,7 +82,10 @@ public class GestionTareasController extends Controller{
     } else {
       String aviso = flash("aviso");
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
-      List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+      if(ordenFecLimite==1)
+        tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
+      else
+        tareas = tareaService.allTareasUsuario(idUsuario);
       return ok(listaTareas.render(tareas, usuario, aviso));
     }
   }
@@ -120,7 +125,7 @@ public class GestionTareasController extends Controller{
         return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(), tarea, e.getMessage()));
       }
     }
-    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString()));
+    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
