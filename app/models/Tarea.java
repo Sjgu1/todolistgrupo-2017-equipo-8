@@ -92,16 +92,26 @@ public class Tarea{
   }
 
   public Date getFechaLimite(){
-    Date fecdefecto=new Date();
+    Date fecDefecto=new Date();
     SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
     try{
-      fecdefecto=sdf.parse("01-01-1900");
-      return fechaLimite==null ? fecdefecto: fechaLimite;
-    }catch (Exception e) { return fecdefecto;}
+      fecDefecto=sdf.parse("01-01-1900");
+      return fechaLimite==null ? fecDefecto: fechaLimite;
+    }catch (Exception e) { return fecDefecto;}
   }
 
   public void setFechaLimite(Date fechaLimite){
     this.fechaLimite=fechaLimite;
+  }
+
+  public boolean tareaCaducada(){
+    Date fechaHoy=new Date();
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    Date fecDefecto=new Date();
+    try{
+      fecDefecto=sdf.parse("01-01-1900");
+      return (fechaLimite==null || fechaLimite.equals(fecDefecto)) ? false : fechaHoy.after(this.getFechaLimite());
+    }catch (Exception e) { return false;}
   }
 
   public String toString(){
