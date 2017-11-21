@@ -72,8 +72,14 @@ public class TareaService{
       throw new TareaServiceException("Usuario no existente");
     }
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
-    Collections.sort(tareas,(a,b) -> a.getFechaLimite().before(b.getFechaLimite()) ? -1 : a.getFechaLimite().equals(b.getFechaLimite()) ? 0 : 1);
-    return tareas;
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(!task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getFechaLimite().before(b.getFechaLimite()) ? -1 : a.getFechaLimite().equals(b.getFechaLimite()) ? 0 : 1);
+    return result;
   }
 
   public Tarea nuevaTarea(Long idUsuario, String titulo){
