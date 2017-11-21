@@ -11,38 +11,64 @@
                 }
             });
         }
+        function ter(urlTer) {
+            $.ajax({
+                url: urlTer,
+                type: 'PUT',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
     </script>
 }
 
 @main("Tareas del usuario @usuario.getLogin()",scripts) {
-    <h2> Listado de tareas de @usuario.getLogin()</h2> <a class="btn btn-primary btn-lg" href="@routes.UsuarioController.detalleUsuario(usuario.getId())"><span class="glyphicon glyphicon-user"/> Perfil @usuario.getLogin()</a>
-    <a class="btn btn-primary btn-lg" href="@routes.GestionTablerosController.listaTableros(usuario.getId())"><span class="glyphicon glyphicon-list"/> Tableros @usuario.getLogin()</a>
+    <h2> Listado de tareas de @usuario.getLogin()</h2>
     </br>
-
-
+    <p>
+      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
+      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),1)">Tareas ordenadas fecha límite</a>
+    </p>
     <table class="table table-striped">
         <tr>
-            <th>Tareas</th>
+            <th>Título</th>
+            <th>Fecha Límite</th>
             <th>Acción</th>
         </tr>
     @for(tarea <- tareas) {
+      @if(tarea.tareaCaducada()){
+        <tr class="danger">
+      } else {
         <tr>
+        }
             <td>@tarea.getTitulo()</td>
+            @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+              <td>Sin fecha límite</td>
+            } else {
+              <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+            }
             <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId())">
-              <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+              <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
               <a onmouseover="" style="cursor: pointer;"
               onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+              <a onmouseover="" style="cursor: pointer;"
+              onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+              <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
         </tr>
       }
 
       <tr>
           <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId())">
               <span class="glyphicon glyphicon-plus"/></a></td>
-          <td><a href="@routes.UsuarioController.logout()">Salir</a></td>
     </tr>
 
   </table>
+
+  <p><a href="@routes.GestionTareasController.listaTareasTerminadas(usuario.getId())">Tareas terminadas</a></p>
+
 
   @if(mensaje != null) {
       <div class="alert alert-success">

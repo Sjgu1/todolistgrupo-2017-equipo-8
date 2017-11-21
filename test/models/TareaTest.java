@@ -17,6 +17,16 @@ import java.io.FileInputStream;
 
 import java.util.List;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+
+import java.lang.Thread;
+import java.lang.Exception;
+
 import play.inject.guice.GuiceApplicationBuilder;
 import play.inject.Injector;
 import play.inject.guice.GuiceInjectorBuilder;
@@ -139,4 +149,128 @@ public class TareaTest {
     Usuario usuario=repository.findById(idUsuario);
     assertEquals(2,usuario.getTareas().size());
   }
+
+
+  //test para comprobar que una tarea esta en no terminada cuando se crea
+  @Test
+  public void testTareaNoTerminada(){
+    Usuario usuario = new Usuario("juangutierrez", "juangutierrez@gmail.com");
+    Tarea tarea = new Tarea(usuario, "Práctica 3 de MADS");
+
+    assertEquals("Práctica 3 de MADS", tarea.getTitulo());
+    assertFalse(tarea.getTerminada());
+  }
+  // Tests testCrearTareaCompruebaFechaCreacion
+  @Test
+  public void testCrearTareaCompruebaFechaCreacion() throws IllegalArgumentException, InterruptedException {
+    UsuarioRepository repository=newUsuarioRepository();
+    Long idUsuario=1000L;
+    Usuario usuario=repository.findById(idUsuario);
+
+    LocalDateTime antesTarea=LocalDateTime.now();
+    //Pausamos para forzar fechas diferentes
+    Thread.sleep(100);
+    Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+
+    //Pausamos para forzar fechas diferentes
+    Thread.sleep(100);
+    LocalDateTime despuesTarea=LocalDateTime.now();
+
+    assertNotNull(tarea.getFechaCreacion());
+    assertTrue(antesTarea.isBefore(tarea.getFechaCreacion()));
+    assertTrue(despuesTarea.isAfter(tarea.getFechaCreacion()));
+    }
+
+    // Tests testCrearTareaSinFechaLimite
+    @Test
+    public void testCrearTareaSinFechaLimite() {
+      try{
+        UsuarioRepository repository=newUsuarioRepository();
+        Long idUsuario=1000L;
+        Usuario usuario=repository.findById(idUsuario);
+        SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+
+        Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+
+        assertNotNull(tarea.getFechaLimite());
+        assertTrue(tarea.getFechaLimite().compareTo(formateador.parse("01-01-1900"))==0);
+      }catch (Exception e){}
+    }
+
+    // Tests testCrearTareaConFechaLimite
+    @Test
+    public void testCrearTareaConFechaLimite() {
+      try{
+        UsuarioRepository repository=newUsuarioRepository();
+        Long idUsuario=1000L;
+        Usuario usuario=repository.findById(idUsuario);
+        SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+
+        Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",formateador.parse("25-12-2018"));
+
+        assertNotNull(tarea.getFechaLimite());
+        assertTrue(tarea.getFechaLimite().compareTo(formateador.parse("25-12-2018"))==0);
+      }catch (Exception e){}
+    }
+
+    // Tests testFechaCaducadaConFechaTareaAnterioroIgualaHoy -- deben estar caducadas
+    @Test
+    public void testFechaCaducadaConFechaTareaAnterioroIgualaHoy(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+
+      Calendar cal=Calendar.getInstance();
+      cal.add(Calendar.DATE,-1);
+      Date fechaAyer= cal.getTime();
+      Date fechaHoy=new Date();
+      fechaHoy.setHours(0);
+      fechaHoy.setMinutes(0);
+      fechaHoy.setSeconds(0);
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaHoy);
+      Tarea tarea1 = new Tarea(usuario, "Práctica con fecha de creación",fechaAyer);
+
+      Boolean caducadaAyer=tarea.tareaCaducada();
+      Boolean caducadaHoy=tarea1.tareaCaducada();
+
+      assertTrue(caducadaAyer);
+      assertTrue(caducadaHoy);
+    }
+
+    // Tests testFechaCaducadaConFechaManana -- devuelve no está caducada
+    @Test
+    public void testFechaCaducadaConFechaTareaManana(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+
+      Calendar cal=Calendar.getInstance();
+      cal.add(Calendar.DATE,1);
+      Date fechaManana= cal.getTime();
+
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaManana);
+
+      Boolean caducadaManana=(!(tarea.tareaCaducada()));
+
+      assertTrue(caducadaManana);
+    }
+
+    // Tests testFechaCaducadaPorDefecto -- devuelve no está caducada
+    @Test
+    public void testFechaCaducadaPorDefecto(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",null);
+      Tarea tarea1 = new Tarea(usuario, "Práctica con fecha de creación");
+
+      Boolean caducadaConNull=(!(tarea.tareaCaducada()));
+      Boolean caducadaSinNull=(!(tarea1.tareaCaducada()));
+
+      assertTrue(caducadaConNull);
+      assertTrue(caducadaSinNull);
+    }
 }

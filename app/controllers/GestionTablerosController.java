@@ -55,16 +55,17 @@ public class GestionTablerosController extends Controller {
        tablero=tableroService.creaTablero(idUsuario, tablero.getNombre());
        Logger.debug("Creado tablero: "+tablero.getId());
        flash("aviso", "El tablero se ha grabado correctamente");
-       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario.toString()));
      }catch (TableroServiceException t){
        flash("aviso", "El nombre del tablero está repetido");
-       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario));
+       return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario.toString()));
      }
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result listaTableros(Long idUsuario) {
+  public Result listaTableros(String idUsuarioRecibida) {
+    Long idUsuario = Long.parseLong(idUsuarioRecibida);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     if ((long)connectedUser != (long)idUsuario) {

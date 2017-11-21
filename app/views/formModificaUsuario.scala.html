@@ -16,7 +16,7 @@
     </fieldset>
     <p>
       <button type="submit" class="btn btn-primary">Modifica</button>
-      <a class="btn btn-warning" href="@routes.UsuarioController.detalleUsuario(usuario.getId())">Cancela</a>
+      <a class="btn btn-warning" href="@routes.UsuarioController.detalleUsuario(usuario.getId().toString())">Cancela</a>
       <a class="btn btn-info" href="@routes.UsuarioController.formularioCambioPassword(usuario.getId())">Cambia contraseña</a>
     </p>
   }
