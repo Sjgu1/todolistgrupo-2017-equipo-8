@@ -14,4 +14,5 @@
     <Tablero id="1000" nombre="Tablero test 1" administradorId="1000"/>
     <Tablero id="1001" nombre="Tablero test 2" administradorId="1000"/>
     <Persona_Tablero/>
+    <Etiqueta id="1000" nombre="urgente" color="#d93f0b" />
  </dataset>
