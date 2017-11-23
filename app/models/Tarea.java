@@ -66,8 +66,12 @@ public class Tarea{
       }else{
         this.fechaLimite=fechaaux;
       }
+      if(descripcion != null){
+        this.descripcion=descripcion;
+      }else{
+        this.descripcion="";
+      }
       this.terminada=false;
-      this.descripcion=descripcion;
     }catch (Exception e) {}
   }
 
