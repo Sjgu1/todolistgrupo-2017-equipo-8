@@ -273,4 +273,34 @@ public class TareaTest {
       assertTrue(caducadaConNull);
       assertTrue(caducadaSinNull);
     }
+
+    @Test
+    public void testCrearDescripcionTareaSinFecha(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",null,"Descripción tarea");
+
+      assertEquals("Descripción tarea", tarea.getDescripcion());
+
+    }
+
+    @Test
+    public void testCreardescripcionNull(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+      Calendar cal=Calendar.getInstance();
+      cal.add(Calendar.DATE,1);
+      Date fechaManana= cal.getTime();
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaManana,null);
+      assertEquals("", tarea.getDescripcion());
+      Boolean caducadaManana=(!(tarea.tareaCaducada()));
+      assertTrue(caducadaManana);
+
+    }
+
+
 }

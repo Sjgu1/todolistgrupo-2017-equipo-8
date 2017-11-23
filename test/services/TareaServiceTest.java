@@ -238,4 +238,53 @@ public class TareaServiceTest {
     assertEquals(1,tareaService.tareasTerminadas(1000L).size());
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
   }
+
+  // Test : nuevaTareaUsuarioConDescripcion
+  @Test
+  public void nuevaTareaUsuarioConDescripcion(){
+    TareaService tareaService=newTareaService();
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    Date fecha=new Date();
+    String fechaLimite=sdf.format(fecha).toString();
+    Logger.info("fecha limite: "+fechaLimite);
+    long idUsuario=1000L;
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, "descripcion");
+    assertEquals(3,tareaService.allTareasUsuario(1000L).size());
+  }
+// Test : nuevaTareaUsuarioConDescripcionNull
+  @Test
+  public void nuevaTareaUsuarioConDescripcionNull(){
+    TareaService tareaService=newTareaService();
+    SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+    Date fecha=new Date();
+    String fechaLimite=sdf.format(fecha).toString();
+    Logger.info("fecha limite: "+fechaLimite);
+    long idUsuario=1000L;
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
+    assertEquals(3,tareaService.allTareasUsuario(1000L).size());
+  }
+
+  // Test: modificación descripcion en Tarea
+  @Test
+  public void modificacionDescripcionTarea(){
+    TareaService tareaService=newTareaService();
+    Date fecha;
+    long idTarea=1000L;
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, "nueva Descripcion");
+    tarea=tareaService.obtenerTarea(idTarea);
+    assertEquals("nueva Descripcion",tarea.getDescripcion());
+  }
+
+  // Test: modificación descripcion en Tarea null
+  @Test
+  public void modificacionDescripcionTareaNull(){
+    TareaService tareaService=newTareaService();
+    Date fecha;
+    long idTarea=1000L;
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, null);
+    tarea=tareaService.obtenerTarea(idTarea);
+    assertEquals("",tarea.getDescripcion());
+  }
 }
