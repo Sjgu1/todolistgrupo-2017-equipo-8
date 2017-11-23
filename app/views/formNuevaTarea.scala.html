@@ -9,9 +9,10 @@
   @helper.form(action = routes.GestionTareasController.creaNuevaTarea(usuario.getId())) {
     <fieldset>
       <legend>Nueva tarea</legend>
+      <form name="tareaForm">
       @helper.inputText(tareaForm("titulo"), '_label -> "Titulo", 'size -> 70)
       Descripción:</br>
-      <textarea type="text" cols="70" rows="5" name="descripcion"></textarea>
+      <textarea type="text" cols="70" rows="5" name="descripcion" _label="descripcion"></textarea>
       @helper.inputText(tareaForm("fechaLimite"), '_label -> "Fecha límite")
     </fieldset>
     <p>

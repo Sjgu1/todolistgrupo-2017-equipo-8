@@ -52,12 +52,15 @@ public class GestionTareasController extends Controller{
         return badRequest(formNuevaTarea.render(usuario, formFactory.form(Tareas.class), "Hay errores en el formulario"));
       }
       Tareas tarea = tareaForm.get();
+      DynamicForm requestData = formFactory.form().bindFromRequest();
+      String descripcion = requestData.get("descripcion");
+
       tarea.fechaLimite=tarea.fechaLimite.equals("") ? null : tarea.fechaLimite;
       if (tarea.fechaLimite==null)
-        tareaService.nuevaTarea(idUsuario, tarea.titulo,null);
+        tareaService.nuevaTarea(idUsuario, tarea.titulo,null, descripcion);
       else {
         try {
-          tareaService.nuevaTarea(idUsuario, tarea.titulo,tarea.fechaLimite);
+          tareaService.nuevaTarea(idUsuario, tarea.titulo,tarea.fechaLimite, descripcion);
         } catch (TareaServiceException e){
           usuario = usuarioService.findUsuarioPorId(idUsuario);
           return badRequest(formNuevaTarea.render(usuario, formFactory.form(Tareas.class), e.getMessage()));
@@ -130,13 +133,13 @@ public class GestionTareasController extends Controller{
     DynamicForm requestData = formFactory.form().bindFromRequest();
     String nuevoTitulo = requestData.get("titulo");
     String nuevaFechaLimite = requestData.get("fechaLimite");
+    String nuevaDescripcion = requestData.get("descripcion");
     Tarea tarea;
-    Logger.info("fecha límite: "+nuevaFechaLimite);
     if (nuevaFechaLimite.equals(""))
-      tarea=tareaService.modificaTarea(idTarea,nuevoTitulo,"01-01-1900");
+      tarea=tareaService.modificaTarea(idTarea,nuevoTitulo,"01-01-1900", nuevaDescripcion);
     else {
       try {
-        tarea=tareaService.modificaTarea(idTarea, nuevoTitulo,nuevaFechaLimite);
+        tarea=tareaService.modificaTarea(idTarea, nuevoTitulo,nuevaFechaLimite, nuevaDescripcion);
       } catch (TareaServiceException e){
         tarea = tareaService.obtenerTarea(idTarea);
         return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(), tarea, e.getMessage()));
