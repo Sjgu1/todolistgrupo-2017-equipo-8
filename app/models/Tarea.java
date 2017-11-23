@@ -81,6 +81,28 @@ public class Tarea{
     }catch (Exception e) {}
   }
 
+  public Tarea(Usuario usuario,String titulo, Date fechaLimite,String descripcion, Tablero tablero){
+    try{
+      SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+      Date fechaaux=formateador.parse("01-01-1900");
+      this.usuario=usuario;
+      this.titulo=titulo;
+      this.fechaCreacion=LocalDateTime.now();
+      if(fechaLimite != null){
+        this.fechaLimite=fechaLimite;
+      }else{
+        this.fechaLimite=fechaaux;
+      }
+      if(descripcion != null){
+        this.descripcion=descripcion;
+      }else{
+        this.descripcion="";
+      }
+      this.tablero=tablero;
+      this.terminada=false;
+    }catch (Exception e) {}
+  }
+
   //Getters y setters necesarios para JPA
 
   public Long getId(){

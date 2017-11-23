@@ -34,6 +34,8 @@ import play.Environment;
 
 import models.Usuario;
 import models.Tarea;
+import models.Tablero;
+import models.TableroRepository;
 import models.UsuarioRepository;
 import models.JPAUsuarioRepository;
 import models.TareaRepository;
@@ -69,6 +71,10 @@ public class TareaTest {
 
   private UsuarioRepository newUsuarioRepository(){
     return injector.instanceOf(UsuarioRepository.class);
+  }
+
+  private TableroRepository newTableroRepository(){
+    return injector.instanceOf(TableroRepository.class);
   }
 
  // Test #11: testCrearTarea
@@ -301,6 +307,40 @@ public class TareaTest {
       assertTrue(caducadaManana);
 
     }
+
+    @Test
+    public void testCrearTareaTablero(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+      TableroRepository tabrepo=newTableroRepository();
+      Tablero tablero=tabrepo.findById(1000L);
+
+      Tarea tarea = new Tarea(usuario, "Tarea con tablero",null,null,tablero);
+      assertEquals("Tarea con tablero", tarea.getTitulo());
+      assertEquals("Tablero test 1", tarea.getTablero().getNombre());
+    }
+
+    //test que prueba crear tarea con todos los parametros posibles
+    @Test
+    public void testCrearTareaTableroConTodosParametros(){
+      try{
+        UsuarioRepository repository=newUsuarioRepository();
+        Long idUsuario=1000L;
+        Usuario usuario=repository.findById(idUsuario);
+        TableroRepository tabrepo=newTableroRepository();
+        Tablero tablero=tabrepo.findById(1000L);
+        SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+
+        Tarea tarea = new Tarea(usuario, "Tarea con tablero",formateador.parse("01-12-2022"),"Descripción tarea",tablero);
+        assertEquals("Tarea con tablero", tarea.getTitulo());
+        assertTrue(tarea.getFechaLimite().compareTo(formateador.parse("01-12-2022"))==0);
+        assertEquals("Descripción tarea", tarea.getDescripcion());
+        assertEquals("Tablero test 1", tarea.getTablero().getNombre());
+      }catch(Exception e){}    
+    }
+
+
 
 
 }
