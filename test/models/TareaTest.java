@@ -273,4 +273,16 @@ public class TareaTest {
       assertTrue(caducadaConNull);
       assertTrue(caducadaSinNull);
     }
+
+    @Test
+    public void testCrearComentarioTareaSinFecha(){
+      UsuarioRepository repository=newUsuarioRepository();
+      Long idUsuario=1000L;
+      Usuario usuario=repository.findById(idUsuario);
+
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",null,"Descripción tarea");
+
+      assertEquals("Descripción tarea", tarea.getDescripcion());
+
+    }
 }

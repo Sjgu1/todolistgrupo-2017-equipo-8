@@ -19,6 +19,7 @@ public class Tarea{
   private Long id;
   private String titulo;
   private Boolean terminada;
+  private String descripcion;
   //Relación muchos-a-uno entre tareas y usuario
   @ManyToOne
   //Nombre de la columna en la BD que guarda físicamente
@@ -51,6 +52,23 @@ public class Tarea{
     this.fechaCreacion=LocalDateTime.now();
     this.fechaLimite=fechaLimite;
     this.terminada=false;
+  }
+
+  public Tarea(Usuario usuario,String titulo, Date fechaLimite,String descripcion){
+    try{
+      SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
+      Date fechaaux=formateador.parse("01-01-1900");
+      this.usuario=usuario;
+      this.titulo=titulo;
+      this.fechaCreacion=LocalDateTime.now();
+      if(fechaLimite != null){
+        this.fechaLimite=fechaLimite;
+      }else{
+        this.fechaLimite=fechaaux;
+      }
+      this.terminada=false;
+      this.descripcion=descripcion;
+    }catch (Exception e) {}
   }
 
   //Getters y setters necesarios para JPA
@@ -102,6 +120,10 @@ public class Tarea{
 
   public void setFechaLimite(Date fechaLimite){
     this.fechaLimite=fechaLimite;
+  }
+
+  public String getDescripcion(){
+    return descripcion;
   }
 
   public boolean tareaCaducada(){
