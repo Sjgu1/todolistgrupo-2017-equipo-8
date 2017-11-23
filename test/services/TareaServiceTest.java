@@ -263,4 +263,28 @@ public class TareaServiceTest {
     tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
   }
+
+  // Test: modificación descripcion en Tarea
+  @Test
+  public void modificacionDescripcionTarea(){
+    TareaService tareaService=newTareaService();
+    Date fecha;
+    long idTarea=1000L;
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, "nueva Descripcion");
+    tarea=tareaService.obtenerTarea(idTarea);
+    assertEquals("nueva Descripcion",tarea.getDescripcion());
+  }
+
+  // Test: modificación descripcion en Tarea null
+  @Test
+  public void modificacionDescripcionTareaNull(){
+    TareaService tareaService=newTareaService();
+    Date fecha;
+    long idTarea=1000L;
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, null);
+    tarea=tareaService.obtenerTarea(idTarea);
+    assertEquals("",tarea.getDescripcion());
+  }
 }

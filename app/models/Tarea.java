@@ -11,6 +11,8 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import play.data.format.*;
+import play.Logger;
+
 
 @Entity
 public class Tarea{
@@ -127,7 +129,14 @@ public class Tarea{
   }
 
   public String getDescripcion(){
-    return descripcion;
+    return this.descripcion;
+  }
+  public void setDescripcion(String descripcion){
+    if(descripcion == null){
+      this.descripcion = "";
+    }else{
+      this.descripcion=descripcion;
+    }
   }
 
   public boolean tareaCaducada(){
