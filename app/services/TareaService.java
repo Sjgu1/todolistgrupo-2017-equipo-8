@@ -128,7 +128,7 @@ public class TareaService{
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
-    if(fechaLimite==null){
+    if(fechaLimite==null && descripcion ==null){
       tarea=new Tarea(usuario,titulo);
     }
     else{
@@ -143,7 +143,10 @@ public class TareaService{
         if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
           throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
         }
-        tarea=new Tarea(usuario,titulo,fechaLim);
+        if(descripcion ==null)
+          tarea=new Tarea(usuario,titulo,fechaLim);
+        else
+          tarea=new Tarea(usuario,titulo,fechaLim, descripcion);
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
       }
