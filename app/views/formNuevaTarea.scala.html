@@ -10,6 +10,8 @@
     <fieldset>
       <legend>Nueva tarea</legend>
       @helper.inputText(tareaForm("titulo"), '_label -> "Titulo", 'size -> 70)
+      Descripción:</br>
+      <textarea type="text" cols="70" rows="5" name="descripcion"></textarea>
       @helper.inputText(tareaForm("fechaLimite"), '_label -> "Fecha límite")
     </fieldset>
     <p>
