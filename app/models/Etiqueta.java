@@ -15,6 +15,9 @@ public class Etiqueta{
   private Long id;
   private String nombre;
   private String color;
+  @ManyToOne
+  @JoinColumn(name="tableroId",nullable=true)
+  public Tablero tablero;
 
   public Etiqueta() {}
 
@@ -22,15 +25,6 @@ public class Etiqueta{
       if(compruebaColor(color)){
         this.color=color;
         this.nombre="";
-      }
-      else
-        throw new IllegalArgumentException();
-  }
-
-  public Etiqueta(String color, String nombre){
-      if(compruebaColor(color)){
-        this.color=color;
-        this.nombre=nombre;
       }
       else
         throw new IllegalArgumentException();
@@ -47,6 +41,9 @@ public class Etiqueta{
   }
 
   public String getNombre(){
+    if(nombre.equals(null))
+      return "";
+    else
     return nombre;
   }
 
@@ -64,6 +61,14 @@ public class Etiqueta{
     }
     else
       throw new IllegalArgumentException();
+  }
+
+  public Tablero getTablero(){
+    return this.tablero;
+  }
+
+  public void setTablero(Tablero tablero){
+    this.tablero=tablero;
   }
 
   public static Boolean compruebaColor(String color){

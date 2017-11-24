@@ -1,6 +1,7 @@
 package models;
 
 import models.Usuario;
+import models.Etiqueta;
 
 import javax.persistence.*;
 
@@ -19,6 +20,10 @@ public class Tablero{
   @ManyToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Persona_Tablero")
   private Set<Usuario> participantes = new HashSet<Usuario>();
+  //relación uno a muchos, un tablero puede tener muchas etiquetas
+  @OneToMany(fetch=FetchType.EAGER)
+  @JoinTable(name="Etiqueta_Tablero")
+  private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
 
   public Tablero() {}
   public Tablero(Usuario administrador,String nombre){
@@ -57,6 +62,16 @@ public class Tablero{
   public void setParticipantes(Set<Usuario> participantes) {
     this.participantes = participantes;
   }
+
+  public Set<Etiqueta> getEtiquetas() {
+    return etiquetas;
+  }
+
+  public void setEtiquetas(Set<Etiqueta> etiquetas) {
+    this.etiquetas = etiquetas;
+  }
+
+
   @Override
   public int hashCode() {
     final int prime = 31;

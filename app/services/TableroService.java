@@ -20,14 +20,19 @@ import models.UsuarioRepository;
 import models.Tablero;
 import models.TableroRepository;
 
+import models.Etiqueta;
+import models.EtiquetaRepository;
+
 public class TableroService{
   UsuarioRepository usuarioRepository;
   TableroRepository tableroRepository;
+  EtiquetaRepository etiquetaRepository;
 
   @Inject
-  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository){
+  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository,EtiquetaRepository etrepository){
     this.usuarioRepository=usurepository;
     this.tableroRepository=tabrepository;
+    this.etiquetaRepository=etrepository;
   }
 
   public Tablero creaTablero(long idUsuario, String titulo){
