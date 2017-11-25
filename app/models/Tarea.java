@@ -8,7 +8,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import java.text.SimpleDateFormat;
+import java.util.Set;
+import java.util.HashSet;
 
 import play.data.format.*;
 import play.Logger;
@@ -34,6 +35,10 @@ public class Tarea{
   @Formats.DateTime(pattern="dd-MM-yyyy")
   @Temporal(TemporalType.DATE)
   private Date fechaLimite;
+  @ManyToMany(fetch=FetchType.EAGER)
+  @JoinTable(name="Etiqueta_Tarea")
+  private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+
   public Tarea() {}
 
   public Tarea(Usuario usuario,String titulo){
@@ -137,6 +142,14 @@ public class Tarea{
     }else{
       this.descripcion=descripcion;
     }
+  }
+
+  public Set<Etiqueta> getEtiquetas() {
+    return etiquetas;
+  }
+
+  public void setEtiquetas(Set<Etiqueta> etiquetas) {
+    this.etiquetas = etiquetas;
   }
 
   public boolean tareaCaducada(){
