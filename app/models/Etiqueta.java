@@ -16,8 +16,11 @@ public class Etiqueta{
   private String nombre;
   private String color;
   @ManyToOne
-  @JoinColumn(name="tableroId",nullable=true)
+  @JoinColumn(name="tableroId")
   public Tablero tablero;
+  @ManyToOne
+  @JoinColumn(name="usuarioId")
+  public Usuario usuario;
 
   public Etiqueta() {}
 
@@ -69,6 +72,14 @@ public class Etiqueta{
 
   public void setTablero(Tablero tablero){
     this.tablero=tablero;
+  }
+
+  public Usuario getUsuario(){
+    return this.usuario;
+  }
+
+  public void setUsuario(Usuario usuario){
+    this.usuario=usuario;
   }
 
   public static Boolean compruebaColor(String color){

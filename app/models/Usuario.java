@@ -32,6 +32,11 @@ public class Usuario{
   private Set<Tablero> administrados = new HashSet<Tablero>();
   @ManyToMany(mappedBy="participantes", fetch=FetchType.EAGER)
   private Set<Tablero> tableros = new HashSet<Tablero>();
+  //relación uno a muchos, un usuario puede tener muchas etiquetas
+  @OneToMany(fetch=FetchType.EAGER)
+  @JoinTable(name="Etiqueta_Usuario")
+  private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+
 
   //Un constructor vacío necesario para JPA
   public Usuario(){}
@@ -122,6 +127,14 @@ public class Usuario{
 
   public void setTableros(Set<Tablero> tableros) {
     this.tableros = tableros;
+  }
+
+  public Set<Etiqueta> getEtiquetas() {
+    return etiquetas;
+  }
+
+  public void setEtiquetas(Set<Etiqueta> etiquetas) {
+    this.etiquetas = etiquetas;
   }
 
    //método auxiliar para no devolver nulos en los campos y así poder mostrar formulario
