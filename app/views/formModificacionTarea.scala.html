@@ -5,6 +5,13 @@
          @mensaje
       </div>
    }
+   <script>
+   $( function() {
+     $( "#fechaLimite" ).datepicker({
+       dateFormat: "dd-mm-yy"
+     });
+   } );
+   </script>
    <h1>Modificar tarea</h1>
    @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId())) {
       <fieldset>
@@ -13,8 +20,8 @@
          <p/>
          Descripción:</br>
          <textarea type="text" cols="75" rows="5" name="descripcion" >@tarea.getDescripcion()</textarea>
-         <p/>
-         Fecha límite:  <input type="text" name="fechaLimite" value= "@tarea.getFechaLimite().format("dd-MM-yyyy").toString()">
+         <p>Fecha límite:</br>
+         <input type="text" id="fechaLimite" name="fechaLimite" _label="fechaLimite"value= "@tarea.getFechaLimite().format("dd-MM-yyyy").toString()">
 
     </fieldset>
       <p/>
