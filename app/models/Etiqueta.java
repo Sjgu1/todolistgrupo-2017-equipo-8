@@ -4,6 +4,9 @@ import javax.persistence.*;
 
 import java.lang.IllegalArgumentException;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import java.awt.Color;
 
 import play.data.format.*;
@@ -21,6 +24,9 @@ public class Etiqueta{
   @ManyToOne
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
+  @ManyToMany(mappedBy="etiquetas", fetch=FetchType.EAGER)
+  private Set<Tarea> tareas = new HashSet<Tarea>();
+
 
   public Etiqueta() {}
 
@@ -80,6 +86,14 @@ public class Etiqueta{
 
   public void setUsuario(Usuario usuario){
     this.usuario=usuario;
+  }
+
+  public Set<Tarea> getTareas(){
+    return tareas;
+  }
+
+  public void setTareas(Set<Tarea> tareas){
+    this.tareas=tareas;
   }
 
   public static Boolean compruebaColor(String color){

@@ -16,6 +16,8 @@ import org.dbunit.operation.*;
 import java.io.FileInputStream;
 
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,10 +36,12 @@ import play.Environment;
 
 import models.Usuario;
 import models.Tarea;
+import models.Etiqueta;
 import models.UsuarioRepository;
 import models.JPAUsuarioRepository;
 import models.TareaRepository;
 import models.JPATareaRepository;
+import models.EtiquetaRepository;
 
 public class TareaTest {
   static Database db;
@@ -69,6 +73,10 @@ public class TareaTest {
 
   private UsuarioRepository newUsuarioRepository(){
     return injector.instanceOf(UsuarioRepository.class);
+  }
+
+  private EtiquetaRepository newEtiquetaRepository(){
+    return injector.instanceOf(EtiquetaRepository.class);
   }
 
  // Test #11: testCrearTarea
@@ -302,5 +310,56 @@ public class TareaTest {
 
     }
 
+    @Test
+    public void testEtiquetaEnVariasTareas() throws Exception {
+      UsuarioRepository usuarioRepository = newUsuarioRepository();
+      EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+      TareaRepository tareaRepository = newTareaRepository();
+      Usuario usuario = usuarioRepository.findById(1000L);
+      Set<Tarea> tareas = usuario.getTareas();
+      Etiqueta etiqueta=new Etiqueta("#ffffff");
+      etiqueta=etiquetaRepository.add(etiqueta);
+      for (Tarea tarea : tareas) {
+        // Actualizamos la relación en memoria, añadiendo el usuario
+        // al tablero
+        tarea.getEtiquetas().add(etiqueta);
+        // Actualizamos la base de datos llamando al repository
+        tareaRepository.update(tarea);
+      }
+      // Comprobamos que se ha actualizado la relación en la BD y
+      // la etiqueta pertenece a las tareas en las que la hemos añadido
+      tareas = usuario.getTareas();
+      for (Tarea tarea: tareas) {
+        assertTrue(tarea.getEtiquetas().contains(etiqueta));
+      }
+    }
 
+    @Test
+    public void testTareaTieneVariasEtiquetas() throws Exception {
+      UsuarioRepository usuarioRepository = newUsuarioRepository();
+      EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+      TareaRepository tareaRepository = newTareaRepository();
+      // Obtenemos datos del dataset
+      Tarea tarea = tareaRepository.findById(1000L);
+      Etiqueta etiqueta1=etiquetaRepository.findById(1000L);
+      //Etiqueta etiqueta1=new Etiqueta("#ffffff");
+      Etiqueta etiqueta2=new Etiqueta("#ff0000");
+      Etiqueta etiqueta3=new Etiqueta("#ff00ff");
+      etiquetaRepository.add(etiqueta2);
+      etiquetaRepository.add(etiqueta3);
+      int numEtiquetas=tarea.getEtiquetas().size();
+      // Añadimos los 3 usuarios al tablero
+      tarea.getEtiquetas().add(etiqueta1);
+      tarea.getEtiquetas().add(etiqueta2);
+      tarea.getEtiquetas().add(etiqueta3);
+      tareaRepository.update(tarea);
+      tarea=tareaRepository.findById(1000L);
+      etiqueta1=etiquetaRepository.findById(1000L);
+      Logger.info("Numero tareas: "+tarea.getEtiquetas().size());
+      //Comprobamos que los datos se han actualizado
+      assertEquals((numEtiquetas+3), tarea.getEtiquetas().size());
+      assertEquals(1, etiqueta1.getTareas().size());
+      assertTrue(tarea.getEtiquetas().contains(etiqueta1));
+      assertTrue(etiqueta1.getTareas().contains(tarea));
+    }
 }

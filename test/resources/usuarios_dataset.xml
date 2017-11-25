@@ -13,8 +13,9 @@
     <Tarea id="1002" titulo="Hacer tests práctica 2" usuarioId="1003"/>
     <Tablero id="1000" nombre="Tablero test 1" administradorId="1000"/>
     <Tablero id="1001" nombre="Tablero test 2" administradorId="1000"/>
-    <Etiqueta/>
+    <Etiqueta id="1000" color="#ffffff"/>
     <Persona_Tablero/>
     <Etiqueta_Tablero/>
     <Etiqueta_Usuario/>
+    <Etiqueta_Tarea/>
  </dataset>
