@@ -4,6 +4,9 @@ import javax.persistence.*;
 
 import java.lang.IllegalArgumentException;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import java.awt.Color;
 
 import play.data.format.*;
@@ -15,6 +18,15 @@ public class Etiqueta{
   private Long id;
   private String nombre;
   private String color;
+  @ManyToOne
+  @JoinColumn(name="tableroId")
+  public Tablero tablero;
+  @ManyToOne
+  @JoinColumn(name="usuarioId")
+  public Usuario usuario;
+  @ManyToMany(mappedBy="etiquetas", fetch=FetchType.EAGER)
+  private Set<Tarea> tareas = new HashSet<Tarea>();
+
 
   public Etiqueta() {}
 
@@ -22,15 +34,6 @@ public class Etiqueta{
       if(compruebaColor(color)){
         this.color=color;
         this.nombre="";
-      }
-      else
-        throw new IllegalArgumentException();
-  }
-
-  public Etiqueta(String color, String nombre){
-      if(compruebaColor(color)){
-        this.color=color;
-        this.nombre=nombre;
       }
       else
         throw new IllegalArgumentException();
@@ -47,6 +50,9 @@ public class Etiqueta{
   }
 
   public String getNombre(){
+    if(nombre.equals(null))
+      return "";
+    else
     return nombre;
   }
 
@@ -64,6 +70,30 @@ public class Etiqueta{
     }
     else
       throw new IllegalArgumentException();
+  }
+
+  public Tablero getTablero(){
+    return this.tablero;
+  }
+
+  public void setTablero(Tablero tablero){
+    this.tablero=tablero;
+  }
+
+  public Usuario getUsuario(){
+    return this.usuario;
+  }
+
+  public void setUsuario(Usuario usuario){
+    this.usuario=usuario;
+  }
+
+  public Set<Tarea> getTareas(){
+    return tareas;
+  }
+
+  public void setTareas(Set<Tarea> tareas){
+    this.tareas=tareas;
   }
 
   public static Boolean compruebaColor(String color){

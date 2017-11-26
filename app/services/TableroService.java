@@ -22,17 +22,21 @@ import models.TableroRepository;
 
 import models.Tarea;
 import models.TareaRepository;
+import models.Etiqueta;
+import models.EtiquetaRepository;
 
 public class TableroService{
   UsuarioRepository usuarioRepository;
   TableroRepository tableroRepository;
   TareaRepository tareaRepository;
+  EtiquetaRepository etiquetaRepository;
 
   @Inject
-  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository, TareaRepository tareaRepository){
+  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository, TareaRepository tareaRepository,EtiquetaRepository etrepository){
     this.usuarioRepository=usurepository;
     this.tableroRepository=tabrepository;
     this.tareaRepository=tareaRepository;
+    this.etiquetaRepository=etrepository;
   }
 
   public Tablero creaTablero(long idUsuario, String titulo){

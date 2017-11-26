@@ -74,16 +74,8 @@ public class EtiquetaTest {
   public void testCrearEtiquetaColorNombre(){
     String color="#d93f0b";
     String nombre="urgente";
-    Etiqueta etiqueta =new Etiqueta(color,nombre);
-    assertEquals(etiqueta.getColor(),color);
-    assertEquals(etiqueta.getNombre(),nombre);
-  }
-
-  @Test(expected=IllegalArgumentException.class)
-  public void testCrearEtiquetaColorIncorrectoNombreExcepcion(){
-    String color="d93f0b";
-    String nombre="urgente";
-    Etiqueta etiqueta =new Etiqueta(color,nombre);
+    Etiqueta etiqueta =new Etiqueta(color);
+    etiqueta.setNombre(nombre);
     assertEquals(etiqueta.getColor(),color);
     assertEquals(etiqueta.getNombre(),nombre);
   }
@@ -117,5 +109,4 @@ public class EtiquetaTest {
     assertTrue(correcto);
     assertTrue(!incorrecto);
   }
-
 }

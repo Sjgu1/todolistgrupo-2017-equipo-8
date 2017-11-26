@@ -137,16 +137,23 @@ public class TareaService{
     }
     else{
       try{
+        Date fechaLim;
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         sdf.setLenient(false);
-        Date fechaLim=sdf.parse(fechaLimite);
+        if (fechaLimite !=null){
+          fechaLim=sdf.parse(fechaLimite);
+        }else{
+          fechaLim = null;
+        }
+
         Date fecdefecto=sdf.parse("01-01-1900");
         Calendar cal=Calendar.getInstance();
         cal.add(Calendar.DATE,-1);
         Date fechaAyer= cal.getTime();
-        if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
-          throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
-        }
+        if (fechaLim != null)
+          if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
+            throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
+          }
         if(descripcion ==null)
           tarea=new Tarea(usuario,titulo,fechaLim);
         else

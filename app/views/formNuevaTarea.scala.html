@@ -5,12 +5,24 @@
       @mensaje
     </div>
   }
+  <script>
+  $( function() {
+    $( "#fechaLimite" ).datepicker({
+      dateFormat: "dd-mm-yy",
+      minDate: "today"
+    });
+  } );
+  </script>
   <h1>Nueva tarea para @usuario.getLogin()</h1>
   @helper.form(action = routes.GestionTareasController.creaNuevaTarea(usuario.getId())) {
     <fieldset>
       <legend>Nueva tarea</legend>
+      <form name="tareaForm">
       @helper.inputText(tareaForm("titulo"), '_label -> "Titulo", 'size -> 70)
-      @helper.inputText(tareaForm("fechaLimite"), '_label -> "Fecha límite")
+      Descripción:</br>
+      <textarea type="text" cols="70" rows="5" name="descripcion" _label="descripcion"></textarea>
+      <p>Fecha límite:</br>
+      <input type="text" id="fechaLimite" name="fechaLimite" _label="fechaLimite"></p>
     </fieldset>
     <p>
       <input type="submit" class="btn btn-primary" value="Guardar">
