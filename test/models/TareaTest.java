@@ -308,7 +308,7 @@ public class TareaTest {
 
     }
 
-    @Test
+    /*@Test
     public void testCrearTareaTablero(){
       UsuarioRepository repository=newUsuarioRepository();
       Long idUsuario=1000L;
@@ -337,8 +337,8 @@ public class TareaTest {
         assertTrue(tarea.getFechaLimite().compareTo(formateador.parse("01-12-2022"))==0);
         assertEquals("Descripción tarea", tarea.getDescripcion());
         assertEquals("Tablero test 1", tarea.getTablero().getNombre());
-      }catch(Exception e){}    
-    }
+      }catch(Exception e){}
+    }*/
 
 
 

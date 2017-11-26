@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class Tablero{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
-  Long id;
+  private Long id;
   private String nombre;
   @ManyToOne
   @JoinColumn(name="administradorId")
