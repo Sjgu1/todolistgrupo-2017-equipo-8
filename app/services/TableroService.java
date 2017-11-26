@@ -20,18 +20,22 @@ import models.UsuarioRepository;
 import models.Tablero;
 import models.TableroRepository;
 
+import models.Tarea;
+import models.TareaRepository;
 import models.Etiqueta;
 import models.EtiquetaRepository;
 
 public class TableroService{
   UsuarioRepository usuarioRepository;
   TableroRepository tableroRepository;
+  TareaRepository tareaRepository;
   EtiquetaRepository etiquetaRepository;
 
   @Inject
-  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository,EtiquetaRepository etrepository){
+  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository, TareaRepository tareaRepository,EtiquetaRepository etrepository){
     this.usuarioRepository=usurepository;
     this.tableroRepository=tabrepository;
+    this.tareaRepository=tareaRepository;
     this.etiquetaRepository=etrepository;
   }
 
@@ -104,6 +108,22 @@ public class TableroService{
     tableros.removeAll(this.allTablerosParticipanteUsuario(idUsuario));
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;
+  }
+
+  public Tablero addTareaTablero(Long idTablero,Long idTarea){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null){
+      throw new TableroServiceException("Tarea no existente");
+    }
+    Set<Tarea> tareas=tablero.getTareas();
+    tareas.add(tarea);
+    tablero.setTareas(tareas);
+    tablero=tableroRepository.update(tablero);
+    return tablero;
   }
 
   /*

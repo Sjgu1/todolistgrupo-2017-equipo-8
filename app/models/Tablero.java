@@ -12,7 +12,7 @@ import java.util.HashSet;
 public class Tablero{
   @Id
   @GeneratedValue(strategy=GenerationType.AUTO)
-  Long id;
+  private Long id;
   private String nombre;
   @ManyToOne
   @JoinColumn(name="administradorId")
@@ -20,6 +20,9 @@ public class Tablero{
   @ManyToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Persona_Tablero")
   private Set<Usuario> participantes = new HashSet<Usuario>();
+  //Relación uno-a-muchos entre tablero y tarea
+  @OneToMany(mappedBy="tablero", fetch=FetchType.EAGER)
+  public Set<Tarea> tareas=new HashSet<Tarea>();
   //relación uno a muchos, un tablero puede tener muchas etiquetas
   @OneToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Etiqueta_Tablero")
@@ -61,6 +64,14 @@ public class Tablero{
 
   public void setParticipantes(Set<Usuario> participantes) {
     this.participantes = participantes;
+  }
+
+  public Set<Tarea> getTareas(){
+    return this.tareas;
+  }
+
+  public void setTareas(Set<Tarea> tareas){
+    this.tareas=tareas;
   }
 
   public Set<Etiqueta> getEtiquetas() {

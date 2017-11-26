@@ -15,6 +15,8 @@ import java.util.Calendar;
 
 import models.Usuario;
 import models.UsuarioRepository;
+import models.Tablero;
+import models.TableroRepository;
 import models.Tarea;
 import models.TareaRepository;
 
@@ -24,11 +26,13 @@ import play.Logger;
 public class TareaService{
   UsuarioRepository usuarioRepository;
   TareaRepository tareaRepository;
+  TableroRepository tableroRepository;
 
   @Inject
-  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository){
+  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository){
     this.usuarioRepository=usuarioRepository;
     this.tareaRepository=tareaRepository;
+    this.tableroRepository=tableroRepository;
   }
 
   //Devuelve la lista de tareas de un usuario, ordenadas por su id

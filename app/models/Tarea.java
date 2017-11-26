@@ -29,6 +29,10 @@ public class Tarea{
   //ei ID del usuario con el que está asociado una tarea
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
+  //Relación muchos-a-uno entre tareas y usuario
+  @ManyToOne()
+  @JoinColumn(name="tableroId")
+  public Tablero tablero;
 
   // Variable para guardar fecha creación tarea
   private LocalDateTime fechaCreacion;
@@ -144,6 +148,14 @@ public class Tarea{
     }
   }
 
+  public Tablero getTablero(){
+    return this.tablero;
+  }
+
+  public void setTablero(Tablero tablero){
+    this.tablero=tablero;
+  }
+  
   public Set<Etiqueta> getEtiquetas() {
     return etiquetas;
   }

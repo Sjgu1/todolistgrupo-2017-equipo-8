@@ -32,6 +32,7 @@ import services.UsuarioService;
 import services.UsuarioServiceException;
 import services.TareaService;
 import services.TareaServiceException;
+import services.TableroService;
 
 public class TareaServiceTest {
   static private Injector injector;
@@ -287,4 +288,5 @@ public class TareaServiceTest {
     tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("",tarea.getDescripcion());
   }
+
 }
