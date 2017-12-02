@@ -81,7 +81,7 @@ public class Practica2Test{
   public void modificaTareanoExisteExcepcion(){
     TareaService tareaService=newTareaService();
     long idTarea=5000L;
-    tareaService.modificaTarea(idTarea,"Descripción tarea");
+    tareaService.modificaTarea(idTarea,"Descripción tarea", null, null);
   }
 
   // Test #34: exceptionSiUsuarioNoExisteNuevaTarea

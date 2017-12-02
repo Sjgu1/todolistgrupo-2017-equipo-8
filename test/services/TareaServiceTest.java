@@ -150,7 +150,7 @@ public class TareaServiceTest {
   public void modificacionTarea(){
     TareaService tareaService=newTareaService();
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler");
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler", null, null);
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("Pagar el alquiler",tarea.getTitulo());
   }
@@ -164,7 +164,7 @@ public class TareaServiceTest {
       Date fecha=new Date();
       String fechaLimite=sdf.format(fecha).toString();
       long idTarea=1000L;
-      tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+      tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
       Tarea tarea=tareaService.obtenerTarea(idTarea);
       assertEquals("Pagar el alquiler",tarea.getTitulo());
       assertEquals(fechaLimite,sdf.format(tarea.getFechaLimite()).toString());
@@ -179,7 +179,7 @@ public class TareaServiceTest {
     long idTarea=1000L;
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     fecha=tarea.getFechaLimite();
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, null);
     tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("Pagar el alquiler",tarea.getTitulo());
     assertEquals(fecha,tarea.getFechaLimite());
@@ -191,7 +191,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="28-13-2018";
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test: modificación fechaLimite anterior en Tarea excepcion
@@ -200,7 +200,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="28-10-2010";
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test #23: borrado tarea
