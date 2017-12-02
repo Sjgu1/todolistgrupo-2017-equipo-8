@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.util.Set;
 import java.util.HashSet;
+import play.Logger;
 
 @Entity
 public class Tablero{
@@ -72,6 +73,7 @@ public class Tablero{
 
   public void setTareas(Set<Tarea> tareas){
     this.tareas=tareas;
+    Logger.info("set tareas "+this.tareas);
   }
 
   public Set<Etiqueta> getEtiquetas() {

@@ -110,6 +110,10 @@ public class TableroService{
     return tableros;
   }
 
+  public Tablero obtenerTablero(Long idTablero){
+    return tableroRepository.findById(idTablero);
+  }
+
   public Tablero addTareaTablero(Long idTablero,Long idTarea){
     Tablero tablero=tableroRepository.findById(idTablero);
     if(tablero==null){

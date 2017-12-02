@@ -244,4 +244,19 @@ public class TareaService{
     tarea.setTerminada(true);
     tareaRepository.update(tarea);
   }
+
+  public List<Tarea> allTareasTablero(Long idUsuario, Long idTablero){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TableroServiceException("Usuario no existente");
+    }
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+    List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
+    Logger.info("tareas "+tablero.getTareas());
+    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tareas;
+  }
 }

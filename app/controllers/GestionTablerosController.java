@@ -12,15 +12,18 @@ import java.util.List;
 
 import services.UsuarioService;
 import services.TableroService;
+import services.TareaService;
 import services.TableroServiceException;
 import models.Usuario;
 import models.Tablero;
+import models.Tarea;
 import models.TableroRepository;
 import security.ActionAuthenticator;
 
 public class GestionTablerosController extends Controller {
   @Inject FormFactory formFactory;
   @Inject UsuarioService usuarioService;
+  @Inject TareaService tareaService;
   @Inject TableroService tableroService;
   @Inject TableroRepository tableroRepository;
 
@@ -105,8 +108,24 @@ public class GestionTablerosController extends Controller {
       if (tablero == null) {
         return notFound("Tablero no encontrado");
       } else {
-        return ok(detalleTablero.render(tablero,idUsuario));
+        String aviso = flash("aviso");
+        Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+        List<Tarea> tareas = tareaService.allTareasTablero(idUsuario,idTablero);
+        return ok(detalleTablero.render(tablero,idUsuario,tareas,aviso));
       }
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result asignaTareaTablero(Long idTablero,Long idTarea, Long idUsuario){
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    if ((long)connectedUser != (long)idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      tableroService.addTareaTablero(idTablero,idTarea);
+      //flash("aviso", "Se ha unido la tarea con éxito");
+      return ok();
     }
   }
 }
