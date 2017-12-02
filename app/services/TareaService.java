@@ -117,7 +117,8 @@ public class TareaService{
         if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
           throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
         }
-        tarea=new Tarea(usuario,titulo,fechaLim);
+        tarea=new Tarea(usuario,titulo);
+        tarea.setFechaLimite(fechaLim);
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
       }
@@ -154,10 +155,14 @@ public class TareaService{
           if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
             throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
           }
-        if(descripcion ==null)
-          tarea=new Tarea(usuario,titulo,fechaLim);
-        else
-          tarea=new Tarea(usuario,titulo,fechaLim, descripcion);
+        if(descripcion ==null){
+          tarea=new Tarea(usuario,titulo);
+          tarea.setFechaLimite(fechaLim);
+        }else{
+          tarea=new Tarea(usuario,titulo);
+          tarea.setFechaLimite(fechaLim);
+          tarea.setDescripcion(descripcion);
+        }
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
       }
