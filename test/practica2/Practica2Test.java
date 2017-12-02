@@ -89,7 +89,7 @@ public class Practica2Test{
   public void nuevaTareaUsuarioNoExisteExcepcion(){
     TareaService tareaService=newTareaService();
     long idUsuario=5000L;
-    tareaService.nuevaTarea(idUsuario,"Descripción tarea");
+    tareaService.nuevaTarea(idUsuario,"Descripción tarea", null, null);
   }
 
 }

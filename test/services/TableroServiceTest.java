@@ -66,7 +66,7 @@ public class TableroServiceTest {
     TableroService tableroService=newTableroService();
     long idUsuario=1000L;
     long idTablero=1000L;
-    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar");
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar", null, null);
     long idTarea=tarea.getId();
     Tablero tab=tableroService.addTareaTablero(idTablero,idTarea);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
@@ -83,7 +83,7 @@ public class TableroServiceTest {
     Date fecha=new Date();
     String fechaLimite=sdf.format(fecha).toString();
     Logger.info("fecha limite: "+fechaLimite);
-    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
     long idTarea=tarea.getId();
     Tablero tab=tableroService.addTareaTablero(idTablero,idTarea);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
