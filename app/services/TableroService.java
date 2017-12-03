@@ -48,6 +48,10 @@ public class TableroService{
     if(tablero!=null){
       throw new TableroServiceException("Nombre de tablero duplicado");
     }
+
+    if(titulo == null || titulo.isEmpty()){
+        throw new TableroServiceException("El titulo es obligatorio");
+    }
     //haciendo uso del método declarado en service
     /*if(nombreTableroDuplicado(titulo)){
       throw new TableroServiceException("Nombre de tablero duplicado");

@@ -86,26 +86,13 @@ public class TareaService{
     return result;
   }
 
-  public Tarea nuevaTarea(Long idUsuario, String titulo){
+  public Tarea nuevaTarea(Long idUsuario, String titulo, String fechaLimite, String descripcion){
     Usuario usuario= usuarioRepository.findById(idUsuario);
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
     Tarea tarea=new Tarea(usuario,titulo);
-    return tareaRepository.add(tarea);
-  }
-
-  public Tarea nuevaTarea(Long idUsuario, String titulo,String fechaLimite){
-    Usuario usuario= usuarioRepository.findById(idUsuario);
-    Tarea tarea;
-
-    if(usuario==null){
-      throw new TareaServiceException("Usuario no existente");
-    }
-    if(fechaLimite==null){
-      tarea=new Tarea(usuario,titulo);
-    }
-    else{
+    if (fechaLimite != null){
       try{
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         sdf.setLenient(false);
@@ -117,51 +104,16 @@ public class TareaService{
         if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
           throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
         }
-        tarea=new Tarea(usuario,titulo,fechaLim);
+        tarea=new Tarea(usuario,titulo);
+        tarea.setFechaLimite(fechaLim);
       } catch (Exception e){
         throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
       }
     }
-    return tareaRepository.add(tarea);
-  }
-
-  public Tarea nuevaTarea(Long idUsuario, String titulo,String fechaLimite, String descripcion){
-    Usuario usuario= usuarioRepository.findById(idUsuario);
-    Tarea tarea;
-
-    if(usuario==null){
-      throw new TareaServiceException("Usuario no existente");
+    if (descripcion != null){
+      tarea.setDescripcion(descripcion);
     }
-    if(fechaLimite==null && descripcion ==null){
-      tarea=new Tarea(usuario,titulo);
-    }
-    else{
-      try{
-        Date fechaLim;
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-        sdf.setLenient(false);
-        if (fechaLimite !=null){
-          fechaLim=sdf.parse(fechaLimite);
-        }else{
-          fechaLim = null;
-        }
 
-        Date fecdefecto=sdf.parse("01-01-1900");
-        Calendar cal=Calendar.getInstance();
-        cal.add(Calendar.DATE,-1);
-        Date fechaAyer= cal.getTime();
-        if (fechaLim != null)
-          if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
-            throw new TareaServiceException("No se puede establecer una fecha límite inferior a hoy");
-          }
-        if(descripcion ==null)
-          tarea=new Tarea(usuario,titulo,fechaLim);
-        else
-          tarea=new Tarea(usuario,titulo,fechaLim, descripcion);
-      } catch (Exception e){
-        throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
-      }
-    }
     return tareaRepository.add(tarea);
   }
 
@@ -169,20 +121,14 @@ public class TareaService{
     return tareaRepository.findById(idTarea);
   }
 
-  public Tarea modificaTarea(Long idTarea,String nuevoTitulo){
+  public Tarea modificaTarea(Long idTarea,String nuevoTitulo, String fechaLimite, String nuevaDescripcion){
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)
       throw new TareaServiceException("No existe tarea");
-    tarea.setTitulo(nuevoTitulo);
-    tarea=tareaRepository.update(tarea);
-    return tarea;
-  }
 
-  public Tarea modificaTarea(Long idTarea,String nuevoTitulo,String fechaLimite){
-    Tarea tarea=tareaRepository.findById(idTarea);
-    if(tarea==null)
-      throw new TareaServiceException("No existe tarea");
     tarea.setTitulo(nuevoTitulo);
+    tarea.setDescripcion(nuevaDescripcion);
+
     if(fechaLimite!=null){
       try{
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
@@ -203,33 +149,7 @@ public class TareaService{
     tarea=tareaRepository.update(tarea);
     return tarea;
   }
-  public Tarea modificaTarea(Long idTarea,String nuevoTitulo,String fechaLimite, String descripcion){
-    Tarea tarea=tareaRepository.findById(idTarea);
-    if(tarea==null)
-      throw new TareaServiceException("No existe tarea");
-    tarea.setTitulo(nuevoTitulo);
-    tarea.setDescripcion(descripcion);
-    if(fechaLimite!=null){
-      try{
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
-        sdf.setLenient(false);
-        Date fechaLim=sdf.parse(fechaLimite);
-        Date fecdefecto=sdf.parse("01-01-1900");
-        Calendar cal=Calendar.getInstance();
-        cal.add(Calendar.DATE,-1);
-        Date fechaAyer= cal.getTime();
-        if (fechaAyer.after(fechaLim) && (!(fechaLim.equals(fecdefecto)))){
-          throw new TareaServiceException("La fecha introducida es incorrecta, debe ser como mínimo igual al día de hoy");
-        }
-        tarea.setFechaLimite(fechaLim);
-      } catch (Exception e){
-        throw new TareaServiceException("La fecha introducida es incorrecta, debe ser del tipo dd-MM-yyyy");
-      }
-    }
-    tarea=tareaRepository.update(tarea);
-    return tarea;
-  }
-
+  
   public void borraTarea(Long idTarea){
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)

@@ -214,8 +214,8 @@ public class TareaTest {
         Usuario usuario=repository.findById(idUsuario);
         SimpleDateFormat formateador=new SimpleDateFormat("dd-MM-yyyy");
 
-        Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",formateador.parse("25-12-2018"));
-
+        Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+        tarea.setFechaLimite(formateador.parse("25-12-2018"));
         assertNotNull(tarea.getFechaLimite());
         assertTrue(tarea.getFechaLimite().compareTo(formateador.parse("25-12-2018"))==0);
       }catch (Exception e){}
@@ -236,8 +236,10 @@ public class TareaTest {
       fechaHoy.setMinutes(0);
       fechaHoy.setSeconds(0);
 
-      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaHoy);
-      Tarea tarea1 = new Tarea(usuario, "Práctica con fecha de creación",fechaAyer);
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+      tarea.setFechaLimite(fechaHoy);
+      Tarea tarea1 = new Tarea(usuario, "Práctica con fecha de creación");
+      tarea1.setFechaLimite(fechaAyer);
 
       Boolean caducadaAyer=tarea.tareaCaducada();
       Boolean caducadaHoy=tarea1.tareaCaducada();
@@ -258,7 +260,8 @@ public class TareaTest {
       Date fechaManana= cal.getTime();
 
 
-      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaManana);
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+      tarea.setFechaLimite(fechaManana);
 
       Boolean caducadaManana=(!(tarea.tareaCaducada()));
 
@@ -272,7 +275,7 @@ public class TareaTest {
       Long idUsuario=1000L;
       Usuario usuario=repository.findById(idUsuario);
 
-      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",null);
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
       Tarea tarea1 = new Tarea(usuario, "Práctica con fecha de creación");
 
       Boolean caducadaConNull=(!(tarea.tareaCaducada()));
@@ -288,7 +291,8 @@ public class TareaTest {
       Long idUsuario=1000L;
       Usuario usuario=repository.findById(idUsuario);
 
-      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",null,"Descripción tarea");
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+      tarea.setDescripcion("Descripción tarea");
 
       assertEquals("Descripción tarea", tarea.getDescripcion());
 
@@ -303,7 +307,8 @@ public class TareaTest {
       cal.add(Calendar.DATE,1);
       Date fechaManana= cal.getTime();
 
-      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación",fechaManana,null);
+      Tarea tarea = new Tarea(usuario, "Práctica con fecha de creación");
+      tarea.setFechaLimite(fechaManana);
       assertEquals("", tarea.getDescripcion());
       Boolean caducadaManana=(!(tarea.tareaCaducada()));
       assertTrue(caducadaManana);

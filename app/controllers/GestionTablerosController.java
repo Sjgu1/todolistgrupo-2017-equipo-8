@@ -52,8 +52,12 @@ public class GestionTablerosController extends Controller {
      }
      Tablero tablero = tableroForm.get();
      try{
+       if(tablero.getNombre().isEmpty()){
+         Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+         return badRequest(formNuevoTablero.render(usuario, formFactory.form(Tablero.class), "El tablero no tiene nombre"));
+       }
        tablero=tableroService.creaTablero(idUsuario, tablero.getNombre());
-       Logger.debug("Creado tablero: "+tablero.getId());
+       //Logger.debug("Creado tablero: "+tablero.getId());
        flash("aviso", "El tablero se ha grabado correctamente");
        return redirect(controllers.routes.GestionTablerosController.listaTableros(idUsuario.toString()));
      }catch (TableroServiceException t){
