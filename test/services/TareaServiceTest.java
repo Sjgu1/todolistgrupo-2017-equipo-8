@@ -300,7 +300,7 @@ public class TareaServiceTest {
     long idTablero=1000L;
     List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
     assertEquals(2, tareas.size());
-    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar las medicinas jeje");
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar las medicinas jeje",null,null);
     long idTarea=tarea.getId();
     tableroService.addTareaTablero(idTablero,idTarea);
     tareas = tareaService.allTareasUsuario(idUsuario);

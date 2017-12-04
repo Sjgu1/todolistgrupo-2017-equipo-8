@@ -133,7 +133,7 @@ public class TableroServiceTest {
     TableroService tableroService=newTableroService();
     long idUsuario=1000L;
     long idTablero=1000L;
-    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar");
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar",null,null);
     long idTarea=1000L;
     long idTarea2=tarea.getId();
     Tablero tablero=tableroService.addTareaTablero(idTablero,idTarea);
