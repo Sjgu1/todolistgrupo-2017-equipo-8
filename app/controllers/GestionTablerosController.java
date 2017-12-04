@@ -111,21 +111,8 @@ public class GestionTablerosController extends Controller {
         String aviso = flash("aviso");
         Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
         List<Tarea> tareas = tableroService.allTareasTablero(idTablero);
-        return ok(detalleTablero.render(tablero,idUsuario,tareas,aviso));
+        return ok(detalleTablero.render(tablero,idUsuario,tareas,usuario,aviso));
       }
-    }
-  }
-
-  @Security.Authenticated(ActionAuthenticator.class)
-  public Result asignaTareaTablero(Long idTablero,Long idTarea, Long idUsuario){
-    String connectedUserStr = session("connected");
-    Long connectedUser =  Long.valueOf(connectedUserStr);
-    if ((long)connectedUser != (long)idUsuario) {
-      return unauthorized("Lo siento, no estás autorizado");
-    } else {
-      tableroService.addTareaTablero(idTablero,idTarea);
-      //flash("aviso", "Se ha unido la tarea con éxito");
-      return ok();
     }
   }
 }

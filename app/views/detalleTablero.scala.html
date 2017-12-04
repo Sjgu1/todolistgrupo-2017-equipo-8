@@ -1,7 +1,7 @@
-@(tablero: Tablero, usuarioSesion: Long, tareas: List[Tarea], mensaje: String)
+@(tablero: Tablero, usuarioSesion: Long, tareas: List[Tarea],usuario: Usuario, mensaje: String)
 
 @main("Detalle de tablero"){
-  <h1>Detalle del tablero @tablero.getId()</h1>
+  <h1>Detalle del tablero</h1>
   <div class="table-responsive">
     <table class="table">
       <tr>
@@ -26,4 +26,31 @@
       </tr>
     </table>
   </div>
+  <h3>Tareas del tablero</h3>
+  <table class="table table-striped">
+    <tr>
+        <th>Título</th>
+        <th>Fecha Límite</th>
+        <th>Acción</th>
+    </tr>
+    @for(tarea <- tareas) {
+      @if(tarea.tareaCaducada()){
+        <tr class="danger">
+      } else {
+        <tr>
+        }
+            <td>@tarea.getTitulo()</td>
+            @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+              <td>Sin fecha límite</td>
+            } else {
+              <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+            }
+        </tr>
+      }
+
+      <tr>
+          <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId(),tablero.getId())">
+              <span class="glyphicon glyphicon-plus"/></a></td>
+    </tr>
+  </table>
 }
