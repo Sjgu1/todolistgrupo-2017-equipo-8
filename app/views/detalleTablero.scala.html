@@ -1,7 +1,7 @@
 @(tablero: Tablero, usuarioSesion: Long, tareas: List[Tarea],usuario: Usuario, mensaje: String)
 
 @main("Detalle de tablero"){
-  <h1>Detalle del tablero</h1>
+  <h1>Detalle del tablero @tablero.getNombre()</h1>
   <div class="table-responsive">
     <table class="table">
       <tr>
@@ -53,4 +53,10 @@
               <span class="glyphicon glyphicon-plus"/></a></td>
     </tr>
   </table>
+
+  @if(mensaje != null) {
+      <div class="alert alert-success">
+          @mensaje
+      </div>
+  }
 }

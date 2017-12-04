@@ -63,17 +63,17 @@ public class GestionTareasController extends Controller{
 
       tarea.fechaLimite=tarea.fechaLimite.equals("") ? null : tarea.fechaLimite;
       if (tarea.fechaLimite==null)
-        tareaService.nuevaTarea(idUsuario, tarea.titulo,null, descripcion);
+        newTarea=tareaService.nuevaTarea(idUsuario, tarea.titulo,null, descripcion);
       else {
         try {
           newTarea=tareaService.nuevaTarea(idUsuario, tarea.titulo,tarea.fechaLimite, descripcion);
-          if(idTablero!=0){
-            tableroService.addTareaTablero(idTablero,newTarea.getId());
-          }
         } catch (TareaServiceException e){
           usuario = usuarioService.findUsuarioPorId(idUsuario);
           return badRequest(formNuevaTarea.render(usuario,formFactory.form(Tareas.class),tab, e.getMessage()));
         }
+      }
+      if(idTablero!=0){
+        tableroService.addTareaTablero(idTablero,newTarea.getId());
       }
       flash("aviso", "La tarea se ha grabado correctamente");
       return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
