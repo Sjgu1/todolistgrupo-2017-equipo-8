@@ -6,6 +6,8 @@ import play.db.jpa.JPAApi;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.NoResultException;
 
 public class JPAEtiquetaRepository implements EtiquetaRepository{
   JPAApi jpaApi;
@@ -46,4 +48,5 @@ public class JPAEtiquetaRepository implements EtiquetaRepository{
       return entityManager.find(Etiqueta.class,idEtiqueta);
     });
   }
+  
 }

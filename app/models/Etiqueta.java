@@ -9,6 +9,7 @@ import java.util.HashSet;
 
 import java.awt.Color;
 
+import play.Logger;
 import play.data.format.*;
 
 @Entity
@@ -114,7 +115,7 @@ public class Etiqueta{
   @Override
   public int hashCode(){
     final int prime=31;
-    int result=prime+((nombre==null)?0:nombre.hashCode());
+    int result=prime+((nombre==null)?0:nombre.hashCode())+((color==null)?0:color.hashCode());
     return result;
   }
 

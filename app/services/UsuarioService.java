@@ -3,21 +3,32 @@ package services;
 import javax.inject.*;
 import java.util.regex.*;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import java.util.Set;
+import java.util.HashSet;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import play.Logger;
 
 import models.Usuario;
 import models.UsuarioRepository;
+import models.Etiqueta;
+import models.EtiquetaRepository;
 
 public class UsuarioService{
   UsuarioRepository repository;
+  EtiquetaRepository etiqRepository;
 
   //Play proporcionará automáticamente el UsuarioRepository necesario
   //usando inyección de dependencias
   @Inject
-  public UsuarioService(UsuarioRepository repository){
+  public UsuarioService(UsuarioRepository repository,EtiquetaRepository etiqRepository){
     this.repository=repository;
+    this.etiqRepository=etiqRepository;
   }
 
   public Usuario creaUsuario(String login,String email, String password){
@@ -104,5 +115,91 @@ public class UsuarioService{
     } else {
       return null;
     }
+  }
+
+  public Usuario addEtiquetaAUsuario(Long idUsuario, Long idEtiqueta){
+    Usuario usuario = repository.findById(idUsuario);
+    if (usuario==null){
+      throw new UsuarioServiceException("Error. Usuario no existente");
+    }
+    Etiqueta etiqueta= etiqRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new UsuarioServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=usuario.getEtiquetas();
+    etiquetas.add(etiqueta);
+    usuario.setEtiquetas(etiquetas);
+    usuario=repository.modify(usuario);
+    return usuario;
+  }
+
+  public Usuario borraEtiquetaAUsuario(Long idUsuario, Long idEtiqueta){
+    Usuario usuario = repository.findById(idUsuario);
+    if (usuario==null){
+      throw new UsuarioServiceException("Error. Usuario no existente");
+    }
+    Etiqueta etiqueta= etiqRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new UsuarioServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=usuario.getEtiquetas();
+    boolean borrado=etiquetas.remove(etiqueta);
+    if(borrado){
+      usuario.setEtiquetas(etiquetas);
+      usuario=repository.modify(usuario);
+      return usuario;
+    }
+    else {
+      throw new UsuarioServiceException("Error, la etiqueta a borrar no pertenece al usuario");
+    }
+  }
+
+  public Usuario modificaEtiquetaAUsuario(Long idUsuario, Long idEtiqueta,String color,String nombre){
+    Usuario usuario = repository.findById(idUsuario);
+    if (usuario==null){
+      throw new UsuarioServiceException("Error. Usuario no existente");
+    }
+    Etiqueta etiqueta= etiqRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new UsuarioServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=usuario.getEtiquetas();
+    if(etiquetas.contains(etiqueta)){
+      try{
+        if(color!=null){
+          etiqueta.setColor(color);
+        }
+        if(nombre!=null){
+          etiqueta.setNombre(nombre);
+        }
+        etiqRepository.update(etiqueta);
+      } catch (IllegalArgumentException e){
+        throw new UsuarioServiceException("Error, el color no es válido");
+      }
+    }
+    else{
+      throw new UsuarioServiceException("Error, la etiqueta a modificar no pertenece al usuario");
+    }
+    usuario = repository.findById(idUsuario);
+    return usuario;
+  }
+
+  public List<Etiqueta> allEtiquetasUsuario(Long idUsuario){
+    Usuario usuario=repository.findById(idUsuario);
+    if(usuario==null){
+      throw new UsuarioServiceException("Usuario no existente");
+    }
+    List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(usuario.getEtiquetas());
+    Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
+    return etiquetas;
+  }
+
+  public boolean EtiquetaPerteneceUsuario(Long idUsuario,String color, String nombre){
+    Usuario usuario = repository.findById(idUsuario);
+    if (usuario==null){
+      throw new UsuarioServiceException("Error. Usuario no existente");
+    }
+    Set<Etiqueta> etiquetas=usuario.getEtiquetas();
+    return etiquetas.stream().filter(etiqueta -> etiqueta.getColor().equals(color) && etiqueta.getNombre().equals(nombre)).count()>0;
   }
 }
