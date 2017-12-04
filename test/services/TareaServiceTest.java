@@ -60,6 +60,9 @@ public class TareaServiceTest {
   private UsuarioService newUsuarioService() {
     return injector.instanceOf(UsuarioService.class);
   }
+  private TableroService newTableroService() {
+    return injector.instanceOf(TableroService.class);
+  }
 
   // Test #19: allTareasUsuarioEstanOrdenadas
   @Test
@@ -287,6 +290,21 @@ public class TareaServiceTest {
     tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, null);
     tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("",tarea.getDescripcion());
+  }
+
+  @Test
+  public void listarTareasSinTablero() {
+    TareaService tareaService = newTareaService();
+    TableroService tableroService = newTableroService();
+    long idUsuario=1000L;
+    long idTablero=1000L;
+    List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+    assertEquals(2, tareas.size());
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar las medicinas jeje",null,null);
+    long idTarea=tarea.getId();
+    tableroService.addTareaTablero(idTablero,idTarea);
+    tareas = tareaService.allTareasUsuario(idUsuario);
+    assertEquals(2, tareas.size());
   }
 
 }

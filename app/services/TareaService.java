@@ -45,7 +45,7 @@ public class TareaService{
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
     List<Tarea> result = new ArrayList<Tarea>();
     for(Tarea task: tareas){
-        if(!task.getTerminada()){
+        if(!task.getTerminada() && task.getTablero()==null){
           result.add(task);
         }
     }
@@ -78,7 +78,7 @@ public class TareaService{
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
     List<Tarea> result = new ArrayList<Tarea>();
     for(Tarea task: tareas){
-        if(!task.getTerminada()){
+        if(!task.getTerminada() && task.getTablero()==null){
           result.add(task);
         }
     }

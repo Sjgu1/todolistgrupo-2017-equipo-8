@@ -114,6 +114,10 @@ public class TableroService{
     return tableros;
   }
 
+  public Tablero obtenerTablero(Long idTablero){
+    return tableroRepository.findById(idTablero);
+  }
+
   public Tablero addTareaTablero(Long idTablero,Long idTarea){
     Tablero tablero=tableroRepository.findById(idTablero);
     if(tablero==null){
@@ -126,8 +130,27 @@ public class TableroService{
     Set<Tarea> tareas=tablero.getTareas();
     tareas.add(tarea);
     tablero.setTareas(tareas);
+    tarea.setTablero(tablero);
     tablero=tableroRepository.update(tablero);
+    tareaRepository.update(tarea);
     return tablero;
+  }
+
+  public List<Tarea> allTareasTablero(Long idTablero){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+
+    List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(!task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
   }
 
   /*

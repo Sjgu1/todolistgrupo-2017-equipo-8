@@ -1,4 +1,4 @@
-@(idUsuario: Long, tarea: Tarea, mensaje: String)
+@(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String)
 @main("Modificar Tarea") {
   @if(mensaje != "") {
       <div class="alert alert-danger">
@@ -14,7 +14,7 @@
    } );
    </script>
    <h1>Modificar tarea</h1>
-   @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId())) {
+   @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId(),idTablero)) {
       <fieldset>
          <legend>Tarea</legend>
          Título:  <input type="text" size=70 name="titulo" value= "@tarea.getTitulo()">

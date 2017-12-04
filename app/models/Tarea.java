@@ -30,7 +30,7 @@ public class Tarea{
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
   //Relación muchos-a-uno entre tareas y usuario
-  @ManyToOne()
+  @ManyToOne
   @JoinColumn(name="tableroId")
   public Tablero tablero;
 

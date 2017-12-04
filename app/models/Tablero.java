@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.util.Set;
 import java.util.HashSet;
+import play.Logger;
 
 @Entity
 public class Tablero{
