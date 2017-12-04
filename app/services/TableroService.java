@@ -126,8 +126,21 @@ public class TableroService{
     Set<Tarea> tareas=tablero.getTareas();
     tareas.add(tarea);
     tablero.setTareas(tareas);
+    tarea.setTablero(tablero);
     tablero=tableroRepository.update(tablero);
+    tareaRepository.update(tarea);
     return tablero;
+  }
+
+  public List<Tarea> allTareasTablero(Long idTablero){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+
+    List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
+    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tareas;
   }
 
   /*

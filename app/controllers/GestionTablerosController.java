@@ -110,7 +110,7 @@ public class GestionTablerosController extends Controller {
       } else {
         String aviso = flash("aviso");
         Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
-        List<Tarea> tareas = tareaService.allTareasTablero(idUsuario,idTablero);
+        List<Tarea> tareas = tableroService.allTareasTablero(idTablero);
         return ok(detalleTablero.render(tablero,idUsuario,tareas,aviso));
       }
     }

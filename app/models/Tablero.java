@@ -73,7 +73,6 @@ public class Tablero{
 
   public void setTareas(Set<Tarea> tareas){
     this.tareas=tareas;
-    Logger.info("set tareas "+this.tareas);
   }
 
   public Set<Etiqueta> getEtiquetas() {

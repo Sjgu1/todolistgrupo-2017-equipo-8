@@ -127,23 +127,20 @@ public class TableroServiceTest {
   }
 
 
-
   @Test
   public void listarTareasTablero(){
     TareaService tareaService=newTareaService();
     TableroService tableroService=newTableroService();
     long idUsuario=1000L;
-    //long idTablero=1000L;
+    long idTablero=1000L;
     Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar");
-    long idTarea=tarea.getId();
-    Tablero tablero=tableroService.creaTablero(idUsuario,"tablero 1");
-    long idTablero=tablero.getId();
-    tablero=tableroService.addTareaTablero(idTablero,idTarea);
-    List<Tarea> tareas=tareaService.allTareasTablero(idUsuario,idTablero);
-    Logger.info("tareas: "+tareas);
-    //assertEquals(1,tab.getTareas().size());
+    long idTarea=1000L;
+    long idTarea2=tarea.getId();
+    Tablero tablero=tableroService.addTareaTablero(idTablero,idTarea);
+    List<Tarea> tareas=tableroService.allTareasTablero(idTablero);
     assertEquals(1,tareas.size());
-    //tableroService.addTareaTablero(idTablero,idTarea2);
-    //assertEquals(2,tableroService.allTareasTablero(idUsuario,idTablero).size());
+    tableroService.addTareaTablero(idTablero,idTarea2);
+    tareas=tableroService.allTareasTablero(idTablero);
+    assertEquals(2,tareas.size());
   }
 }
