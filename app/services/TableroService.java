@@ -139,8 +139,14 @@ public class TableroService{
     }
 
     List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
-    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
-    return tareas;
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(!task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
   }
 
   /*

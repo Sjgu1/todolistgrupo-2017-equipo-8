@@ -121,7 +121,7 @@ public class GestionTareasController extends Controller{
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result formularioEditaTarea(Long idTarea){
+  public Result formularioEditaTarea(Long idTarea, Long idTablero){
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     if(tarea==null){
       return notFound("Tarea no encontrada");
@@ -131,15 +131,13 @@ public class GestionTareasController extends Controller{
       if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
         return unauthorized("Lo siento, no estás autorizado");
       } else {
-        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),
-        tarea,
-        ""));
+        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,""));
       }
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result grabaTareaModificada(Long idTarea) {
+  public Result grabaTareaModificada(Long idTarea, Long idTablero) {
     DynamicForm requestData = formFactory.form().bindFromRequest();
     String nuevoTitulo = requestData.get("titulo");
     String nuevaFechaLimite = requestData.get("fechaLimite");
@@ -152,10 +150,11 @@ public class GestionTareasController extends Controller{
         tarea=tareaService.modificaTarea(idTarea, nuevoTitulo,nuevaFechaLimite, nuevaDescripcion);
       } catch (TareaServiceException e){
         tarea = tareaService.obtenerTarea(idTarea);
-        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(), tarea, e.getMessage()));
+        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage()));
       }
     }
-    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0));
+    return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0)) :
+    redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,tarea.getUsuario().getId()));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)

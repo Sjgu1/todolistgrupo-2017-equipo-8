@@ -1,6 +1,30 @@
 @(tablero: Tablero, usuarioSesion: Long, tareas: List[Tarea],usuario: Usuario, mensaje: String)
+@scripts = {
+    <script type="text/javascript">
+        function del(urlBorrar) {
+            $.ajax({
+                url: urlBorrar,
+                type: 'DELETE',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
+        function ter(urlTer) {
+            $.ajax({
+                url: urlTer,
+                type: 'PUT',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
+    </script>
+}
 
-@main("Detalle de tablero"){
+@main("Detalle de tablero",scripts){
   <h1>Detalle del tablero @tablero.getNombre()</h1>
   <div class="table-responsive">
     <table class="table">
@@ -45,6 +69,14 @@
             } else {
               <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
             }
+            <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">
+              <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+              <a onmouseover="" style="cursor: pointer;"
+              onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+              <a onmouseover="" style="cursor: pointer;"
+              onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+              <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
         </tr>
       }
 
