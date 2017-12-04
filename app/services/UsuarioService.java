@@ -183,7 +183,8 @@ public class UsuarioService{
     usuario = repository.findById(idUsuario);
     return usuario;
   }
-
+  
+  //Devuelve las etiquetas en una lista ordenada por color y nombre
   public List<Etiqueta> allEtiquetasUsuario(Long idUsuario){
     Usuario usuario=repository.findById(idUsuario);
     if(usuario==null){
