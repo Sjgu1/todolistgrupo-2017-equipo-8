@@ -156,7 +156,7 @@ public class TareaService{
     tarea=tareaRepository.update(tarea);
     return tarea;
   }
-  
+
   public void borraTarea(Long idTarea){
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)
@@ -182,10 +182,7 @@ public class TareaService{
       throw new TareaServiceException("Error. Etiqueta no existente");
     }
     Set<Etiqueta> etiquetas=tarea.getEtiquetas();
-    //Logger.info("Tablero id:"+tarea.getTablero().getId());
-    Logger.info("Quiero añadir etiqueta "+idEtiqueta+" a "+"tarea "+idTarea+" con tablero "+tarea.getTablero());
-    //Tablero tablero=tarea.getTablero();
-    Tablero tablero=tableroRepository.findById(1000L);
+    Tablero tablero=tarea.getTablero();
     if(tablero!=null){
       if(tablero.getEtiquetas().contains(etiqueta)){
         etiquetas.add(etiqueta);
