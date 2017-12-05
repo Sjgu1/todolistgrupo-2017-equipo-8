@@ -11,6 +11,9 @@ import java.io.FileInputStream;
 
 import java.util.List;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -20,6 +23,8 @@ import java.util.Calendar;
 
 import models.Usuario;
 import models.Tarea;
+import models.Tablero;
+import models.Etiqueta;
 
 import play.inject.guice.GuiceApplicationBuilder;
 import play.inject.Injector;
@@ -33,6 +38,9 @@ import services.UsuarioServiceException;
 import services.TareaService;
 import services.TareaServiceException;
 import services.TableroService;
+import services.TableroServiceException;
+import services.EtiquetaService;
+import services.EtiquetaServiceException;
 
 public class TareaServiceTest {
   static private Injector injector;
@@ -62,6 +70,10 @@ public class TareaServiceTest {
   }
   private TableroService newTableroService() {
     return injector.instanceOf(TableroService.class);
+  }
+
+  private EtiquetaService newEtiquetaService() {
+    return injector.instanceOf(EtiquetaService.class);
   }
 
   // Test #19: allTareasUsuarioEstanOrdenadas
@@ -307,4 +319,317 @@ public class TareaServiceTest {
     assertEquals(2, tareas.size());
   }
 
+  @Test
+  public void anadeEtiquetasVariasTareasPerteneceTablero(){
+    TableroService tableroService=newTableroService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    TareaService tareaService=newTareaService();
+
+    Long idTablero=1000L;
+    Long idUsuario=1000L;
+
+    Tablero tablero=tableroService.findTableroPorId(idTablero);
+    Etiqueta etiqueta1=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Etiqueta etiqueta2=etiquetaService.creaEtiqueta("#000000","testEspecial2");
+    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1",null,null);
+    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2",null,null);
+
+    tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta1.getId());
+    tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta2.getId());
+    tablero=tableroService.addTareaTablero(tablero.getId(),tarea1.getId());
+    tablero=tableroService.addTareaTablero(tablero.getId(),tarea2.getId());
+
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta1.getId());
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta2.getId());
+    tarea2=tareaService.addEtiquetaATarea(tarea2.getId(),etiqueta1.getId());
+
+    assertTrue(tarea1.getEtiquetas().contains(etiqueta1));
+    assertTrue(tarea1.getEtiquetas().contains(etiqueta2));
+    assertTrue(tarea2.getEtiquetas().contains(etiqueta1));
+    assertTrue(!(tarea2.getEtiquetas().contains(etiqueta2)));
+  }
+
+  @Test(expected=TareaServiceException.class)
+  public void anadeEtiquetaATareaNoPerteneceTableroExcepcion(){
+    TableroService tableroService=newTableroService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    TareaService tareaService=newTareaService();
+
+    Long idTablero=1000L;
+    Long idUsuario=1000L;
+
+    Tablero tablero=tableroService.findTableroPorId(idTablero);
+    Etiqueta etiqueta1=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Etiqueta etiqueta2=etiquetaService.creaEtiqueta("#000000","testEspecial2");
+    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1",null,null);
+    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2",null,null);
+
+    tablero=tableroService.addTareaTablero(tablero.getId(),tarea1.getId());
+    tablero=tableroService.addTareaTablero(tablero.getId(),tarea2.getId());
+
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta1.getId());
+  }
+
+  @Test
+  public void anadeEtiquetasVariasTareasPerteneceUsuario(){
+    UsuarioService usuarioService=newUsuarioService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    TareaService tareaService=newTareaService();
+
+    Long idTablero=1000L;
+    Long idUsuario=1000L;
+
+    Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+    Etiqueta etiqueta1=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Etiqueta etiqueta2=etiquetaService.creaEtiqueta("#000000","testEspecial2");
+    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1",null,null);
+    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2",null,null);
+
+    usuario=usuarioService.addEtiquetaAUsuario(usuario.getId(),etiqueta1.getId());
+    usuario=usuarioService.addEtiquetaAUsuario(usuario.getId(),etiqueta2.getId());
+
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta1.getId());
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta2.getId());
+    tarea2=tareaService.addEtiquetaATarea(tarea2.getId(),etiqueta1.getId());
+
+    assertTrue(tarea1.getEtiquetas().contains(etiqueta1));
+    assertTrue(tarea1.getEtiquetas().contains(etiqueta2));
+    assertTrue(tarea2.getEtiquetas().contains(etiqueta1));
+    assertTrue(!(tarea2.getEtiquetas().contains(etiqueta2)));
+  }
+
+  @Test(expected=TareaServiceException.class)
+  public void anadeEtiquetasVariasTareasNoPerteneceUsuarioExcepcion(){
+    UsuarioService usuarioService=newUsuarioService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    TareaService tareaService=newTareaService();
+
+    Long idTablero=1000L;
+    Long idUsuario=1000L;
+
+    Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+    Etiqueta etiqueta1=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Etiqueta etiqueta2=etiquetaService.creaEtiqueta("#000000","testEspecial2");
+    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1",null,null);
+    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2",null,null);
+
+    tarea1=tareaService.addEtiquetaATarea(tarea1.getId(),etiqueta1.getId());
+
+  }
+
+  @Test(expected=TareaServiceException.class)
+  public void anadeEtiquetaNoExisteTareaExcepcion(){
+    TareaService tareaService=newTareaService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    Long idTarea=1000L;
+    Long idEtiqueta=10000L;
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    tarea=tareaService.addEtiquetaATarea(tarea.getId(),idEtiqueta);
+  }
+
+  @Test(expected=TareaServiceException.class)
+  public void anadeEtiquetaTareaNoExisteExcepcion(){
+    TareaService tareaService=newTareaService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    Long idTarea=10000L;
+    Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    tareaService.addEtiquetaATarea(idTarea,etiqueta.getId());
+  }
+
+    @Test
+    public void borraEtiquetaTarea(){
+      TableroService tableroService=newTableroService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      int numEtiquetas=tarea.getEtiquetas().size();
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      int numEtiquetas2=tarea.getEtiquetas().size();
+      assertTrue(numEtiquetas2>numEtiquetas);
+      assertTrue(tarea.getEtiquetas().contains(etiqueta));
+      tarea=tareaService.borraEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      int numEtiquetas3=tarea.getEtiquetas().size();
+      assertEquals(numEtiquetas,numEtiquetas3);
+      assertTrue(!(tarea.getEtiquetas().contains(etiqueta)));
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void borraEtiquetaNoExistenteTareaExcepcion(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      Long idEtiqueta=10000L;
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      tarea=tareaService.borraEtiquetaATarea(tarea.getId(),idEtiqueta);
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void borraEtiquetaTareaNoExisteExcepcion(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=10000L;
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      tareaService.borraEtiquetaATarea(idTarea,etiqueta.getId());
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void borraEtiquetaNoPerteneceTareaExcepcion(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      tarea=tareaService.borraEtiquetaATarea(idTarea,etiqueta.getId());
+    }
+
+    @Test
+    public void etiquetaExisteTarea(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TableroService tableroService=newTableroService();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      assertTrue(tareaService.EtiquetaPerteneceTarea(idTarea,etiqueta.getColor(),etiqueta.getNombre()));
+    }
+
+    @Test
+    public void etiquetaNoExisteTarea(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      assertTrue(!(tareaService.EtiquetaPerteneceTarea(idTarea,etiqueta.getColor(),etiqueta.getNombre())));
+    }
+
+    @Test
+    public void modificaEtiquetaTarea(){
+      TareaService tareaService=newTareaService();
+      TableroService tableroService=newTableroService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      String color="#ffffff";
+      String nombre="testEspecial";
+      String nuevoColor="#000000";
+      String nuevoNombre="testEspecial2";
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color,nombre);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      assertTrue(!(tareaService.EtiquetaPerteneceTarea(idTarea,nuevoColor,nuevoNombre)));
+      assertTrue(tareaService.EtiquetaPerteneceTarea(idTarea,color,nombre));
+
+      tarea=tareaService.modificaEtiquetaATarea(tarea.getId(),etiqueta.getId(),nuevoColor,nuevoNombre);
+      assertTrue(!(tareaService.EtiquetaPerteneceTarea(idTarea,color,nombre)));
+      assertTrue(tareaService.EtiquetaPerteneceTarea(idTarea,nuevoColor,nuevoNombre));
+      //Comprobamos que al cambiar los valores de la etiqueta, también se ha actualizado desde la referencia hacia tablero
+      assertTrue(!(tableroService.EtiquetaPerteneceTablero(idTablero,color,nombre)));
+      assertTrue(tableroService.EtiquetaPerteneceTablero(idTablero,nuevoColor,nuevoNombre));
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void modificaEtiquetaTareaNoExistenteExcepcion(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      String color="#ffffff";
+      String nombre="testEspecial";
+      String nuevoColor="#000000";
+      String nuevoNombre="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color,nombre);
+      tarea=tareaService.modificaEtiquetaATarea(10000L,etiqueta.getId(),nuevoColor,nuevoNombre);
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void modificaEtiquetaNoExistenteTarea(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      String color="#ffffff";
+      String nombre="testEspecial";
+      String nuevoColor="#000000";
+      String nuevoNombre="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color,nombre);
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      tarea=tareaService.modificaEtiquetaATarea(tarea.getId(),10000L,nuevoColor,nuevoNombre);
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void modificaEtiquetaTableroColorIncorrectoExcepcion(){
+      TareaService tareaService=newTareaService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      Long idTarea=1000L;
+      String color="#ffffff";
+      String nombre="testEspecial";
+      String nuevoColor="ffffff";
+      String nuevoNombre="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color,nombre);
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      tarea=tareaService.modificaEtiquetaATarea(tarea.getId(),etiqueta.getId(),nuevoColor,nuevoNombre);
+    }
+
+    @Test
+    public void listaEtiquetasTarea(){
+      TableroService tableroService=newTableroService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      String color1="#ffffff";
+      String nombre1="testEspecial";
+      String color2="#000000";
+      String nombre2="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color1,nombre1);
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color1,null);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color2,nombre1);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color2,nombre2);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color1,nombre2);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color2,null);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      List<Etiqueta> etiquetas=tareaService.allEtiquetasTarea(idTarea);
+      assertEquals(etiquetas.get(0).getColor(),color2);
+      assertEquals(etiquetas.get(1).getColor(),color2);
+      assertEquals(etiquetas.get(2).getColor(),color2);
+      assertEquals(etiquetas.get(3).getColor(),color1);
+      assertEquals(etiquetas.get(4).getColor(),color1);
+      assertEquals(etiquetas.get(5).getColor(),color1);
+      assertEquals(etiquetas.get(0).getNombre(),"");
+      assertEquals(etiquetas.get(1).getNombre(),nombre1);
+      assertEquals(etiquetas.get(2).getNombre(),nombre2);
+      assertEquals(etiquetas.get(3).getNombre(),"");
+      assertEquals(etiquetas.get(4).getNombre(),nombre1);
+      assertEquals(etiquetas.get(5).getNombre(),nombre2);
+    }
 }

@@ -109,4 +109,61 @@ public class EtiquetaTest {
     assertTrue(correcto);
     assertTrue(!incorrecto);
   }
+
+  @Test
+  public void testCrearEtiquetaRepository(){
+    String color="#d93f0b";
+    Etiqueta etiqueta =new Etiqueta(color);
+    EtiquetaRepository etiquetaRepository=newEtiquetaRepository();
+    etiqueta=etiquetaRepository.add(etiqueta);
+    assertEquals(color,etiqueta.getColor());
+  }
+
+  @Test
+  public void testModificarEtiquetaRepository(){
+    String color="#d93f0b";
+    String color2="#ffffff";
+    String nombre="tech";
+    Etiqueta etiqueta =new Etiqueta(color);
+    EtiquetaRepository etiquetaRepository=newEtiquetaRepository();
+    etiqueta=etiquetaRepository.add(etiqueta);
+    etiqueta.setColor(color2);
+    etiqueta.setNombre(nombre);
+    etiqueta=etiquetaRepository.update(etiqueta);
+    assertEquals(color2,etiqueta.getColor());
+    assertEquals(nombre,etiqueta.getNombre());
+  }
+
+  @Test
+  public void testRecuperarEtiquetaPorIdRepository(){
+    String color="#d93f0b";
+    Etiqueta etiqueta =new Etiqueta(color);
+    EtiquetaRepository etiquetaRepository=newEtiquetaRepository();
+    etiqueta=etiquetaRepository.add(etiqueta);
+    Long idEtiqueta=etiqueta.getId();
+    etiqueta=etiquetaRepository.findById(idEtiqueta);
+    assertEquals(color,etiqueta.getColor());
+    assertEquals(idEtiqueta,etiqueta.getId());
+  }
+
+  @Test
+  public void testRecuperarEtiquetaPorIdNoExisteRepository(){
+    EtiquetaRepository etiquetaRepository=newEtiquetaRepository();
+    Etiqueta etiqueta=etiquetaRepository.findById(10000L);
+    assertNull(etiqueta);
+  }
+
+  @Test
+  public void testEliminarEtiquetaRepository(){
+    String color="#d93f0b";
+    Etiqueta etiqueta =new Etiqueta(color);
+    EtiquetaRepository etiquetaRepository=newEtiquetaRepository();
+    etiqueta=etiquetaRepository.add(etiqueta);
+    Long idEtiqueta=etiqueta.getId();
+    etiqueta=etiquetaRepository.findById(idEtiqueta);
+    assertNotNull(etiqueta);
+    etiquetaRepository.delete(idEtiqueta);
+    etiqueta=etiquetaRepository.findById(idEtiqueta);
+    assertNull(etiqueta);
+  }
 }

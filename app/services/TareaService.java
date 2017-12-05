@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -19,6 +22,8 @@ import models.Tablero;
 import models.TableroRepository;
 import models.Tarea;
 import models.TareaRepository;
+import models.Etiqueta;
+import models.EtiquetaRepository;
 
 import play.Logger;
 
@@ -27,12 +32,14 @@ public class TareaService{
   UsuarioRepository usuarioRepository;
   TareaRepository tareaRepository;
   TableroRepository tableroRepository;
+  EtiquetaRepository etiquetaRepository;
 
   @Inject
-  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository){
+  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository,EtiquetaRepository etiquetaRepository){
     this.usuarioRepository=usuarioRepository;
     this.tareaRepository=tareaRepository;
     this.tableroRepository=tableroRepository;
+    this.etiquetaRepository=etiquetaRepository;
   }
 
   //Devuelve la lista de tareas de un usuario, ordenadas por su id
@@ -149,7 +156,7 @@ public class TareaService{
     tarea=tareaRepository.update(tarea);
     return tarea;
   }
-  
+
   public void borraTarea(Long idTarea){
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)
@@ -164,4 +171,111 @@ public class TareaService{
     tarea.setTerminada(true);
     tareaRepository.update(tarea);
   }
+
+  public Tarea addEtiquetaATarea(Long idTarea, Long idEtiqueta){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    if (tarea==null){
+      throw new TareaServiceException("Error. Tarea no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TareaServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    Tablero tablero=tarea.getTablero();
+    if(tablero!=null){
+      if(tablero.getEtiquetas().contains(etiqueta)){
+        etiquetas.add(etiqueta);
+        tarea.setEtiquetas(etiquetas);
+        tarea=tareaRepository.update(tarea);
+      }
+      else{
+        throw new TareaServiceException("Error. La etiqueta no pertenece al tablero de la tarea");
+      }
+    }
+    else{
+      if(tarea.getUsuario().getEtiquetas().contains(etiqueta)){
+        etiquetas.add(etiqueta);
+        tarea.setEtiquetas(etiquetas);
+        tarea=tareaRepository.update(tarea);
+      }
+      else{
+        throw new TareaServiceException("Error. La etiqueta no pertenece al usuario de la tarea");
+      }
+    }
+    return tarea;
+  }
+
+
+  public Tarea borraEtiquetaATarea(Long idTarea, Long idEtiqueta){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    if (tarea==null){
+      throw new TareaServiceException("Error. Tarea no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TareaServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    boolean borrado=etiquetas.remove(etiqueta);
+    if(borrado){
+      tarea.setEtiquetas(etiquetas);
+      tarea=tareaRepository.update(tarea);
+      return tarea;
+    }
+    else {
+      throw new TareaServiceException("Error, la etiqueta a borrar no pertenece a la tarea");
+    }
+  }
+
+  public Tarea modificaEtiquetaATarea(Long idTarea, Long idEtiqueta,String color,String nombre){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    if (tarea==null){
+      throw new TareaServiceException("Error. Tarea no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TareaServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    if(etiquetas.contains(etiqueta)){
+      try{
+        if(color!=null){
+          etiqueta.setColor(color);
+        }
+        if(nombre!=null){
+          etiqueta.setNombre(nombre);
+        }
+        etiquetaRepository.update(etiqueta);
+      } catch (IllegalArgumentException e){
+        throw new TareaServiceException("Error, el color no es válido");
+      }
+    }
+    else{
+      throw new TareaServiceException("Error, la etiqueta a modificar no pertenece a la tarea");
+    }
+    tarea = tareaRepository.findById(idTarea);
+    return tarea;
+  }
+
+  //Devuelve las etiquetas en una lista ordenada por color y nombre
+  public List<Etiqueta> allEtiquetasTarea(Long idTarea){
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null){
+      throw new TareaServiceException("Tarea no existente");
+    }
+    List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tarea.getEtiquetas());
+    Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
+    return etiquetas;
+  }
+
+  public boolean EtiquetaPerteneceTarea(Long idTarea,String color, String nombre){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    if (tarea==null){
+      throw new TareaServiceException("Error. Tarea no existente");
+    }
+    Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    return etiquetas.stream().filter(etiqueta -> etiqueta.getColor().equals(color) && etiqueta.getNombre().equals(nombre)).count()>0;
+  }
+
 }
