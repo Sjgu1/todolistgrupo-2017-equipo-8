@@ -72,10 +72,6 @@ public class TareaServiceTest {
     return injector.instanceOf(TableroService.class);
   }
 
-  private TableroService newTableroService() {
-    return injector.instanceOf(TableroService.class);
-  }
-
   private EtiquetaService newEtiquetaService() {
     return injector.instanceOf(EtiquetaService.class);
   }
@@ -320,8 +316,8 @@ public class TareaServiceTest {
     Tablero tablero=tableroService.findTableroPorId(idTablero);
     Etiqueta etiqueta1=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
     Etiqueta etiqueta2=etiquetaService.creaEtiqueta("#000000","testEspecial2");
-    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1");
-    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2");
+    Tarea tarea1=tareaService.nuevaTarea(idUsuario,"Titulo tarea1",null,null);
+    Tarea tarea2=tareaService.nuevaTarea(idUsuario,"Titulo tarea2",null,null);
     Logger.info(tarea1.toString());
     Logger.info(tarea1.getUsuario().toString());
     tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta1.getId());

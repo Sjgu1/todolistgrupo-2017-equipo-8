@@ -153,7 +153,7 @@ public class TableroService{
     etiquetas.add(etiqueta);
     tablero.setEtiquetas(etiquetas);
     tablero=tableroRepository.update(tablero);
-    tareaRepository.update(tarea);
+    tableroRepository.update(tablero);
     return tablero;
   }
 
@@ -210,6 +210,7 @@ public class TableroService{
 
   //Devuelve las etiquetas en una lista ordenada por color y nombre
   public List<Etiqueta> allEtiquetasTablero(Long idTablero){
+    Tablero tablero = tableroRepository.findById(idTablero);
     List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tablero.getEtiquetas());
     Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
     return etiquetas;
