@@ -23,12 +23,14 @@ import java.text.SimpleDateFormat;
 import models.Usuario;
 import models.UsuarioRepository;
 import models.Etiqueta;
+import models.Tarea;
 
 import services.UsuarioService;
 import services.UsuarioServiceException;
 import services.EtiquetaService;
 import services.EtiquetaServiceException;
-
+import services.TareaService;
+import services.TareaServiceException;
 
 public class UsuarioServiceTest{
   static private Injector injector;
@@ -49,6 +51,10 @@ public class UsuarioServiceTest{
 
   private EtiquetaService newEtiquetaService(){
     return injector.instanceOf(EtiquetaService.class);
+  }
+
+  private TareaService newTareaService(){
+    return injector.instanceOf(TareaService.class);
   }
 
   @Before
@@ -242,14 +248,40 @@ public class UsuarioServiceTest{
       Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
       int numEtiquetas=usuario.getEtiquetas().size();
       Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      Long etiquetaId=etiqueta.getId();
       usuario=usuarioService.addEtiquetaAUsuario(usuario.getId(),etiqueta.getId());
       int numEtiquetas2=usuario.getEtiquetas().size();
       assertTrue(numEtiquetas2>numEtiquetas);
       assertTrue(usuario.getEtiquetas().contains(etiqueta));
+      assertNotNull(etiquetaService.obtenerEtiqueta(etiquetaId));
       usuario=usuarioService.borraEtiquetaAUsuario(usuario.getId(),etiqueta.getId());
       int numEtiquetas3=usuario.getEtiquetas().size();
       assertEquals(numEtiquetas,numEtiquetas3);
       assertTrue(!(usuario.getEtiquetas().contains(etiqueta)));
+      assertNull(etiquetaService.obtenerEtiqueta(etiquetaId));
+    }
+
+    @Test
+    public void borraEtiquetaUsuarioBorraEtiquetasTareasAsociadas(){
+      UsuarioService usuarioService=newUsuarioService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      Long idUsuario=1000L;
+      Long idTarea=1000L;
+      Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+      Long etiquetaId=etiqueta.getId();
+      usuario=usuarioService.addEtiquetaAUsuario(usuario.getId(),etiqueta.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+      assertTrue(usuario.getEtiquetas().contains(etiqueta));
+      assertTrue(tarea.getEtiquetas().contains(etiqueta));
+      assertNotNull(etiquetaService.obtenerEtiqueta(etiquetaId));
+      usuario=usuarioService.borraEtiquetaAUsuario(usuario.getId(),etiqueta.getId());
+      tarea=tareaService.obtenerTarea(idTarea);
+      assertTrue(!(usuario.getEtiquetas().contains(etiqueta)));
+      assertTrue(!(tarea.getEtiquetas().contains(etiqueta)));
+      assertNull(etiquetaService.obtenerEtiqueta(etiquetaId));
     }
 
     @Test(expected=UsuarioServiceException.class)

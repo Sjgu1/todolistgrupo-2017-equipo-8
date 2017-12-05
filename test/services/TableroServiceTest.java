@@ -178,14 +178,41 @@ public class TableroServiceTest {
     Tablero tablero=tableroService.findTableroPorId(idTablero);
     int numEtiquetas=tablero.getEtiquetas().size();
     Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Long etiquetaId=etiqueta.getId();
     tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
     int numEtiquetas2=tablero.getEtiquetas().size();
     assertTrue(numEtiquetas2>numEtiquetas);
     assertTrue(tablero.getEtiquetas().contains(etiqueta));
+    assertNotNull(etiquetaService.obtenerEtiqueta(etiquetaId));
     tablero=tableroService.borraEtiquetaATablero(tablero.getId(),etiqueta.getId());
     int numEtiquetas3=tablero.getEtiquetas().size();
     assertEquals(numEtiquetas,numEtiquetas3);
     assertTrue(!(tablero.getEtiquetas().contains(etiqueta)));
+    assertNull(etiquetaService.obtenerEtiqueta(etiquetaId));
+  }
+
+  @Test
+  public void borraEtiquetaTableroBorraEtiquetasTareasAsociadas(){
+    TableroService tableroService=newTableroService();
+    EtiquetaService etiquetaService=newEtiquetaService();
+    TareaService tareaService=newTareaService();
+    Long idTablero=1000L;
+    Long idTarea=1000L;
+    Tablero tablero=tableroService.findTableroPorId(idTablero);
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    Etiqueta etiqueta=etiquetaService.creaEtiqueta("#ffffff","testEspecial");
+    Long etiquetaId=etiqueta.getId();
+    tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+    tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+    tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta.getId());
+    assertTrue(tablero.getEtiquetas().contains(etiqueta));
+    assertTrue(tarea.getEtiquetas().contains(etiqueta));
+    assertNotNull(etiquetaService.obtenerEtiqueta(etiquetaId));
+    tablero=tableroService.borraEtiquetaATablero(tablero.getId(),etiqueta.getId());
+    tarea=tareaService.obtenerTarea(idTarea);
+    assertTrue(!(tablero.getEtiquetas().contains(etiqueta)));
+    assertTrue(!(tarea.getEtiquetas().contains(etiqueta)));
+    assertNull(etiquetaService.obtenerEtiqueta(etiquetaId));
   }
 
   @Test(expected=TableroServiceException.class)

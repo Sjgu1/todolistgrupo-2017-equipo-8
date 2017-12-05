@@ -18,17 +18,21 @@ import models.Usuario;
 import models.UsuarioRepository;
 import models.Etiqueta;
 import models.EtiquetaRepository;
+import models.Tarea;
+import models.TareaRepository;
 
 public class UsuarioService{
   UsuarioRepository repository;
   EtiquetaRepository etiqRepository;
+  TareaRepository tareaRepository;
 
   //Play proporcionará automáticamente el UsuarioRepository necesario
   //usando inyección de dependencias
   @Inject
-  public UsuarioService(UsuarioRepository repository,EtiquetaRepository etiqRepository){
+  public UsuarioService(UsuarioRepository repository,EtiquetaRepository etiqRepository,TareaRepository tareaRepository){
     this.repository=repository;
     this.etiqRepository=etiqRepository;
+    this.tareaRepository=tareaRepository;
   }
 
   public Usuario creaUsuario(String login,String email, String password){
@@ -145,8 +149,10 @@ public class UsuarioService{
     Set<Etiqueta> etiquetas=usuario.getEtiquetas();
     boolean borrado=etiquetas.remove(etiqueta);
     if(borrado){
+      borraEtiquetasTareasPerteneceUsuario(usuario.getId(),etiqueta.getId());
       usuario.setEtiquetas(etiquetas);
       usuario=repository.modify(usuario);
+      etiqRepository.delete(etiqueta.getId());
       return usuario;
     }
     else {
@@ -183,7 +189,7 @@ public class UsuarioService{
     usuario = repository.findById(idUsuario);
     return usuario;
   }
-  
+
   //Devuelve las etiquetas en una lista ordenada por color y nombre
   public List<Etiqueta> allEtiquetasUsuario(Long idUsuario){
     Usuario usuario=repository.findById(idUsuario);
@@ -195,6 +201,18 @@ public class UsuarioService{
     return etiquetas;
   }
 
+  private void borraEtiquetasTareasPerteneceUsuario(Long idUsuario,Long idEtiqueta){
+      Usuario usuario=repository.findById(idUsuario);
+      Etiqueta etiqueta=etiqRepository.findById(idEtiqueta);
+      Set<Tarea> tareas=usuario.getTareas();
+      for(Tarea tarea : tareas){
+        Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+        etiquetas.remove(etiqueta);
+        tarea.setEtiquetas(etiquetas);
+        tareaRepository.update(tarea);
+      }
+  }
+
   public boolean EtiquetaPerteneceUsuario(Long idUsuario,String color, String nombre){
     Usuario usuario = repository.findById(idUsuario);
     if (usuario==null){
@@ -203,4 +221,6 @@ public class UsuarioService{
     Set<Etiqueta> etiquetas=usuario.getEtiquetas();
     return etiquetas.stream().filter(etiqueta -> etiqueta.getColor().equals(color) && etiqueta.getNombre().equals(nombre)).count()>0;
   }
+
+
 }

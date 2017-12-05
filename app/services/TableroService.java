@@ -169,8 +169,10 @@ public class TableroService{
     Set<Etiqueta> etiquetas=tablero.getEtiquetas();
     boolean borrado=etiquetas.remove(etiqueta);
     if(borrado){
+      borraEtiquetasTareasPerteneceTablero(tablero.getId(),etiqueta.getId());
       tablero.setEtiquetas(etiquetas);
       tablero=tableroRepository.update(tablero);
+      etiquetaRepository.delete(etiqueta.getId());
       return tablero;
     }
     else {
@@ -240,6 +242,18 @@ public class TableroService{
     }
     Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return result;
+  }
+
+  private void borraEtiquetasTareasPerteneceTablero(Long idTablero,Long idEtiqueta){
+      Tablero tablero=tableroRepository.findById(idTablero);
+      Etiqueta etiqueta=etiquetaRepository.findById(idEtiqueta);
+      Set<Tarea> tareas=tablero.getTareas();
+      for(Tarea tarea : tareas){
+        Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+        etiquetas.remove(etiqueta);
+        tarea.setEtiquetas(etiquetas);
+        tareaRepository.update(tarea);
+      }
   }
 
   /*
