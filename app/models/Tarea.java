@@ -155,7 +155,7 @@ public class Tarea{
   public void setTablero(Tablero tablero){
     this.tablero=tablero;
   }
-  
+
   public Set<Etiqueta> getEtiquetas() {
     return etiquetas;
   }

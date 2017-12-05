@@ -126,7 +126,9 @@ public class TableroService{
     Set<Tarea> tareas=tablero.getTareas();
     tareas.add(tarea);
     tablero.setTareas(tareas);
+    tarea.setTablero(tablero);
     tablero=tableroRepository.update(tablero);
+    tareaRepository.update(tarea);
     return tablero;
   }
 
