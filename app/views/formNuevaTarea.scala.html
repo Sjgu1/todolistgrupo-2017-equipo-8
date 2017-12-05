@@ -1,4 +1,4 @@
-@(usuario: Usuario, tareaForm: Form[Tareas], mensaje: String)
+@(usuario: Usuario, tareaForm: Form[Tareas], tablero:Long, mensaje: String)
 @main("Nueva tarea") {
   @if(mensaje != "") {
     <div class="alert alert-danger">
@@ -14,7 +14,7 @@
   } );
   </script>
   <h1>Nueva tarea para @usuario.getLogin()</h1>
-  @helper.form(action = routes.GestionTareasController.creaNuevaTarea(usuario.getId())) {
+  @helper.form(action = routes.GestionTareasController.creaNuevaTarea(usuario.getId(),tablero)) {
     <fieldset>
       <legend>Nueva tarea</legend>
       <form name="tareaForm">

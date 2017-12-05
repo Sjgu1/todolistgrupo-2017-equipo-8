@@ -13,9 +13,11 @@ import java.util.List;
 
 import services.UsuarioService;
 import services.TareaService;
+import services.TableroService;
 import services.TareaServiceException;
 import models.Usuario;
 import models.Tarea;
+import models.Tablero;
 import security.ActionAuthenticator;
 
 public class GestionTareasController extends Controller{
@@ -23,33 +25,37 @@ public class GestionTareasController extends Controller{
   @Inject FormFactory formFactory;
   @Inject UsuarioService usuarioService;
   @Inject TareaService tareaService;
+  @Inject TableroService tableroService;
+  //GestionTablerosController gestTab;
 
   // Comprobamos si hay alguien logeado con @Security.Authenticated(ActionAuthenticator.class)
   // https://alexgaribay.com/2014/06/15/authentication-in-play-framework-using-java/
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result formularioNuevaTarea(Long idUsuario) {
+  public Result formularioNuevaTarea(Long idUsuario, Long idTablero) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
-      return ok(formNuevaTarea.render(usuario, formFactory.form(Tareas.class),""));
+      return ok(formNuevaTarea.render(usuario, formFactory.form(Tareas.class),idTablero,""));
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result creaNuevaTarea(Long idUsuario) {
+  public Result creaNuevaTarea(Long idUsuario, Long idTablero) {
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     Usuario usuario;
+    Tarea newTarea;
+    long tab=0L;
     if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
       Form<Tareas> tareaForm = formFactory.form(Tareas.class).bindFromRequest();
       if (tareaForm.hasErrors()) {
         usuario = usuarioService.findUsuarioPorId(idUsuario);
-        return badRequest(formNuevaTarea.render(usuario, formFactory.form(Tareas.class), "Hay errores en el formulario"));
+        return badRequest(formNuevaTarea.render(usuario,formFactory.form(Tareas.class),tab, "Hay errores en el formulario"));
       }
       Tareas tarea = tareaForm.get();
       DynamicForm requestData = formFactory.form().bindFromRequest();
@@ -57,17 +63,21 @@ public class GestionTareasController extends Controller{
 
       tarea.fechaLimite=tarea.fechaLimite.equals("") ? null : tarea.fechaLimite;
       if (tarea.fechaLimite==null)
-        tareaService.nuevaTarea(idUsuario, tarea.titulo,null, descripcion);
+        newTarea=tareaService.nuevaTarea(idUsuario, tarea.titulo,null, descripcion);
       else {
         try {
-          tareaService.nuevaTarea(idUsuario, tarea.titulo,tarea.fechaLimite, descripcion);
+          newTarea=tareaService.nuevaTarea(idUsuario, tarea.titulo,tarea.fechaLimite, descripcion);
         } catch (TareaServiceException e){
           usuario = usuarioService.findUsuarioPorId(idUsuario);
-          return badRequest(formNuevaTarea.render(usuario, formFactory.form(Tareas.class), e.getMessage()));
+          return badRequest(formNuevaTarea.render(usuario,formFactory.form(Tareas.class),tab, e.getMessage()));
         }
       }
+      if(idTablero!=0){
+        tableroService.addTareaTablero(idTablero,newTarea.getId());
+      }
       flash("aviso", "La tarea se ha grabado correctamente");
-      return redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0));
+      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
+      redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,idUsuario));
     }
   }
 
@@ -111,7 +121,7 @@ public class GestionTareasController extends Controller{
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result formularioEditaTarea(Long idTarea){
+  public Result formularioEditaTarea(Long idTarea, Long idTablero){
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     if(tarea==null){
       return notFound("Tarea no encontrada");
@@ -121,15 +131,13 @@ public class GestionTareasController extends Controller{
       if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
         return unauthorized("Lo siento, no estás autorizado");
       } else {
-        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),
-        tarea,
-        ""));
+        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,""));
       }
     }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result grabaTareaModificada(Long idTarea) {
+  public Result grabaTareaModificada(Long idTarea, Long idTablero) {
     DynamicForm requestData = formFactory.form().bindFromRequest();
     String nuevoTitulo = requestData.get("titulo");
     String nuevaFechaLimite = requestData.get("fechaLimite");
@@ -142,10 +150,11 @@ public class GestionTareasController extends Controller{
         tarea=tareaService.modificaTarea(idTarea, nuevoTitulo,nuevaFechaLimite, nuevaDescripcion);
       } catch (TareaServiceException e){
         tarea = tareaService.obtenerTarea(idTarea);
-        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(), tarea, e.getMessage()));
+        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage()));
       }
     }
-    return redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0));
+    return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0)) :
+    redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,tarea.getUsuario().getId()));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)

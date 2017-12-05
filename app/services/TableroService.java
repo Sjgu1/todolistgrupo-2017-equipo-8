@@ -48,6 +48,10 @@ public class TableroService{
     if(tablero!=null){
       throw new TableroServiceException("Nombre de tablero duplicado");
     }
+
+    if(titulo == null || titulo.isEmpty()){
+        throw new TableroServiceException("El titulo es obligatorio");
+    }
     //haciendo uso del método declarado en service
     /*if(nombreTableroDuplicado(titulo)){
       throw new TableroServiceException("Nombre de tablero duplicado");
@@ -114,6 +118,10 @@ public class TableroService{
     return tableros;
   }
 
+  public Tablero obtenerTablero(Long idTablero){
+    return tableroRepository.findById(idTablero);
+  }
+
   public Tablero addTareaTablero(Long idTablero,Long idTarea){
     Tablero tablero=tableroRepository.findById(idTablero);
     if(tablero==null){
@@ -145,6 +153,7 @@ public class TableroService{
     etiquetas.add(etiqueta);
     tablero.setEtiquetas(etiquetas);
     tablero=tableroRepository.update(tablero);
+    tareaRepository.update(tarea);
     return tablero;
   }
 
@@ -201,10 +210,6 @@ public class TableroService{
 
   //Devuelve las etiquetas en una lista ordenada por color y nombre
   public List<Etiqueta> allEtiquetasTablero(Long idTablero){
-    Tablero tablero=tableroRepository.findById(idTablero);
-    if(tablero==null){
-      throw new TableroServiceException("Tablero no existente");
-    }
     List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tablero.getEtiquetas());
     Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
     return etiquetas;
@@ -217,6 +222,23 @@ public class TableroService{
     }
     Set<Etiqueta> etiquetas=tablero.getEtiquetas();
     return etiquetas.stream().filter(etiqueta -> etiqueta.getColor().equals(color) && etiqueta.getNombre().equals(nombre)).count()>0;
+  }
+
+  public List<Tarea> allTareasTablero(Long idTablero){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+
+    List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(!task.getTerminada()){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
   }
 
   /*

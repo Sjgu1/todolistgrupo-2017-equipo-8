@@ -49,7 +49,7 @@
             } else {
               <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
             }
-            <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId())">
+            <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),0)">
               <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
               <a onmouseover="" style="cursor: pointer;"
               onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
@@ -61,7 +61,7 @@
       }
 
       <tr>
-          <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId())">
+          <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId(),0)">
               <span class="glyphicon glyphicon-plus"/></a></td>
     </tr>
 

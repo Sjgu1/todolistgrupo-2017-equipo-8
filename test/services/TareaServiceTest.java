@@ -68,6 +68,9 @@ public class TareaServiceTest {
   private UsuarioService newUsuarioService() {
     return injector.instanceOf(UsuarioService.class);
   }
+  private TableroService newTableroService() {
+    return injector.instanceOf(TableroService.class);
+  }
 
   private TableroService newTableroService() {
     return injector.instanceOf(TableroService.class);
@@ -96,8 +99,8 @@ public class TareaServiceTest {
     cal.add(Calendar.DATE,1);
     Date fechaManana= cal.getTime();
     Date fechaHoy=new Date();
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler2",sdf.format(fechaManana).toString());
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler3",sdf.format(fechaHoy).toString());
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler2",sdf.format(fechaManana).toString(), null);
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler3",sdf.format(fechaHoy).toString(), null);
     List<Tarea> tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
     assertEquals("Renovar DNI", tareas.get(0).getTitulo());
     assertEquals("Práctica 1 MADS", tareas.get(1).getTitulo());
@@ -117,7 +120,7 @@ public class TareaServiceTest {
   public void nuevaTareaUsuario(){
     TareaService tareaService=newTareaService();
     long idUsuario=1000L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler");
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler", null, null);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
   }
 
@@ -130,7 +133,7 @@ public class TareaServiceTest {
     String fechaLimite=sdf.format(fecha).toString();
     Logger.info("fecha limite: "+fechaLimite);
     long idUsuario=1000L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
   }
 
@@ -139,7 +142,7 @@ public class TareaServiceTest {
   public void nuevaTareaUsuarioConFechaLimiteNull(){
     TareaService tareaService=newTareaService();
     long idUsuario=1000L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",null);
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",null, null);
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
   }
 
@@ -149,7 +152,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="25-13-2018";
     long idUsuario=1000L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test : nuevaTareaUsuarioConFechaLimiteAnteriorExcepcion
@@ -158,7 +161,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="25-10-2010";
     long idUsuario=1000L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite);
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test #22: modificación de tareas
@@ -166,7 +169,7 @@ public class TareaServiceTest {
   public void modificacionTarea(){
     TareaService tareaService=newTareaService();
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler");
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler", null, null);
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("Pagar el alquiler",tarea.getTitulo());
   }
@@ -180,7 +183,7 @@ public class TareaServiceTest {
       Date fecha=new Date();
       String fechaLimite=sdf.format(fecha).toString();
       long idTarea=1000L;
-      tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+      tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
       Tarea tarea=tareaService.obtenerTarea(idTarea);
       assertEquals("Pagar el alquiler",tarea.getTitulo());
       assertEquals(fechaLimite,sdf.format(tarea.getFechaLimite()).toString());
@@ -195,7 +198,7 @@ public class TareaServiceTest {
     long idTarea=1000L;
     Tarea tarea=tareaService.obtenerTarea(idTarea);
     fecha=tarea.getFechaLimite();
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",null, null);
     tarea=tareaService.obtenerTarea(idTarea);
     assertEquals("Pagar el alquiler",tarea.getTitulo());
     assertEquals(fecha,tarea.getFechaLimite());
@@ -207,7 +210,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="28-13-2018";
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test: modificación fechaLimite anterior en Tarea excepcion
@@ -216,7 +219,7 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     String fechaLimite="28-10-2010";
     long idTarea=1000L;
-    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite);
+    tareaService.modificaTarea(idTarea,"Pagar el alquiler",fechaLimite, null);
   }
 
   // Test #23: borrado tarea
@@ -249,8 +252,8 @@ public class TareaServiceTest {
     TareaService tareaService=newTareaService();
     long idUsuario=1000L;
     long idTarea =1001L;
-    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler");
-    tareaService.nuevaTarea(idUsuario,"Pagar la coca");
+    tareaService.nuevaTarea(idUsuario,"Pagar el alquiler", null, null);
+    tareaService.nuevaTarea(idUsuario,"Pagar la coca", null, null);
     tareaService.tareaTerminada(idTarea);
     assertEquals(1,tareaService.tareasTerminadas(1000L).size());
     assertEquals(3,tareaService.allTareasUsuario(1000L).size());
@@ -545,4 +548,17 @@ public class TareaServiceTest {
     assertEquals(etiquetas.get(5).getNombre(),nombre2);
   }*/
 
+  public void listarTareasSinTablero() {
+    TareaService tareaService = newTareaService();
+    TableroService tableroService = newTableroService();
+    long idUsuario=1000L;
+    long idTablero=1000L;
+    List<Tarea> tareas = tareaService.allTareasUsuario(idUsuario);
+    assertEquals(2, tareas.size());
+    Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar las medicinas jeje",null,null);
+    long idTarea=tarea.getId();
+    tableroService.addTareaTablero(idTablero,idTarea);
+    tareas = tareaService.allTareasUsuario(idUsuario);
+    assertEquals(2, tareas.size());
+  }
 }
