@@ -33,6 +33,9 @@ public class Tarea{
   @ManyToOne
   @JoinColumn(name="tableroId")
   public Tablero tablero;
+  @ManyToOne
+  @JoinColumn(name="usuarioTareaId")
+  public Usuario responsable;
 
   // Variable para guardar fecha creación tarea
   private LocalDateTime fechaCreacion;
@@ -133,6 +136,14 @@ public class Tarea{
 
   public void setEtiquetas(Set<Etiqueta> etiquetas) {
     this.etiquetas = etiquetas;
+  }
+
+  public Usuario getResponsable(){
+    return responsable;
+  }
+
+  public void setResponsable(Usuario usuario){
+    this.responsable=usuario;
   }
 
   public boolean tareaCaducada(){
