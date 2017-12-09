@@ -287,6 +287,9 @@ public class TareaService{
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
+    if(tarea.getResponsable()!=null){
+      throw new TareaServiceException("La tarea ya tiene un usuario asignado");
+    }
     Set<Tarea> tareas=usuario.getTareasAsig();
     tareas.add(tarea);
     usuario.setTareasAsig(tareas);
@@ -294,6 +297,29 @@ public class TareaService{
     tarea=tareaRepository.update(tarea);
     usuarioRepository.modify(usuario);
     return tarea;
+  }
+
+  public Tarea borrarResponsableTarea(Long idTarea, Long idUsuario){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    Usuario usuario= usuarioRepository.findById(idUsuario);
+    if (tarea==null){
+      throw new TareaServiceException("Error. Tarea no existente");
+    }
+    if(usuario==null){
+      throw new TareaServiceException("Usuario no existente");
+    }
+    Set<Tarea> tareas=usuario.getTareasAsig();
+    if(tareas.remove(tarea)){
+      usuario.setTareasAsig(tareas);
+      tarea.setResponsable(null);
+      tarea=tareaRepository.update(tarea);
+      usuarioRepository.modify(usuario);
+      return tarea;
+    }else{
+      throw new TareaServiceException("Error al borrar el responsable");
+    }
+
+
   }
 
 }
