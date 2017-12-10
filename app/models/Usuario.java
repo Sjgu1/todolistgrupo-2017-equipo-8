@@ -36,6 +36,7 @@ public class Usuario{
   @OneToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Etiqueta_Usuario")
   private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+
   @OneToMany(mappedBy="responsable", fetch=FetchType.EAGER)
   public Set<Tarea> tareasAsig=new HashSet<Tarea>();
 

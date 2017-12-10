@@ -14,6 +14,7 @@
          password="eidal" eMail="azarrouk00@gmail.com" fechaNacimiento="1980-12-01"/>
     <Tarea id="1002" titulo="Hacer tests práctica 2" usuarioId="1003"/>
     <Etiqueta id="1000" color="#ffffff"/>
+    <Comentario/>
     <Persona_Tablero/>
     <Etiqueta_Tablero/>
     <Etiqueta_Usuario/>

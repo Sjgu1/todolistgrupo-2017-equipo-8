@@ -45,6 +45,10 @@ public class Tarea{
   @ManyToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Etiqueta_Tarea")
   private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+  //Relación uno-a-muchos entre usuario y comentario
+  @OneToMany(mappedBy="tarea", fetch=FetchType.EAGER)
+  public Set<Comentario> comentarios=new HashSet<Comentario>();
+
 
   public Tarea() {}
 
@@ -138,12 +142,21 @@ public class Tarea{
     this.etiquetas = etiquetas;
   }
 
+
+  public Set<Comentario> getComentarios(){
+    return comentarios;
+  }
+
+  public void setComentarios(Set<Comentario> comentarios){
+    this.comentarios=comentarios;
+}
   public Usuario getResponsable(){
     return responsable;
   }
 
   public void setResponsable(Usuario usuario){
     this.responsable=usuario;
+
   }
 
   public boolean tareaCaducada(){
