@@ -46,6 +46,7 @@ public class Tarea{
   @OneToMany(mappedBy="tarea", fetch=FetchType.EAGER)
   public Set<Comentario> comentarios=new HashSet<Comentario>();
 
+
   public Tarea() {}
 
   public Tarea(Usuario usuario,String titulo){
@@ -136,6 +137,14 @@ public class Tarea{
 
   public void setEtiquetas(Set<Etiqueta> etiquetas) {
     this.etiquetas = etiquetas;
+  }
+
+  public Set<Comentario> getComentarios(){
+    return comentarios;
+  }
+
+  public void setComentarios(Set<Comentario> comentarios){
+    this.comentarios=comentarios;
   }
 
   public boolean tareaCaducada(){

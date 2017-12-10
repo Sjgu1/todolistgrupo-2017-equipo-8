@@ -29,16 +29,16 @@ public class Comentario{
   private Date fechaCreacion;
   private String comentario;
   private Date fechaModificacion;
+
   @ManyToOne
   @JoinColumn(name="tareaId")
   public Tarea tarea;
-  @ManyToOne
-  @JoinColumn(name="usuarioId")
-  public Usuario usuario;
+
+  public String usuario;
 
   public Comentario() {}
 
-  public Comentario(String comentario, Usuario usuario, Tarea tarea){
+  public Comentario(String comentario, String usuario, Tarea tarea){
     DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Date fecha = new Date();
     fecha.setHours(fecha.getHours() +1);
@@ -92,11 +92,11 @@ public class Comentario{
     this.tarea=tarea;
   }
 
-  public Usuario getUsuario(){
+  public String getUsuario(){
     return this.usuario;
   }
 
-  public void setUsuario(Usuario usuario){
+  public void setUsuario(String usuario){
     this.usuario=usuario;
   }
 
