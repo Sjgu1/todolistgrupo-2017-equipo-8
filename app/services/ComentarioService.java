@@ -3,6 +3,10 @@ package services;
 import javax.inject.*;
 import java.util.regex.*;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import models.Comentario;
 import models.ComentarioRepository;
 
@@ -42,5 +46,18 @@ public class ComentarioService{
 
   }
 
+  public Comentario obtenerComentario(Long idComentario){
+    return comentarioRepository.findById(idComentario);
+  }
+
+  public List<Comentario> allComentariosTarea(Long idTarea){
+    Tarea tarea = tareaRepository.findById(idTarea);
+    if(tarea==null){
+      throw new ComentarioServiceException("Tarea no existente");
+    }
+    List<Comentario> comentarios=new ArrayList<Comentario>(tarea.getComentarios());
+
+    return comentarios;
+  }
 
 }

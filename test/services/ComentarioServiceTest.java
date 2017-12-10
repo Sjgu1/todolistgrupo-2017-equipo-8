@@ -100,4 +100,62 @@ public class ComentarioServiceTest {
     assertEquals(idTarea,comentario.getTarea().getId());
   }
 
+  @Test
+  public void encuentraComentario(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Comentario encontrado = comentarioService.obtenerComentario(comentario.getId());
+
+    assertEquals(comentario,encontrado);
+
+  }
+
+  @Test
+  public void encuentraComentarioNoExiste(){
+    ComentarioService comentarioService=newComentarioService();
+    Comentario comentario=comentarioService.obtenerComentario(10000L);
+    assertNull(comentario);
+  }
+
+  @Test
+  public void listarComentariosTarea(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de juangutierrez", user, idTarea);
+
+    String user2="juangutierrez2";
+    Comentario comentario2 = comentarioService.crearComentario("Comentario de juangutierrez2", user2, idTarea);
+
+    List<Comentario> comentarios=comentarioService.allComentariosTarea(idTarea);
+    assertEquals(2,comentarios.size());
+
+    String user3="juangutierrez3";
+    Comentario comentario3 = comentarioService.crearComentario("Comentario de juangutierrez3", user3, idTarea);
+
+    String user4="juangutierrez";
+    Comentario comentario4 = comentarioService.crearComentario("Comentario 2 de juangutierrez", user, idTarea);
+
+    comentarios=comentarioService.allComentariosTarea(idTarea);
+    assertEquals(4,comentarios.size());
+  }
+
+  @Test(expected=ComentarioServiceException.class)
+  public void listarComentariosTareaError(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 10000L;
+
+    List<Comentario> comentarios=comentarioService.allComentariosTarea(idTarea);
+
+  }
+
 }
