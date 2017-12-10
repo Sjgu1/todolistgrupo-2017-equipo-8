@@ -149,7 +149,7 @@ public class Tarea{
 
   public void setComentarios(Set<Comentario> comentarios){
     this.comentarios=comentarios;
-
+}
   public Usuario getResponsable(){
     return responsable;
   }
