@@ -36,6 +36,9 @@ public class Usuario{
   @OneToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Etiqueta_Usuario")
   private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+//Relación uno-a-muchos entre usuario y comentario
+  @OneToMany(mappedBy="usuario", fetch=FetchType.EAGER)
+  public Set<Comentario> comentarios=new HashSet<Comentario>();
 
 
   //Un constructor vacío necesario para JPA
