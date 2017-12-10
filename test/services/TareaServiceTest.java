@@ -632,4 +632,115 @@ public class TareaServiceTest {
       assertEquals(etiquetas.get(4).getNombre(),nombre1);
       assertEquals(etiquetas.get(5).getNombre(),nombre2);
     }
+
+    @Test
+    public void asignarUsuarioTarea(){
+      TareaService tareaService=newTareaService();
+      SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+      Date fecha=new Date();
+      String fechaLimite=sdf.format(fecha).toString();
+      long idUsuario=1000L;
+      Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",fechaLimite, "descripcion");
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario);
+      assertNotNull(tarea.getResponsable());
+      assertEquals("Juan", tarea.getResponsable().getNombre());
+    }
+
+    @Test
+    public void asignarUsuarioDiferenteAlQueCreaTarea(){
+      TareaService tareaService=newTareaService();
+      long idUsuario=1000L;
+      long idUsuario2=1003L;
+      Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",null, null);
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario2);
+      assertNotNull(tarea.getResponsable());
+      assertEquals("Adel", tarea.getResponsable().getNombre());
+    }
+
+    @Test
+    public void asignarUsuarioTareaDeUnTablero(){
+      TareaService tareaService=newTareaService();
+      TableroService tableroService=newTableroService();
+      long idUsuario=1000L;
+      long idTablero=1000L;
+      Tarea tarea=tareaService.nuevaTarea(idUsuario,"Do the right thing",null,null);
+      tableroService.addTareaTablero(idTablero,tarea.getId());
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario);
+      assertNotNull(tarea.getResponsable());
+      assertEquals("Juan", tarea.getResponsable().getNombre());
+    }
+
+    @Test(expected = TareaServiceException.class)
+    public void asignarUsuarioTareaNoExistente(){
+      TareaService tareaService=newTareaService();
+      long idUsuario=1000L;
+      long idTarea= 4564L;
+      tareaService.addResponsableTarea(idTarea, idUsuario);
+    }
+
+    @Test(expected = TareaServiceException.class)
+    public void asignarUsuarioNoExistenteTarea(){
+      TareaService tareaService=newTareaService();
+      long idUsuario=9000L;
+      long idTarea= 1000L;
+      tareaService.addResponsableTarea(idTarea, idUsuario);
+    }
+
+    @Test
+    public void borrarResponsableTarea(){
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      long idUsuario=1000L;
+      long idTarea= 1000L;
+      Tarea tarea=tareaService.addResponsableTarea(idTarea, idUsuario);
+      assertNotNull(tarea.getResponsable());
+      tarea=tareaService.borrarResponsableTarea(idTarea,idUsuario);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario);
+      assertFalse(user.getTareasAsig().contains(tarea));
+      assertNull(tarea.getResponsable());
+    }
+
+    @Test
+    public void borrarResponsableTareaDeTablero(){
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      TableroService tableroService=newTableroService();
+      long idUsuario=1000L;
+      long idTablero=1000L;
+      Tarea tarea=tareaService.nuevaTarea(idUsuario,"Do the thing right",null,null);
+      tableroService.addTareaTablero(idTablero,tarea.getId());
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario);
+      assertNotNull(tarea.getResponsable());
+      tarea=tareaService.borrarResponsableTarea(tarea.getId(),idUsuario);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario);
+      assertFalse(user.getTareasAsig().contains(tarea));
+      assertNull(tarea.getResponsable());
+    }
+
+    @Test
+    public void asignarBorrarAsignarUsuarioTarea(){
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      long idUsuario=1000L;
+      long idUsuario2=1003L;
+      Tarea tarea=tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",null, null);
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario);
+      assertNotNull(tarea.getResponsable());
+      assertEquals("Juan", tarea.getResponsable().getNombre());
+      tarea=tareaService.borrarResponsableTarea(tarea.getId(),idUsuario);
+      assertNull(tarea.getResponsable());
+      tarea=tareaService.addResponsableTarea(tarea.getId(), idUsuario2);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario2);
+      assertTrue(user.getTareasAsig().contains(tarea));
+      assertEquals("Adel", tarea.getResponsable().getNombre());
+    }
+
+    @Test(expected = TareaServiceException.class)
+    public void asignarUsuarioTareaTeniendoUno(){
+      TareaService tareaService=newTareaService();
+      long idUsuario=1000L;
+      long idTarea= 1000L;
+      tareaService.addResponsableTarea(idTarea, idUsuario);
+      tareaService.addResponsableTarea(idTarea, idUsuario);
+    }
 }
