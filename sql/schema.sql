@@ -135,12 +135,15 @@ CREATE TABLE `Tarea` (
   `fechaLimite` date DEFAULT NULL,
   `terminada` bit(1) DEFAULT NULL,
   `titulo` varchar(255) DEFAULT NULL,
+  `usuarioTareaId` bigint(20) DEFAULT NULL,
   `tableroId` bigint(20) DEFAULT NULL,
   `usuarioId` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `FK90tirn6fqwxohlg4kafef7tpw` (`usuarioTareaId`),
   KEY `FK2r7tsv4xu3bjvst83o8xuspud` (`tableroId`),
   KEY `FKepne2t52y8dmn8l9da0dd7l51` (`usuarioId`),
   CONSTRAINT `FK2r7tsv4xu3bjvst83o8xuspud` FOREIGN KEY (`tableroId`) REFERENCES `Tablero` (`id`),
+  CONSTRAINT `FK90tirn6fqwxohlg4kafef7tpw` FOREIGN KEY (`usuarioTareaId`) REFERENCES `Usuario` (`id`),
   CONSTRAINT `FKepne2t52y8dmn8l9da0dd7l51` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -36,6 +36,8 @@ public class Usuario{
   @OneToMany(fetch=FetchType.EAGER)
   @JoinTable(name="Etiqueta_Usuario")
   private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+  @OneToMany(mappedBy="responsable", fetch=FetchType.EAGER)
+  public Set<Tarea> tareasAsig=new HashSet<Tarea>();
 
 
   //Un constructor vacío necesario para JPA
@@ -135,6 +137,14 @@ public class Usuario{
 
   public void setEtiquetas(Set<Etiqueta> etiquetas) {
     this.etiquetas = etiquetas;
+  }
+
+  public Set<Tarea> getTareasAsig(){
+    return tareasAsig;
+  }
+
+  public void setTareasAsig(Set<Tarea> tareas){
+    this.tareasAsig=tareas;
   }
 
    //método auxiliar para no devolver nulos en los campos y así poder mostrar formulario
