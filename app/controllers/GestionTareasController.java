@@ -127,12 +127,21 @@ public class GestionTareasController extends Controller{
   @Security.Authenticated(ActionAuthenticator.class)
   public Result formularioEditaTarea(Long idTarea, Long idTablero){
     Tarea tarea=tareaService.obtenerTarea(idTarea);
+    Tablero tablero = tableroService.findTableroPorId(idTablero);
     if(tarea==null){
       return notFound("Tarea no encontrada");
     } else {
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
-      if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
+      Boolean participa = false ;
+      if(tablero != null){
+        for ( Usuario participante: tablero.getParticipantes()) {
+          if (participante.getId() == connectedUser)
+            participa=true;
+        }
+      }
+      if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
+
         return unauthorized("Lo siento, no estás autorizado");
       } else {
         List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
@@ -167,19 +176,30 @@ public class GestionTareasController extends Controller{
 
   @Security.Authenticated(ActionAuthenticator.class)
   public Result grabaComentario(Long idTarea, Long idUsuario) {
-    Logger.info("Paso por aqui");
     DynamicForm requestData = formFactory.form().bindFromRequest();
     String mensaje = requestData.get("msg");
     Comentario comentario;
-    Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     Tarea tarea = tareaService.obtenerTarea(idTarea);
+    Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
 
-    if ((long)connectedUser != (long)idUsuario) {
+
+    Tablero tablero = tableroService.findTableroPorId(tarea.getTablero().getId());
+    Logger.info(usuario.getLogin());
+
+
+    Boolean participa = false ;
+    if(tablero != null){
+      for ( Usuario participante: tablero.getParticipantes()) {
+        if (participante.getId() == connectedUser)
+          participa=true;
+      }
+    }
+
+    if ((long)connectedUser != (long)idUsuario && !participa) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
-
         try {
           comentario= comentarioService.crearComentario(mensaje, usuario.getLogin(), idTarea);
           System.out.println("dentro del try: "+ comentario.getComentario());
