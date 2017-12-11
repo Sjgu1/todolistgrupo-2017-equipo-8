@@ -158,4 +158,72 @@ public class ComentarioServiceTest {
 
   }
 
+  @Test
+  public void actualizaComentario(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Long idComentario = comentario.getId();
+    Logger.info(comentario.getUsuario());
+
+    assertEquals("Comentario de servicio",comentario.getComentario());
+
+    Comentario actualizado = comentarioService.modificaComentario("actualizado", user, idComentario);
+    assertNotEquals(comentario.getComentario(),actualizado.getComentario());
+    assertEquals("actualizado",actualizado.getComentario());
+
+    assertNotEquals(actualizado.getFechaModificacion(), actualizado.getFechaCreacion());
+  }
+
+  @Test
+  public void actualizaComentarioNull(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Long idComentario = comentario.getId();
+
+    assertEquals("Comentario de servicio",comentario.getComentario());
+
+    Comentario actualizado = comentarioService.modificaComentario(null, user, idComentario);
+    assertNotEquals(comentario.getComentario(),actualizado.getComentario());
+    assertEquals("",actualizado.getComentario());
+
+    assertNotEquals(actualizado.getFechaModificacion(), actualizado.getFechaCreacion());
+  }
+
+  @Test(expected=ComentarioServiceException.class)
+  public void actualizaComentarioNoDuenyo(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Long idComentario = comentario.getId();
+
+    assertEquals("Comentario de servicio",comentario.getComentario());
+
+    Comentario actualizado = comentarioService.modificaComentario("actualizado", "NULLjuangutierrez", idComentario);
+  }
+
+  @Test(expected=ComentarioServiceException.class)
+  public void actualizaComentarioNoExiste(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Long idComentario = 99999l;
+
+    assertEquals("Comentario de servicio",comentario.getComentario());
+
+    Comentario actualizado = comentarioService.modificaComentario("actualizado", "NULLjuangutierrez", idComentario);
+  }
 }

@@ -61,4 +61,18 @@ public class ComentarioService{
     return comentarios;
   }
 
+  public Comentario modificaComentario(String nuevoComentario,  String user, Long idComentario){
+    Comentario comentario=comentarioRepository.findById(idComentario);
+
+    if(comentario==null)
+      throw new ComentarioServiceException("No existe comentario");
+    if (!comentario.getUsuario().equals(user))
+      throw new ComentarioServiceException("No pertenece el comentario al usuario indicado");
+
+    comentario.setComentario(nuevoComentario);
+
+    comentario=comentarioRepository.update(comentario);
+    return comentario;
+  }
+
 }
