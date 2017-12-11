@@ -75,4 +75,10 @@ public class ComentarioService{
     return comentario;
   }
 
+  public void borraComentario(Long idComentario){
+    Comentario comentario=comentarioRepository.findById(idComentario);
+    if(comentario==null)
+      throw new ComentarioServiceException("No existe el comentario");
+    comentarioRepository.delete(idComentario);
+  }
 }

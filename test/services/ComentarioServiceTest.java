@@ -167,7 +167,6 @@ public class ComentarioServiceTest {
     Long idTarea = 1000L;
     Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
     Long idComentario = comentario.getId();
-    Logger.info(comentario.getUsuario());
 
     assertEquals("Comentario de servicio",comentario.getComentario());
 
@@ -225,5 +224,29 @@ public class ComentarioServiceTest {
     assertEquals("Comentario de servicio",comentario.getComentario());
 
     Comentario actualizado = comentarioService.modificaComentario("actualizado", "NULLjuangutierrez", idComentario);
+  }
+
+  @Test
+  public void borrarComentario(){
+    ComentarioService comentarioService = newComentarioService();
+    TareaService tareaService=newTareaService();
+
+    String user="juangutierrez";
+    Long idTarea = 1000L;
+    Comentario comentario = comentarioService.crearComentario("Comentario de servicio", user, idTarea);
+    Long idComentario = comentario.getId();
+
+    assertEquals("Comentario de servicio",comentario.getComentario());
+
+    comentarioService.borraComentario( idComentario);
+    Comentario eliminado = comentarioService.obtenerComentario(idComentario);
+    assertNull(eliminado);
+  }
+
+  @Test(expected=ComentarioServiceException.class)
+  public void borrarComentarioNoExiste(){
+    ComentarioService comentarioService = newComentarioService();
+    Long idComentario = 10000L;
+    comentarioService.borraComentario( idComentario);
   }
 }
