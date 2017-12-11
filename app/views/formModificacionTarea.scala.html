@@ -1,4 +1,4 @@
-@(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String)
+@(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String, comentarios: List[Comentario])
 
 @main("Modificar Tarea") {
    @if(mensaje != "") {
@@ -46,7 +46,7 @@
       <div class="panel-heading">Comentarios</div>
 
       <div class="panel-body comentarios-Div" id="scrollDiv">
-        @for(comentario<- tarea.getComentarios()) {
+        @for(comentario<- comentarios) {
           <div class="well well-sm">
               <b>@comentario.getUsuario() </b>
               <span class="label label-default pull-right">Enviado: @comentario.getFechaCreacion()</span>

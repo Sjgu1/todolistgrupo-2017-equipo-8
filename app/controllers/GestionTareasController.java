@@ -135,7 +135,9 @@ public class GestionTareasController extends Controller{
       if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
         return unauthorized("Lo siento, no estás autorizado");
       } else {
-        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,""));
+        List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
+
+        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,"", comentarios));
       }
     }
   }
@@ -154,7 +156,9 @@ public class GestionTareasController extends Controller{
         tarea=tareaService.modificaTarea(idTarea, nuevoTitulo,nuevaFechaLimite, nuevaDescripcion);
       } catch (TareaServiceException e){
         tarea = tareaService.obtenerTarea(idTarea);
-        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage()));
+        List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
+
+        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage(), comentarios));
       }
     }
     return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0)) :
