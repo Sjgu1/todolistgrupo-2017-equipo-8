@@ -1,34 +1,77 @@
 @(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String)
-@main("Modificar Tarea") {
-  @if(mensaje != "") {
-      <div class="alert alert-danger">
-         @mensaje
-      </div>
-   }
-   <script>
-   $( function() {
-     $( "#fechaLimite" ).datepicker({
-       dateFormat: "dd-mm-yy",
-       minDate: "today"
-     });
-   } );
-   </script>
-   <h1>Modificar tarea</h1>
-   @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId(),idTablero)) {
-      <fieldset>
-         <legend>Tarea</legend>
-         Título:  <input type="text" size=70 name="titulo" value= "@tarea.getTitulo()">
-         <p/>
-         Descripción:</br>
-         <textarea type="text" cols="75" rows="5" name="descripcion" >@tarea.getDescripcion()</textarea>
-         <p>Fecha límite:</br>
-         <input type="text" id="fechaLimite" name="fechaLimite" _label="fechaLimite"value= "@tarea.getFechaLimite().format("dd-MM-yyyy").toString()">
 
+@main("Modificar Tarea") {
+   @if(mensaje != "") {
+<div class="alert alert-danger">
+  @mensaje
+</div>
+}
+<style>
+  .comentarios-Div {
+    overflow-y: scroll;
+    height: 300px;
+  }
+</style>
+<script>
+  $(function() {
+    $("#fechaLimite").datepicker({
+      dateFormat: "dd-mm-yy",
+      minDate: "today"
+    });
+  });
+</script>
+<h1>Modificar tarea</h1>
+<div class="row">
+  <div class="col-md-6">
+    @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId(),idTablero)) {
+    <fieldset>
+      <legend>Tarea</legend>
+      Título: <input type="text" size=70 name="titulo" value="@tarea.getTitulo()">
+      <p/> Descripción:
+      </br>
+      <textarea type="text" cols="75" rows="5" name="descripcion">@tarea.getDescripcion()</textarea>
+      <p>Fecha límite:</br>
+        <input type="text" id="fechaLimite" name="fechaLimite" _label="fechaLimite" value="@tarea.getFechaLimite().format(" dd-MM-yyyy ").toString()">
     </fieldset>
-      <p/>
-      <p>
-         <input type="submit" class="btn btn-primary" value="Guardar">
-         <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(idUsuario.toString(),0)">Cancelar</a>
-      </p>
-   }
+    <p/>
+    <p>
+      <input type="submit" class="btn btn-primary" value="Guardar">
+      <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(idUsuario.toString(),0)">Cancelar</a>
+    </p>
+  </div>
+  }
+  @if(idTablero != 0){
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Comentarios</div>
+
+      <div class="panel-body comentarios-Div" id="scrollDiv">
+        @for(comentario<- tarea.getComentarios()) {
+          <div class="well well-sm">
+              <b>@comentario.getUsuario() </b>
+              <span class="label label-default pull-right">Enviado: @comentario.getFechaCreacion()</span>
+              <hr style=" border-style: inset;margin-top: 0;"/>
+              <p>
+                @comentario.getComentario()
+              </p>
+          </div>
+        }
+        </div>
+        <form action= "/comentarios/@tarea.getId()/@idUsuario" method="post">
+          <fieldset>
+            <div class="panel-footer input-group ">
+              <input id="msg" type="text" class="form-control" name="msg" placeholder="Mensaje...">
+              <span class="input-group-addon"><button type="submit" class="button button-primary">Enviar</button></span>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  }
+  </div>
+  <script>
+    var element = document.getElementById("scrollDiv");
+    element.scrollTop = element.scrollHeight;
+  </script>
+</div>
 }

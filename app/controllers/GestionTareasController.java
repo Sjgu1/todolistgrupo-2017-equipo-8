@@ -17,6 +17,9 @@ import services.TableroService;
 import services.TareaServiceException;
 import models.Usuario;
 import models.Tarea;
+import models.Comentario;
+import services.ComentarioService;
+import services.ComentarioServiceException;
 import models.Tablero;
 import security.ActionAuthenticator;
 
@@ -26,6 +29,7 @@ public class GestionTareasController extends Controller{
   @Inject UsuarioService usuarioService;
   @Inject TareaService tareaService;
   @Inject TableroService tableroService;
+  @Inject ComentarioService comentarioService;
   //GestionTablerosController gestTab;
 
   // Comprobamos si hay alguien logeado con @Security.Authenticated(ActionAuthenticator.class)
@@ -155,6 +159,36 @@ public class GestionTareasController extends Controller{
     }
     return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0)) :
     redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,tarea.getUsuario().getId()));
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result grabaComentario(Long idTarea, Long idUsuario) {
+    Logger.info("Paso por aqui");
+    DynamicForm requestData = formFactory.form().bindFromRequest();
+    String mensaje = requestData.get("msg");
+    Comentario comentario;
+    Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    Tarea tarea = tareaService.obtenerTarea(idTarea);
+
+    if ((long)connectedUser != (long)idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+
+        try {
+          comentario= comentarioService.crearComentario(mensaje, usuario.getLogin(), idTarea);
+          System.out.println("dentro del try: "+ comentario.getComentario());
+        } catch (TareaServiceException e){
+          usuario = usuarioService.findUsuarioPorId(idUsuario);
+        }
+
+      flash("aviso", "La tarea se ha grabado correctamente");
+
+      return redirect(controllers.routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tarea.getTablero().getId()));
+
+      //return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea, tarea.getTablero().getId(),""));
+    }
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
