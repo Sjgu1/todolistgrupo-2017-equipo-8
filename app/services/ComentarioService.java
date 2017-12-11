@@ -57,6 +57,7 @@ public class ComentarioService{
     }
     List<Comentario> comentarios=new ArrayList<Comentario>(tarea.getComentarios());
 
+    Collections.sort(comentarios,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return comentarios;
   }
 
