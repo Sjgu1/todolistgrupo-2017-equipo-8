@@ -1,0 +1,20 @@
+@(usuario: Usuario, etiquetaForm: Form[Etiquetas], tablero:Long, mensaje: String)
+@main("Nueva etiqueta") {
+  @if(mensaje != "") {
+    <div class="alert alert-danger">
+      @mensaje
+    </div>
+  }
+  <h1>Nueva etiqueta para @if(tablero!=0){Tablero @tablero} else{@usuario.getLogin()}</h1>
+  @helper.form(action = routes.GestionEtiquetasController.creaNuevaEtiqueta(usuario.getId(),tablero)) {
+    <fieldset>
+      <legend>Nueva etiqueta</legend>
+      <form name="etiquetaForm">
+      @helper.inputText(etiquetaForm("color"), '_label -> "Color")
+      @helper.inputText(etiquetaForm("nombre"), '_label -> "Nombre", 'size -> 70)
+    </fieldset>
+    <p>
+      <input type="submit" class="btn btn-primary" value="Guardar">
+    </p>
+    }
+}
