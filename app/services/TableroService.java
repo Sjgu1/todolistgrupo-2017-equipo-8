@@ -152,8 +152,9 @@ public class TableroService{
     Set<Etiqueta> etiquetas=tablero.getEtiquetas();
     etiquetas.add(etiqueta);
     tablero.setEtiquetas(etiquetas);
+    etiqueta.setTablero(tablero);
     tablero=tableroRepository.update(tablero);
-    tableroRepository.update(tablero);
+    etiquetaRepository.update(etiqueta);
     return tablero;
   }
 

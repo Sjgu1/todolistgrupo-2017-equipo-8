@@ -40,3 +40,18 @@
       border-width: 1px 2px; }
     .aside-menu .tab-content .tab-pane {
       padding: 0; }
+.etiqueta{
+  clear: left;
+  height: 30px;
+  width: 85%;
+  margin-right: 10px;
+  padding: 5px;
+  float: left;
+  border-width: 1px;
+  border-color: #7f7f7f;
+  border-style: solid;
+  border-radius: 10px;
+  text-align: center;
+  text-shadow: 2px 2px 7px #333333;
+  color: #ffffff;
+}

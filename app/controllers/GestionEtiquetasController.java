@@ -87,4 +87,62 @@ public class GestionEtiquetasController extends Controller{
     }
   }
 
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result formularioEditaEtiqueta(Long idEtiqueta, Long idTablero){
+    Etiqueta etiqueta=etiquetaService.obtenerEtiqueta(idEtiqueta);
+    if(etiqueta==null){
+      return notFound("Etiqueta no encontrada");
+    } else {
+      String connectedUserStr = session("connected");
+      Long connectedUser =  Long.valueOf(connectedUserStr);
+      if(idTablero!=0){
+        if((long)idTablero==(long)etiqueta.getTablero().getId()){
+          Logger.debug("El tablero es bueno");
+          Tablero tablero=tableroService.findTableroPorId(idTablero);
+          if (tablero==null){
+            return notFound("Tablero no encontrado");
+          }
+          else {
+            Usuario usuarioConectado=usuarioService.findUsuarioPorId(connectedUser);
+            if((long)connectedUser != (long)etiqueta.getTablero().getAdministrador().getId() && !(etiqueta.getTablero().getParticipantes().contains(usuarioConectado))){
+              return unauthorized("Lo siento, no estás autorizado");
+            }
+            else {
+              return ok(formModificacionEtiqueta.render(connectedUser,etiqueta,idTablero,""));
+            }
+          }
+        }
+        else {
+          return notFound("La etiqueta no pertenece a dicho tablero");
+        }
+      }
+      else {
+        if ((long)connectedUser != (long)etiqueta.getUsuario().getId()) {
+          return unauthorized("Lo siento, no estás autorizado");
+        }
+        else{
+            return ok(formModificacionEtiqueta.render(connectedUser,etiqueta,idTablero,""));
+        }
+      }
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result grabaEtiquetaModificada(Long idEtiqueta, Long idTablero) {
+    DynamicForm requestData = formFactory.form().bindFromRequest();
+    String nuevoColor = requestData.get("color");
+    String nuevoNombre = requestData.get("nombre");
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    Etiqueta etiqueta;
+    try {
+        etiqueta=etiquetaService.modificaEtiqueta(idEtiqueta, nuevoColor,nuevoNombre);
+    } catch (EtiquetaServiceException e){
+        etiqueta = etiquetaService.obtenerEtiqueta(idEtiqueta);
+        return badRequest(formModificacionEtiqueta.render(connectedUser,etiqueta,idTablero,e.getMessage()));
+    }
+    return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(connectedUser.toString(),0)) :
+    redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
+  }
+
 }

@@ -133,7 +133,9 @@ public class UsuarioService{
     Set<Etiqueta> etiquetas=usuario.getEtiquetas();
     etiquetas.add(etiqueta);
     usuario.setEtiquetas(etiquetas);
+    etiqueta.setUsuario(usuario);
     usuario=repository.modify(usuario);
+    etiqRepository.update(etiqueta);
     return usuario;
   }
 
