@@ -61,7 +61,7 @@ public class GestionEtiquetasController extends Controller{
       }
       Etiquetas etiqueta = etiquetaForm.get();
       DynamicForm requestData = formFactory.form().bindFromRequest();
-      String color = requestData.get("color");
+      String color = "#"+requestData.get("color");
       String nombre = requestData.get("nombre");
       try{
         etiquetaNueva=etiquetaService.creaEtiqueta(color,nombre);
@@ -130,7 +130,7 @@ public class GestionEtiquetasController extends Controller{
   @Security.Authenticated(ActionAuthenticator.class)
   public Result grabaEtiquetaModificada(Long idEtiqueta, Long idTablero) {
     DynamicForm requestData = formFactory.form().bindFromRequest();
-    String nuevoColor = requestData.get("color");
+    String nuevoColor = "#"+requestData.get("color");
     String nuevoNombre = requestData.get("nombre");
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);

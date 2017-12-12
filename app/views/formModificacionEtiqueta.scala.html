@@ -9,7 +9,7 @@
    @helper.form(action = routes.GestionEtiquetasController.grabaEtiquetaModificada(etiqueta.getId(),idTablero)) {
       <fieldset>
          <legend>Etiqueta</legend>
-         Color:  <input type="text" name="color" value= "@etiqueta.getColor()">
+         Color:  <input class="jscolor {closable:true,closeText:'Close me!'}" type="text" name="color" value= "@etiqueta.getColor()">
          <p/>
          Nombre: <input type="text" size=70 name="nombre" value="@etiqueta.getNombre()">
       </fieldset>

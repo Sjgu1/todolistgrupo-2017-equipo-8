@@ -10,7 +10,7 @@
     <fieldset>
       <legend>Nueva etiqueta</legend>
       <form name="etiquetaForm">
-      @helper.inputText(etiquetaForm("color"), '_label -> "Color")
+      Color:  <input class="jscolor {closable:true,closeText:'Close me!'}" type="text" name="color" value= "234567">
       @helper.inputText(etiquetaForm("nombre"), '_label -> "Nombre", 'size -> 70)
     </fieldset>
     <p>
