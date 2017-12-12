@@ -145,4 +145,25 @@ public class GestionEtiquetasController extends Controller{
     redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
   }
 
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borraEtiqueta(Long idEtiqueta,Long idTablero){
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    try{
+      if(idTablero!=0){
+        tableroService.borraEtiquetaATablero(idTablero,idEtiqueta);
+      }
+      else{
+        usuarioService.borraEtiquetaAUsuario(connectedUser,idEtiqueta);
+      }
+    } catch (TableroServiceException e){
+      Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
+    } catch (UsuarioServiceException e){
+      Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
+    }
+    flash("aviso","Etiqueta borrada correctamente");
+    return ok();
+  }
 }

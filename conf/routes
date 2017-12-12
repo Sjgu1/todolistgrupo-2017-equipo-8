@@ -40,6 +40,7 @@ GET     /usuarios/:id/etiquetas/nueva controllers.GestionEtiquetasController.for
 POST    /usuarios/:id/etiquetas/nueva controllers.GestionEtiquetasController.creaNuevaEtiqueta(id: Long, idTab: Long)
 GET     /etiquetas/:id/editar         controllers.GestionEtiquetasController.formularioEditaEtiqueta(id: Long, idTab:Long)
 POST    /etiquetas/:id/editar         controllers.GestionEtiquetasController.grabaEtiquetaModificada(id: Long, idTab: Long)
+DELETE  /etiquetas/:id                controllers.GestionEtiquetasController.borraEtiqueta(id:Long,idTab: Long)
 GET     /usuarios/:id/tableros        controllers.GestionTablerosController.listaTableros(id: String)
 PUT     /usuarios/:id/tableros        controllers.GestionTablerosController.asignaParticipanteTablero(idTablero: Long, id: Long)
 GET     /tableros/:id/sesion/:idusu   controllers.GestionTablerosController.detalleTablero(id: Long, idusu: Long)

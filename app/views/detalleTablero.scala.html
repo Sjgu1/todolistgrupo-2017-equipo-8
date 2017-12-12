@@ -110,7 +110,7 @@
         <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag">Etiquetas</button>
         <div id="etiquetas" class="collapse in">
             <hr class="transparent mx-3 my-0">
-            <table class="table">
+            <table class="table table-condensed">
               @if(tablero.getEtiquetas().isEmpty()){
                 <td class="text-muted">Sin etiquetas</td>
               } else{
@@ -119,6 +119,9 @@
                     <td><p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
                         <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),tablero.getId())">
                         <span class="glyphicon glyphicon-pencil"/></a>
+                        <a onmouseover="" style="cursor: pointer;"
+                        onclick="del('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),tablero.getId())')">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                     </td>
                   </tr>
                 }
