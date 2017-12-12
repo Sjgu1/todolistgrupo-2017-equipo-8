@@ -28,9 +28,7 @@ public class JPAEtiquetaRepository implements EtiquetaRepository{
 
   public Etiqueta update(Etiqueta etiqueta){
     return jpaApi.withTransaction(entityManager -> {
-      Etiqueta etiquetaBD=entityManager.find(Etiqueta.class,etiqueta.getId());
-      etiquetaBD.setNombre(etiqueta.getNombre());
-      etiquetaBD.setColor(etiqueta.getColor());
+      Etiqueta etiquetaBD = entityManager.merge(etiqueta);
       return etiquetaBD;
     });
   }
@@ -48,5 +46,5 @@ public class JPAEtiquetaRepository implements EtiquetaRepository{
       return entityManager.find(Etiqueta.class,idEtiqueta);
     });
   }
-  
+
 }

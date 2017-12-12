@@ -37,9 +37,15 @@ GET     /usuarios/:id/tareas/terminadas          controllers.GestionTareasContro
 
 GET     /usuarios/:id/tableros/nuevo  controllers.GestionTablerosController.formularioNuevoTablero(id: Long)
 POST    /usuarios/:id/tableros/nuevo  controllers.GestionTablerosController.creaNuevoTablero(id: Long)
+GET     /usuarios/:id/etiquetas/nueva controllers.GestionEtiquetasController.formularioNuevaEtiqueta(id: Long, idTab: Long)
+POST    /usuarios/:id/etiquetas/nueva controllers.GestionEtiquetasController.creaNuevaEtiqueta(id: Long, idTab: Long)
+GET     /etiquetas/:id/editar         controllers.GestionEtiquetasController.formularioEditaEtiqueta(id: Long, idTab:Long)
+POST    /etiquetas/:id/editar         controllers.GestionEtiquetasController.grabaEtiquetaModificada(id: Long, idTab: Long)
+DELETE  /etiquetas/:id                controllers.GestionEtiquetasController.borraEtiqueta(id:Long,idTab: Long)
 GET     /usuarios/:id/tableros        controllers.GestionTablerosController.listaTableros(id: String)
 PUT     /usuarios/:id/tableros        controllers.GestionTablerosController.asignaParticipanteTablero(idTablero: Long, id: Long)
 GET     /tableros/:id/sesion/:idusu   controllers.GestionTablerosController.detalleTablero(id: Long, idusu: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

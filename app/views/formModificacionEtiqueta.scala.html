@@ -1,0 +1,26 @@
+@(idUsuario: Long, etiqueta: Etiqueta, idTablero:Long, mensaje: String)
+@main("Modificar Etiqueta") {
+  @if(mensaje != "") {
+      <div class="alert alert-danger">
+         @mensaje
+      </div>
+   }
+   <h1>Modificar etiqueta</h1>
+   @helper.form(action = routes.GestionEtiquetasController.grabaEtiquetaModificada(etiqueta.getId(),idTablero)) {
+      <fieldset>
+         <legend>Etiqueta</legend>
+         Color:  <input class="jscolor {closable:true,closeText:'Close me!'}" type="text" name="color" value= "@etiqueta.getColor()">
+         <p/>
+         Nombre: <input type="text" size=70 name="nombre" value="@etiqueta.getNombre()">
+      </fieldset>
+      <p/>
+      <p>
+         <input type="submit" class="btn btn-primary" value="Guardar">
+         @if(idTablero==0){
+           <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(session.get("connected"),0)">Cancelar</a>
+         } else {
+           <a class="btn btn-warning" href="@routes.GestionTablerosController.detalleTablero(idTablero,Long.parseLong(session.get("connected")))">Cancelar</a>
+         }
+      </p>
+   }
+}
