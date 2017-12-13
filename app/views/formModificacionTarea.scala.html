@@ -1,17 +1,28 @@
 @(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String, comentarios: List[Comentario])
 
+
 @main("Modificar Tarea") {
-   @if(mensaje != "") {
-<div class="alert alert-danger">
-  @mensaje
-</div>
-}
+
 <style>
   .comentarios-Div {
     overflow-y: scroll;
     height: 300px;
   }
 </style>
+<script type="text/javascript">
+    function del(urlBorrar) {
+      console.log(urlBorrar)
+
+        $.ajax({
+            url: urlBorrar,
+            type: 'DELETE',
+            success: function(results) {
+              //refresh the page
+                location.reload();
+            }
+        });
+    }
+</script>
 <script>
   $(function() {
     $("#fechaLimite").datepicker({
@@ -50,6 +61,7 @@
           <div class="well well-sm">
               <b>@comentario.getUsuario() </b>
               <span class="label label-default pull-right">Enviado: @comentario.getFechaCreacion()</span>
+                <span type="button" onClick="del('@routes.GestionTareasController.borraComentario(comentario.getId(), idUsuario)')" class="btn btn-xs glyphicon glyphicon-trash"></span>
               <hr style=" border-style: inset;margin-top: 0;"/>
               <p>
                 @comentario.getComentario()
@@ -74,4 +86,9 @@
     element.scrollTop = element.scrollHeight;
   </script>
 </div>
+}
+@if(flash.containsKey("aviso")) {
+  <div class="alert alert-danger">
+      @flash.get("aviso")
+  </div>
 }

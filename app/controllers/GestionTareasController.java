@@ -184,10 +184,7 @@ public class GestionTareasController extends Controller{
     Tarea tarea = tareaService.obtenerTarea(idTarea);
     Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
 
-
     Tablero tablero = tableroService.findTableroPorId(tarea.getTablero().getId());
-    Logger.info(usuario.getLogin());
-
 
     Boolean participa = false ;
     if(tablero != null){
@@ -211,8 +208,29 @@ public class GestionTareasController extends Controller{
 
       return redirect(controllers.routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tarea.getTablero().getId()));
 
-      //return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea, tarea.getTablero().getId(),""));
     }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borraComentario(Long idComentario ,Long idUsu){
+    Long idUsuario = Long.valueOf(session("connected"));
+    Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+    Comentario comentario = comentarioService.obtenerComentario(idComentario);
+    Tarea tarea = comentario.getTarea();
+    Long idTablero = tarea.getTablero().getId();
+    List<Comentario> comentarios = comentarioService.allComentariosTarea(tarea.getId());
+
+
+    if(usuario.getLogin().equals(comentario.getUsuario())){
+      comentarioService.borraComentario(idComentario);
+
+      return ok();
+
+    }
+    System.out.println("Se supone que no borro");
+    flash("aviso","Solo puedes eliminar comentarios tuyos.");
+
+    return ok();
   }
 
   @Security.Authenticated(ActionAuthenticator.class)

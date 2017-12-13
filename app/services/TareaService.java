@@ -25,6 +25,9 @@ import models.TareaRepository;
 import models.Etiqueta;
 import models.EtiquetaRepository;
 
+import models.Comentario;
+import models.ComentarioRepository;
+
 import play.Logger;
 
 
@@ -33,13 +36,15 @@ public class TareaService{
   TareaRepository tareaRepository;
   TableroRepository tableroRepository;
   EtiquetaRepository etiquetaRepository;
+  ComentarioRepository comentarioRepository;
 
   @Inject
-  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository,EtiquetaRepository etiquetaRepository){
+  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository,EtiquetaRepository etiquetaRepository, ComentarioRepository comentarioRepository){
     this.usuarioRepository=usuarioRepository;
     this.tareaRepository=tareaRepository;
     this.tableroRepository=tableroRepository;
     this.etiquetaRepository=etiquetaRepository;
+    this.comentarioRepository = comentarioRepository;
   }
 
   //Devuelve la lista de tareas de un usuario, ordenadas por su id
@@ -159,6 +164,12 @@ public class TareaService{
 
   public void borraTarea(Long idTarea){
     Tarea tarea=tareaRepository.findById(idTarea);
+    Set<Comentario> comentarios= tarea.getComentarios();
+    if (comentarios.size()>0){
+      for (Comentario comentario : comentarios ) {
+        comentarioRepository.delete(comentario.getId());
+      }
+    }
     if(tarea==null)
       throw new TareaServiceException("No existe tarea");
     tareaRepository.delete(idTarea);
