@@ -164,14 +164,14 @@ public class TareaService{
 
   public void borraTarea(Long idTarea){
     Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null)
+      throw new TareaServiceException("No existe tarea");
     Set<Comentario> comentarios= tarea.getComentarios();
     if (comentarios.size()>0){
       for (Comentario comentario : comentarios ) {
         comentarioRepository.delete(comentario.getId());
       }
-    }
-    if(tarea==null)
-      throw new TareaServiceException("No existe tarea");
+    }    
     tareaRepository.delete(idTarea);
   }
 

@@ -135,13 +135,16 @@ public class GestionTareasController extends Controller{
       Long connectedUser =  Long.valueOf(connectedUserStr);
       Boolean participa = false ;
       if(tablero != null){
+
         for ( Usuario participante: tablero.getParticipantes()) {
-          if (participante.getId() == connectedUser)
+          if (participante.getId() == (long)connectedUser){
             participa=true;
+
+          }
         }
       }
-      if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
 
+      if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
         return unauthorized("Lo siento, no estás autorizado");
       } else {
         List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
@@ -204,8 +207,6 @@ public class GestionTareasController extends Controller{
           usuario = usuarioService.findUsuarioPorId(idUsuario);
         }
 
-      flash("aviso", "La tarea se ha grabado correctamente");
-
       return redirect(controllers.routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tarea.getTablero().getId()));
 
     }
@@ -227,7 +228,6 @@ public class GestionTareasController extends Controller{
       return ok();
 
     }
-    System.out.println("Se supone que no borro");
     flash("aviso","Solo puedes eliminar comentarios tuyos.");
 
     return ok();
