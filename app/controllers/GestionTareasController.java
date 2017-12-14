@@ -151,7 +151,7 @@ public class GestionTareasController extends Controller{
       }
       else {
         if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
-          return unauthorized("Lo siento, no estás autorizado");
+        return unauthorized("Lo siento, no estás autorizado");
         }
       }
         List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);

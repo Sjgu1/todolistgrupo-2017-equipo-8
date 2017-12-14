@@ -51,7 +51,18 @@
         } else {
           <tr>
           }
-              <td>@tarea.getTitulo()</td>
+              <td>
+                @tarea.getTitulo()
+                <div class="row">
+                  @if(tarea.getEtiquetas().isEmpty()){
+                    <p> Sin etiquetas</p>
+                  } else {
+                    @for(etiqueta <- tarea.getEtiquetas()){
+                      <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+                    }
+                  }
+                  </div>
+              </td>
               @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
                 <td>Sin fecha límite</td>
               } else {
