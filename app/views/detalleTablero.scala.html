@@ -21,6 +21,13 @@
                 }
             });
         }
+        function confirmar(ideti) {
+          var txt=ideti;
+          var r = confirm("Se eliminara la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+          if (r == true) {
+            del(ideti)
+          }
+        }
     </script>
 }
 
@@ -131,7 +138,7 @@
                         <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),tablero.getId())">
                         <span class="glyphicon glyphicon-pencil"/></a>
                         <a onmouseover="" style="cursor: pointer;"
-                        onclick="del('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),tablero.getId())')">
+                        onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),tablero.getId())')">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                     </td>
                   </tr>
