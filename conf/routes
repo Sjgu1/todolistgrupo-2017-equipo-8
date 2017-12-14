@@ -30,6 +30,7 @@ POST    /usuarios/:id/tareas/nueva    controllers.GestionTareasController.creaNu
 GET     /usuarios/:id/tareas          controllers.GestionTareasController.listaTareas(id: String,orden: Long)
 GET     /tareas/:id/editar            controllers.GestionTareasController.formularioEditaTarea(id: Long, idTab:Long)
 POST    /tareas/:id/editar            controllers.GestionTareasController.grabaTareaModificada(id: Long, idTab: Long)
+PUT    /tareas/:id/etiquetas/anadir  controllers.GestionTareasController.asignaEtiquetaTarea(id: Long, idEtiqueta: Long)
 POST    /comentarios/:id/:idUser      controllers.GestionTareasController.grabaComentario(id: Long, idUser: Long)
 DELETE  /tareas/:id                   controllers.GestionTareasController.borraTarea(id: Long)
 PUT     /tareas/:id                   controllers.GestionTareasController.terminarTarea(id:Long)
