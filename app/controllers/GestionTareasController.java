@@ -141,9 +141,12 @@ public class GestionTareasController extends Controller{
       Long connectedUser =  Long.valueOf(connectedUserStr);
       Boolean participa = false ;
       if(tablero != null){
+
         for ( Usuario participante: tablero.getParticipantes()) {
-          if (participante.getId() == connectedUser)
+          if (participante.getId() == (long)connectedUser){
             participa=true;
+
+          }
         }
         if ((long)connectedUser != (long)tablero.getAdministrador().getId() && !participa) {
         return unauthorized("Lo siento, no estás autorizado");
@@ -195,10 +198,7 @@ public class GestionTareasController extends Controller{
     Tarea tarea = tareaService.obtenerTarea(idTarea);
     Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
 
-
     Tablero tablero = tableroService.findTableroPorId(tarea.getTablero().getId());
-    Logger.info(usuario.getLogin());
-
 
     Boolean participa = false ;
     if(tablero != null){
@@ -218,11 +218,8 @@ public class GestionTareasController extends Controller{
           usuario = usuarioService.findUsuarioPorId(idUsuario);
         }
 
-      flash("aviso", "La tarea se ha grabado correctamente");
-
       return redirect(controllers.routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tarea.getTablero().getId()));
 
-      //return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea, tarea.getTablero().getId(),""));
     }
   }
 
@@ -272,6 +269,25 @@ public class GestionTareasController extends Controller{
   public Result borraEtiquetaTarea(Long idTarea,Long idEtiqueta){
     tareaService.borraEtiquetaATarea(idTarea,idEtiqueta);
     flash("aviso","Etiqueta borrada correctamente");
+    return ok();
+  }
+
+  public Result borraComentario(Long idComentario ,Long idUsu){
+    Long idUsuario = Long.valueOf(session("connected"));
+    Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+    Comentario comentario = comentarioService.obtenerComentario(idComentario);
+    Tarea tarea = comentario.getTarea();
+    Long idTablero = tarea.getTablero().getId();
+    List<Comentario> comentarios = comentarioService.allComentariosTarea(tarea.getId());
+
+
+    if(usuario.getLogin().equals(comentario.getUsuario())){
+      comentarioService.borraComentario(idComentario);
+
+      return ok();
+
+    }
+    flash("aviso","Solo puedes eliminar comentarios tuyos.");
     return ok();
   }
 
