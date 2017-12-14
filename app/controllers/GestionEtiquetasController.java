@@ -50,41 +50,49 @@ public class GestionEtiquetasController extends Controller{
     Long connectedUser =  Long.valueOf(connectedUserStr);
     Usuario usuario;
     Etiqueta etiquetaNueva;
-    long tab=0L;
-    if ((long)connectedUser != (long)idUsuario) {
-      return unauthorized("Lo siento, no estás autorizado");
-    } else {
-      Form<Etiquetas> etiquetaForm = formFactory.form(Etiquetas.class).bindFromRequest();
-      if (etiquetaForm.hasErrors()) {
-        usuario = usuarioService.findUsuarioPorId(idUsuario);
-        return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, "Hay errores en el formulario"));
-      }
-      Etiquetas etiqueta = etiquetaForm.get();
-      DynamicForm requestData = formFactory.form().bindFromRequest();
-      String color = "#"+requestData.get("color");
-      String nombre = requestData.get("nombre");
-      try{
-        etiquetaNueva=etiquetaService.creaEtiqueta(color,nombre);
-        if(idTablero!=0){
+
+    Form<Etiquetas> etiquetaForm = formFactory.form(Etiquetas.class).bindFromRequest();
+    if (etiquetaForm.hasErrors()) {
+      usuario = usuarioService.findUsuarioPorId(idUsuario);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, "Hay errores en el formulario"));
+    }
+    Etiquetas etiqueta = etiquetaForm.get();
+    DynamicForm requestData = formFactory.form().bindFromRequest();
+    String color = "#"+requestData.get("color");
+    String nombre = requestData.get("nombre");
+    try{
+      etiquetaNueva=etiquetaService.creaEtiqueta(color,nombre);
+      if(idTablero!=0){
+        Usuario usuarioConectado=usuarioService.findUsuarioPorId(connectedUser);
+        Tablero tablero=tableroService.findTableroPorId(idTablero);
+        if((long)connectedUser != (long)tablero.getAdministrador().getId() && !(tablero.getParticipantes().contains(usuarioConectado))){
+          return unauthorized("Lo siento, no estás autorizado");
+        }
+        else {
           tableroService.addEtiquetaATablero(idTablero,etiquetaNueva.getId());
         }
-        else{
+      }
+      else{
+        if ((long)connectedUser != (long)idUsuario) {
+          return unauthorized("Lo siento, no estás autorizado");
+        } else {
           usuarioService.addEtiquetaAUsuario(idUsuario,etiquetaNueva.getId());
         }
-      } catch (EtiquetaServiceException e){
-        usuario = usuarioService.findUsuarioPorId(idUsuario);
-        return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
-      } catch (TableroServiceException e){
-        usuario = usuarioService.findUsuarioPorId(idUsuario);
-        return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
-      } catch (UsuarioServiceException e){
-        usuario = usuarioService.findUsuarioPorId(idUsuario);
-        return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
       }
-      flash("aviso", "La etiqueta se ha grabado correctamente");
-      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
-      redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,idUsuario));
+    } catch (EtiquetaServiceException e){
+      usuario = usuarioService.findUsuarioPorId(idUsuario);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
+    } catch (TableroServiceException e){
+      usuario = usuarioService.findUsuarioPorId(idUsuario);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
+    } catch (UsuarioServiceException e){
+      usuario = usuarioService.findUsuarioPorId(idUsuario);
+      return badRequest(formNuevaEtiqueta.render(usuario,formFactory.form(Etiquetas.class),idTablero, e.getMessage()));
     }
+    flash("aviso", "La etiqueta se ha grabado correctamente");
+    return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
+    redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,idUsuario));
+
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
@@ -97,7 +105,6 @@ public class GestionEtiquetasController extends Controller{
       Long connectedUser =  Long.valueOf(connectedUserStr);
       if(idTablero!=0){
         if((long)idTablero==(long)etiqueta.getTablero().getId()){
-          Logger.debug("El tablero es bueno");
           Tablero tablero=tableroService.findTableroPorId(idTablero);
           if (tablero==null){
             return notFound("Tablero no encontrado");
