@@ -13,6 +13,16 @@
   }
 </style>
 <script>
+  function del(urlBorrar) {
+    $.ajax({
+        url: urlBorrar,
+        type: 'DELETE',
+        success: function(results) {
+          //refresh the page
+            location.reload();
+        }
+    });
+  }
   //función para limpiarchecks
   function limpiachecks(){
     var checks=$('input[type="checkbox"]').removeAttr("checked")
@@ -71,7 +81,7 @@
       @if(idTablero==0){
         <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(idUsuario.toString(),0)">Cancelar</a>
       } else {
-        <a class="btn btn-warning" href="@routes.GestionTablerosController.detalleTablero(idTablero,idUsuario)">Cancelar</a>
+        <a class="btn btn-warning" href="@routes.GestionTablerosController.detalleTablero(idTablero,Long.parseLong(session.get("connected")))">Cancelar</a>
       }
     </p>
   </div>
@@ -113,6 +123,9 @@
       @for(etiqueta <- tarea.getEtiquetas()){
         <div class="col-md-2">
           <p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
+            <a onmouseover="" style="cursor: pointer;"
+            onclick="del('@routes.GestionTareasController.borraEtiquetaTarea(tarea.getId(),etiqueta.getId())')">
+            <span class="glyphicon glyphicon-remove" style="background: white" aria-hidden="true"></span></a></p>
         </div>
       }
     }

@@ -145,16 +145,19 @@ public class GestionTareasController extends Controller{
           if (participante.getId() == connectedUser)
             participa=true;
         }
-      }
-      if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
-
+        if ((long)connectedUser != (long)tablero.getAdministrador().getId() && !participa) {
         return unauthorized("Lo siento, no estás autorizado");
-      } else {
+        }
+      }
+      else {
+        if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
+          return unauthorized("Lo siento, no estás autorizado");
+        }
+      }
         List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
         List<Etiqueta> etiqDisponibles = tareaService.allEtiquetasTareaSinAsignarDisponibles(idTarea);
 
         return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,"", comentarios,etiqDisponibles));
-      }
     }
   }
 
@@ -225,7 +228,6 @@ public class GestionTareasController extends Controller{
 
   @Security.Authenticated(ActionAuthenticator.class)
   public Result asignaEtiquetaTarea(Long idTarea,Long idEtiqueta){
-
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     Tarea tarea=tareaService.obtenerTarea(idTarea);
@@ -240,8 +242,14 @@ public class GestionTareasController extends Controller{
     }
 
     if(tablero!=null){
-      Usuario usuarioConectado=usuarioService.findUsuarioPorId(connectedUser);
-      if((long)connectedUser!=(long)tablero.getAdministrador().getId() && (tablero.getParticipantes().contains(usuarioConectado))){
+      Boolean participa = false;
+      for ( Usuario participante: tablero.getParticipantes()) {
+        if (participante.getId() == (long)connectedUser){
+            participa=true;
+            break;
+        }
+      }
+      if ((long)connectedUser != (long)tablero.getAdministrador().getId() && !participa) {
         return unauthorized("Lo siento, no estás autorizado");
       }
     }
@@ -257,6 +265,13 @@ public class GestionTareasController extends Controller{
         List<Etiqueta> etiqDisponibles = tareaService.allEtiquetasTareaSinAsignarDisponibles(idTarea);
         return badRequest(formModificacionTarea.render(connectedUser,tarea,idTablero,e.getMessage(), comentarios,etiqDisponibles));
     }
+    return ok();
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borraEtiquetaTarea(Long idTarea,Long idEtiqueta){
+    tareaService.borraEtiquetaATarea(idTarea,idEtiqueta);
+    flash("aviso","Etiqueta borrada correctamente");
     return ok();
   }
 
