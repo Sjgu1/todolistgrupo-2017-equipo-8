@@ -779,4 +779,23 @@ public class TareaServiceTest {
       tareaService.addResponsableTarea(idTarea, idUsuario);
       tareaService.addResponsableTarea(idTarea, idUsuario);
     }
+
+    @Test
+    public void reactivarTareaTerminada(){
+      TareaService tareaService=newTareaService();
+      long idTarea =1000L;
+      tareaService.tareaTerminada(idTarea);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      assertTrue(tarea.getTerminada());
+      tareaService.reactivarTareaTerminada(idTarea);
+      tarea = tareaService.obtenerTarea(idTarea);
+      assertFalse(tarea.getTerminada());
+    }
+
+    @Test(expected = TareaServiceException.class)
+    public void reactivarTareaTerminadaNoExiste(){
+      TareaService tareaService=newTareaService();
+      long idTarea =10000L;
+      tareaService.reactivarTareaTerminada(idTarea);
+    }
 }
