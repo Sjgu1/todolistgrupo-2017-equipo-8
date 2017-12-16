@@ -171,7 +171,7 @@ public class TareaService{
       for (Comentario comentario : comentarios ) {
         comentarioRepository.delete(comentario.getId());
       }
-    }    
+    }
     tareaRepository.delete(idTarea);
   }
 
@@ -182,6 +182,15 @@ public class TareaService{
     tarea.setTerminada(true);
     tareaRepository.update(tarea);
   }
+
+  public void reactivarTareaTerminada(Long idTarea){
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null)
+      throw new TareaServiceException("No existe tarea");
+    tarea.setTerminada(false);
+    tareaRepository.update(tarea);
+  }
+
 
   public Tarea addEtiquetaATarea(Long idTarea, Long idEtiqueta){
     Tarea tarea = tareaRepository.findById(idTarea);
