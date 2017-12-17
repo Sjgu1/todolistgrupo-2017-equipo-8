@@ -29,6 +29,13 @@
       del(ideti)
     }
   }
+  function confirmarTarea(ideti) {
+    var txt=ideti;
+    var r = confirm("Se eliminará la tarea, ¿está seguro de ello?");
+    if (r == true) {
+      del(ideti)
+    }
+  }
 </script>
 } @main("Tareas del usuario @usuario.getLogin()",scripts) {
 <div class="panel panel-default">
@@ -157,7 +164,7 @@
     } }
     </td>
     <td>
-      <a onmouseover="" style="cursor: pointer;" onclick="confirmar('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+      <a onmouseover="" style="cursor: pointer;" onclick="confirmarTarea('@routes.GestionTareasController.borraTarea(tarea.getId())')">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
       <a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
                                 <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>

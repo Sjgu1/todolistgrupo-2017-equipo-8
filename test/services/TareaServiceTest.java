@@ -785,6 +785,8 @@ public class TareaServiceTest {
       assertEquals(1,user.getTareasAsig().size());
       tarea=tareaService.addResponsableTarea(idTarea, idUsuario2);
       assertEquals(1,user.getTareasAsig().size());
+      tarea=tareaService.addResponsableTarea(idTarea, idUsuario);
+      assertEquals("Juan", tarea.getResponsable().getNombre());
     }
 
     @Test

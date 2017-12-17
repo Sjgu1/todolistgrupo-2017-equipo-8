@@ -23,7 +23,7 @@
         }
         function confirmar(ideti) {
           var txt=ideti;
-          var r = confirm("Se eliminar2 la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+          var r = confirm("Se eliminará la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
           if (r == true) {
             del(ideti)
           }
@@ -160,8 +160,10 @@
                        @for(participante <- tablero.getParticipantes()){
                          <li><a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.asignarResponsableTarea(tarea.getId(), participante.getId())')">@participante.getLogin()</a></li>
                        }
-                      <li role="separator" class="divider"></li>
-                      <li><a href="#">Separated link</li>
+                       @if(tarea.getResponsable()!=null){
+                         <li role="separator" class="divider"></li>
+                         <li><a onmouseover="" style="cursor: pointer;" onclick="del('@routes.GestionTareasController.borrarResponsableTarea(tarea.getId(), tarea.getResponsable().getId())')">Borrar responsable</a></li>
+                       }
                     </ul></span></a></td>
 
                     <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">

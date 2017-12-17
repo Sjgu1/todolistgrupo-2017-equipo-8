@@ -185,7 +185,7 @@ public class UsuarioController extends Controller {
     String connectedUserStr=session("connected");
     session().clear();
     //return ok(saludo.render("Adiós usuario " + connectedUserStr));
-    return ok(formLogin.render(formFactory.form(Login.class),"Adiós usuario " + connectedUserStr));
+    return ok(formLogin.render(formFactory.form(Login.class),"Sesión cerrada"));
   }
 
   @Security.Authenticated(ActionAuthenticator.class)

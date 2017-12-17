@@ -307,15 +307,16 @@ public class GestionTareasController extends Controller{
 
   @Security.Authenticated(ActionAuthenticator.class)
   public Result asignarResponsableTarea(Long idTarea, Long idUsuario){
-    String connectedUserStr = session("connected");
-    Long connectedUser =  Long.valueOf(connectedUserStr);
-    if ((long)connectedUser != (long)idUsuario) {
-      return unauthorized("Lo siento, no estás autorizado");
-    } else {
-      tareaService.addResponsableTarea(idTarea,idUsuario);
-      flash("aviso","Se ha asignado el responsable correctamente");
-      return ok();
-    }
+    tareaService.addResponsableTarea(idTarea,idUsuario);
+    flash("aviso","Se ha asignado el responsable correctamente");
+    return ok();
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borrarResponsableTarea(Long idTarea,Long idUsuario){
+    tareaService.borrarResponsableTarea(idTarea,idUsuario);
+    flash("aviso","Se ha borrado el responsable correctamente");
+    return ok();
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
