@@ -157,11 +157,13 @@
                     <a href="#" style="text-decoration:none" class="glyphicon glyphicon-cog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
                      <ul class="dropdown-menu">
                        <li><a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.asignarResponsableTarea(tarea.getId(), tablero.getAdministrador().getId())')">@tablero.getAdministrador().getLogin()</a></li>
-                      <li><a href="#">Another action</a></li>
+                       @for(participante <- tablero.getParticipantes()){
+                         <li><a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.asignarResponsableTarea(tarea.getId(), participante.getId())')">@participante.getLogin()</a></li>
+                       }
                       <li role="separator" class="divider"></li>
                       <li><a href="#">Separated link</li>
                     </ul></span></a></td>
-                    
+
                     <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">
                       <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
                       <a onmouseover="" style="cursor: pointer;"

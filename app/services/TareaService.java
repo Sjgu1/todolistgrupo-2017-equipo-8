@@ -339,9 +339,7 @@ public class TareaService{
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
-    if(tarea.getResponsable()!=null){
-      throw new TareaServiceException("La tarea ya tiene un usuario asignado");
-    }
+    
     Set<Tarea> tareas=usuario.getTareasAsig();
     tareas.add(tarea);
     usuario.setTareasAsig(tareas);

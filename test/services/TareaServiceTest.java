@@ -771,13 +771,20 @@ public class TareaServiceTest {
       assertEquals("Adel", tarea.getResponsable().getNombre());
     }
 
-    @Test(expected = TareaServiceException.class)
+    @Test()
     public void asignarUsuarioTareaTeniendoUno(){
       TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
       long idUsuario=1000L;
+      long idUsuario2=1003L;
       long idTarea= 1000L;
-      tareaService.addResponsableTarea(idTarea, idUsuario);
-      tareaService.addResponsableTarea(idTarea, idUsuario);
+      Tarea tarea=tareaService.addResponsableTarea(idTarea, idUsuario);
+      tarea=tareaService.addResponsableTarea(idTarea, idUsuario2);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario2);
+      assertEquals("Adel", tarea.getResponsable().getNombre());
+      assertEquals(1,user.getTareasAsig().size());
+      tarea=tareaService.addResponsableTarea(idTarea, idUsuario2);
+      assertEquals(1,user.getTareasAsig().size());
     }
 
     @Test
