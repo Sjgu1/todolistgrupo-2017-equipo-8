@@ -37,9 +37,10 @@ DELETE  /tareas/:id/etiquetas             controllers.GestionTareasController.bo
 POST    /comentarios/:id/:idUser          controllers.GestionTareasController.grabaComentario(id: Long, idUser: Long)
 DELETE  /tareas/:id                       controllers.GestionTareasController.borraTarea(id: Long)
 PUT     /tareas/:id                       controllers.GestionTareasController.terminarTarea(id:Long)
-PUT     /tareas/:id/reactivar                       controllers.GestionTareasController.reactivarTarea(id:Long)
-
+PUT     /tareas/:id/reactivar             controllers.GestionTareasController.reactivarTarea(id:Long)
 GET     /usuarios/:id/tareas/terminadas   controllers.GestionTareasController.listaTareasTerminadas(id: Long)
+PUT     /tareas/:id/usuario/:idUsu        controllers.GestionTareasController.asignarResponsableTarea(id: Long, idUsu: Long)
+DELETE  /tareas/:id/usuario/:idUsu        controllers.GestionTareasController.borrarResponsableTarea(id: Long, idUsu: Long)
 
 GET     /usuarios/:id/tableros/nuevo      controllers.GestionTablerosController.formularioNuevoTablero(id: Long)
 POST    /usuarios/:id/tableros/nuevo      controllers.GestionTablerosController.creaNuevoTablero(id: Long)

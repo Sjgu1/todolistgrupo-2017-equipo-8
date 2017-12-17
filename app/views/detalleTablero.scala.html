@@ -23,7 +23,7 @@
         }
         function confirmar(ideti) {
           var txt=ideti;
-          var r = confirm("Se eliminar2 la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+          var r = confirm("Se eliminará la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
           if (r == true) {
             del(ideti)
           }
@@ -118,6 +118,7 @@
                 <th>Título</th>
                 <th>Fecha Límite</th>
                 <th>Etiquetas</th>
+                <th>Responsable</th>
                 <th>Acción</th>
             </tr>
             @for(tarea <- tareas) {
@@ -147,6 +148,24 @@
                         }
                       }
                     </td>
+                    @if(tarea.getResponsable()==null){
+                      <td>Sin responsable
+                    }else{
+                      <td>@tarea.getResponsable().getLogin()
+                    }
+                    <span class="dropdown">
+                    <a href="#" style="text-decoration:none" class="glyphicon glyphicon-cog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                     <ul class="dropdown-menu">
+                       <li><a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.asignarResponsableTarea(tarea.getId(), tablero.getAdministrador().getId())')">@tablero.getAdministrador().getLogin()</a></li>
+                       @for(participante <- tablero.getParticipantes()){
+                         <li><a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.asignarResponsableTarea(tarea.getId(), participante.getId())')">@participante.getLogin()</a></li>
+                       }
+                       @if(tarea.getResponsable()!=null){
+                         <li role="separator" class="divider"></li>
+                         <li><a onmouseover="" style="cursor: pointer;" onclick="del('@routes.GestionTareasController.borrarResponsableTarea(tarea.getId(), tarea.getResponsable().getId())')">Borrar responsable</a></li>
+                       }
+                    </ul></span></a></td>
+
                     <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">
                       <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
                       <a onmouseover="" style="cursor: pointer;"

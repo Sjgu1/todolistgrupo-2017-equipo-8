@@ -304,6 +304,21 @@ public class GestionTareasController extends Controller{
     flash("aviso","La tarea se ha puesto a terminada correctamente");
     return ok();
   }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result asignarResponsableTarea(Long idTarea, Long idUsuario){
+    tareaService.addResponsableTarea(idTarea,idUsuario);
+    flash("aviso","Se ha asignado el responsable correctamente");
+    return ok();
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borrarResponsableTarea(Long idTarea,Long idUsuario){
+    tareaService.borrarResponsableTarea(idTarea,idUsuario);
+    flash("aviso","Se ha borrado el responsable correctamente");
+    return ok();
+  }
+
   @Security.Authenticated(ActionAuthenticator.class)
   public Result reactivarTarea(Long idTarea){
     tareaService.reactivarTareaTerminada(idTarea);
