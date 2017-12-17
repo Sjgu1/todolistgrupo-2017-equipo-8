@@ -12,8 +12,28 @@
                 }
             });
         }
+
+        function ter(urlTer) {
+            $.ajax({
+                url: urlTer,
+                type: 'PUT',
+                success: function(results) {
+                  //refresh the page
+                    location.reload();
+                }
+            });
+        }
+        function confirmar(ideti) {
+          var txt=ideti;
+          var r = confirm("Se eliminará la tarea, ¿está seguro de ello?");
+          if (r == true) {
+            del(ideti)
+          }
+        }
     </script>
 }
+
+
 
 @main("Tareas terminadas del usuario @usuario.getLogin()",scripts) {
     <h2> Listado de tareas terminadas de @usuario.getLogin()</h2>
@@ -29,8 +49,11 @@
             <tr>
                 <td>@tarea.getTitulo()</td>
                 <td><a onmouseover="" style="cursor: pointer;"
-                onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                onclick="confirmar('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+                <a onmouseover="" style="cursor: pointer;"
+                onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
+                <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
             </tr>
         }
     </table>

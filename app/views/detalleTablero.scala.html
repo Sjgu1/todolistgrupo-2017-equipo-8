@@ -23,7 +23,15 @@
         }
         function confirmar(ideti) {
           var txt=ideti;
-          var r = confirm("Se eliminara la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+          var r = confirm("Se eliminar2 la etiqueta del tablero y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+          if (r == true) {
+            del(ideti)
+          }
+        }
+
+        function confirmarTarea(ideti) {
+          var txt=ideti;
+          var r = confirm("Se eliminará la tarea del tablero, ¿está seguro de ello?");
           if (r == true) {
             del(ideti)
           }
@@ -192,7 +200,7 @@
                     </td>
                     <td>
                       <a onmouseover="" style="cursor: pointer;"
-                      onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                      onclick="confirmarTarea('@routes.GestionTareasController.borraTarea(tarea.getId())')">
                       <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
                       <a onmouseover="" style="cursor: pointer;"
                       onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
@@ -203,7 +211,6 @@
           </table>
         </div>
       </div>
-
 
       @if(mensaje != null) {
           <div class="alert alert-success">
