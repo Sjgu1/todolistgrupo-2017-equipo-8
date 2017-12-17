@@ -55,14 +55,14 @@ public class TareaService{
       throw new TareaServiceException("Usuario no existente");
     }
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
-    //List<Tarea> result = new ArrayList<Tarea>();
-    //for(Tarea task: tareas){
-    //    if(!task.getTerminada() && task.getTablero()==null){
-    //      result.add(task);
-    //    }
-    //}
-    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
-    return tareas;
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if( task.getTablero()==null){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return result;
   }
 
   public List<Tarea> tareasTerminadas(Long idUsuario){
@@ -88,14 +88,14 @@ public class TareaService{
       throw new TareaServiceException("Usuario no existente");
     }
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
-    //List<Tarea> result = new ArrayList<Tarea>();
-    //for(Tarea task: tareas){
-    //    if(!task.getTerminada() && task.getTablero()==null){
-    //      result.add(task);
-    //    }
-  //  }
-    Collections.sort(tareas,(a,b) -> a.getFechaLimite().before(b.getFechaLimite()) ? -1 : a.getFechaLimite().equals(b.getFechaLimite()) ? 0 : 1);
-    return tareas;
+    List<Tarea> result = new ArrayList<Tarea>();
+    for(Tarea task: tareas){
+        if(task.getTablero()==null){
+          result.add(task);
+        }
+    }
+    Collections.sort(result,(a,b) -> a.getFechaLimite().before(b.getFechaLimite()) ? -1 : a.getFechaLimite().equals(b.getFechaLimite()) ? 0 : 1);
+    return result;
   }
 
   public Tarea nuevaTarea(Long idUsuario, String titulo, String fechaLimite, String descripcion){

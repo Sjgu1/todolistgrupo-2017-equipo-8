@@ -34,16 +34,17 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h1>Listado de tareas de @usuario.getLogin()</h1></div>
-    <div class="row">
   <div class="panel-body">
-    <div class="col-md-8">
-      <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
-        <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
-      </ul>
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
+      <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
+    </ul>
 
-      <div class="tab-content">
-        <div id="home" class="tab-pane fade in active">
+    <div class="tab-content">
+
+      <div id="home" class="tab-pane fade in active">
+        <div class="col-md-8">
+
           <h3>Tareas</h3>
           <p>
             <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
@@ -53,7 +54,6 @@
             <tr>
               <th>Título</th>
               <th>Fecha Límite</th>
-              <th>Tablero</th>
               <th>Etiquetas</th>
               <th>Acción</th>
             </tr>
@@ -70,10 +70,6 @@
                 <td>Sin fecha límite</td>
                 } else {
                 <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
-                } @if(tarea.getTablero()== null){
-                <td>Sin tablero</td>
-                } else {
-                <td><a href="@routes.GestionTablerosController.detalleTablero(tarea.getTablero().getId(),usuario.getId())">@tarea.getTablero().getNombre()</a></td>
                 }
 
                 <td>
@@ -93,85 +89,84 @@
                                 <span class="glyphicon glyphicon-plus"/></a></td>
         </tr>
         </table>
-        <div class="col-md-2">
-            <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">
-              <small><b><span class="glyphicon glyphicon-cog">Opciones</b></small>
-            </div>
-            <!-- Tab panes -->
-            <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag">Etiquetas</button>
-            <div id="etiquetas" class="collapse in">
-              <hr class="transparent mx-3 my-0">
-              <table class="table table-condensed">
-                @if(usuario.getEtiquetas().isEmpty()){
-                <td class="text-muted">Sin etiquetas</td>
-                } else{ @for(etiqueta
-                <- usuario.getEtiquetas()) { <tr>
-                  <td>
-                    <p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
-                    <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),0L)">
-                                          <span class="glyphicon glyphicon-pencil"/></a>
-                    <a onmouseover="" style="cursor: pointer;" onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),0L)')">
-                                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-                  </td>
-                  </tr>
-                  } }
-                  <tr>
-                    <td><a class="btn btn-primary" href="@routes.GestionEtiquetasController.formularioNuevaEtiqueta(usuario.getId(),0)">
-                                           Nueva etiqueta</a></td>
-                  </tr>
-              </table>
-            </div>
-            <br/>
-            <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter">Filtrado</button>
-            <div id="filtrado" class="collapse">
-              <hr class="transparent mx-3 my-0">
-            </div>
-
+      </div>
+      <div class="col-md-4">
+        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">
+          <small><b><span class="glyphicon glyphicon-cog">Opciones</b></small>
         </div>
-      </div>
-      </div>
-      <div id="menu1" class="tab-pane fade">
-        <h3>Terminadas</h3>
-        <table class="table table-striped">
-          <tr>
-            <th>Título</th>
-            <th>Fecha Límite</th>
-            <th>Tablero</th>
-            <th>Etiquetas</th>
-            <th>Acción</th>
-          </tr>
-          @for(tarea
-          <- tareas) { @if(tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
-            }else{
-            <tr>
-              }
+        <!-- Tab panes -->
+        <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag">Etiquetas</button>
+        <div id="etiquetas" class="collapse in">
+          <hr class="transparent mx-3 my-0">
+          <table class="table table-condensed">
+            @if(usuario.getEtiquetas().isEmpty()){
+            <td class="text-muted">Sin etiquetas</td>
+            } else{ @for(etiqueta
+            <- usuario.getEtiquetas()) { <tr>
               <td>
-                @tarea.getTitulo()
-
+                <p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
+                <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),0L)">
+                                          <span class="glyphicon glyphicon-pencil"/></a>
+                <a onmouseover="" style="cursor: pointer;" onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),0L)')">
+                                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
               </td>
-              @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
-              <td>Sin fecha límite</td>
-              } else {
-              <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
-              } @if(tarea.getTablero()== null){
-              <td>Sin tablero</td>
-              } else {
-              <td><a href="@routes.GestionTablerosController.detalleTablero(tarea.getTablero().getId(),usuario.getId())">@tarea.getTablero().getNombre()</a></td>
-              }
-              <td>
-                @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
-                <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
-      } }
-      </td>
-      <td>
-        <a onmouseover="" style="cursor: pointer;" onclick="confirmarTarea('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
-        <a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
-                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
-      </tr>
-      } }
-      </table>
+              </tr>
+              } }
+              <tr>
+                <td><a class="btn btn-primary" href="@routes.GestionEtiquetasController.formularioNuevaEtiqueta(usuario.getId(),0)">
+                                           Nueva etiqueta</a></td>
+              </tr>
+          </table>
+        </div>
+        <br/>
+        <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter">Filtrado</button>
+        <div id="filtrado" class="collapse">
+          <hr class="transparent mx-3 my-0">
+        </div>
 
+      </div>
+    </div>
+
+
+    <div id="menu1" class="tab-pane fade">
+      <h3>Terminadas</h3>
+      <table class="table table-striped">
+        <tr>
+          <th>Título</th>
+          <th>Fecha Límite</th>
+          <th>Etiquetas</th>
+          <th>Acción</th>
+        </tr>
+        @for(tarea
+        <- tareas) { @if(tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
+          }else{
+          <tr>
+            }
+            <td>
+              @tarea.getTitulo()
+
+            </td>
+            @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+            <td>Sin fecha límite</td>
+            } else {
+            <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+            }
+            <td>
+              @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
+              <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+    } }
+    </td>
+    <td>
+      <a onmouseover="" style="cursor: pointer;" onclick="confirmar('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+      <a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
+                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
+    </tr>
+    } }
+    </table>
+  </div>
+</div>
+</div>
 </div>
 
 @if(mensaje != null) {
@@ -182,14 +177,6 @@
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
 
 
-
-@if(mensaje != null) {
-<div class="alert alert-success">
-  @mensaje
-</div>
-} }
+}
