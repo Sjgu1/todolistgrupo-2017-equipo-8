@@ -307,7 +307,7 @@ public class GestionTareasController extends Controller{
   @Security.Authenticated(ActionAuthenticator.class)
   public Result reactivarTarea(Long idTarea){
     tareaService.reactivarTareaTerminada(idTarea);
-    flash("aviso","La tarea se ha puesto a terminada correctamente");
+    flash("aviso","La tarea se ha puesto a reactivado correctamente");
     return ok();
   }
 }

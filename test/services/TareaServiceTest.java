@@ -252,7 +252,7 @@ public class TareaServiceTest {
     tareaService.nuevaTarea(idUsuario,"Pagar la coca", null, null);
     tareaService.tareaTerminada(idTarea);
     assertEquals(1,tareaService.tareasTerminadas(1000L).size());
-    assertEquals(3,tareaService.allTareasUsuario(1000L).size());
+    assertEquals(4,tareaService.allTareasUsuario(1000L).size());
   }
 
   // Test : nuevaTareaUsuarioConDescripcion
