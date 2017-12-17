@@ -1,4 +1,4 @@
-@(tareas: List[Tarea], usuario: Usuario, mensaje: String) @scripts = {
+@(tareas: List[Tarea], tareasTab: List[Tarea], usuario: Usuario, mensaje: String) @scripts = {
 <script type="text/javascript">
   function del(urlBorrar) {
     $.ajax({
@@ -45,6 +45,7 @@
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
       <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
+      <li><a data-toggle="tab" href="#menu2">Tableros</a></li>
     </ul>
 
     <div class="tab-content">
@@ -171,6 +172,42 @@
     </tr>
     } }
     </table>
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Tareas de tableros</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Título</th>
+        <th>Fecha Límite</th>
+        <th>Etiquetas</th>
+        <th>Tablero</th>
+      </tr>
+      @for(tarea
+      <- tareasTab) { @if(!tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
+        }else{
+        <tr>
+          }
+          <td>
+            @tarea.getTitulo()
+
+          </td>
+          @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+          <td>Sin fecha límite</td>
+          } else {
+          <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+          }
+
+          <td>
+            @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
+            <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+      } }
+      </td>
+      <td>
+        <a href="@routes.GestionTablerosController.detalleTablero(tarea.getTablero().getId(),usuario.getId())">@tarea.getTablero().getNombre()</a>
+      </td>
+      </tr>
+  }}
+  </table>
   </div>
 </div>
 </div>
