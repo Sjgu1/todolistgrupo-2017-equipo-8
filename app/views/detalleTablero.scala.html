@@ -66,52 +66,114 @@
           </tr>
         </table>
       </div>
-      <h3>Tareas del tablero</h3>
-      <table class="table table-striped">
-        <tr>
-            <th>Título</th>
-            <th>Fecha Límite</th>
-            <th>Acción</th>
-        </tr>
-        @for(tarea <- tareas) {
-          @if(tarea.tareaCaducada()){
-            <tr class="danger">
-          } else {
-            <tr>
-            }
-                <td>
-                  @tarea.getTitulo()
-                  <div class="row">
-                    @if(tarea.getEtiquetas().isEmpty()){
-                      <p> Sin etiquetas</p>
-                    } else {
-                      @for(etiqueta <- tarea.getEtiquetas()){
-                        <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
-                      }
-                    }
-                    </div>
-                </td>
-                @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
-                  <td>Sin fecha límite</td>
-                } else {
-                  <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
-                }
-                <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">
-                  <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-                  <a onmouseover="" style="cursor: pointer;"
-                  onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
-                  <a onmouseover="" style="cursor: pointer;"
-                  onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
-                  <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
-            </tr>
-          }
 
-          <tr>
-              <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId(),tablero.getId())">
-                  <span class="glyphicon glyphicon-plus"/></a></td>
-        </tr>
-      </table>
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
+        <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+          <h3>Tareas del tablero</h3>
+          <table class="table table-striped">
+            <tr>
+                <th>Título</th>
+                <th>Fecha Límite</th>
+                <th>Etiquetas</th>
+                <th>Acción</th>
+            </tr>
+            @for(tarea <- tareas) {
+
+              @if(!tarea.getTerminada()){
+
+                @if(tarea.tareaCaducada()){
+                  <tr class="danger">
+                }else{
+                  <tr>
+                }
+                    <td>
+                      @tarea.getTitulo()
+
+                    </td>
+                    @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+                      <td>Sin fecha límite</td>
+                    } else {
+                      <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+                    }
+                    <td>
+                      @if(tarea.getEtiquetas().isEmpty()){
+                       Sin etiquetas
+                      } else {
+                        @for(etiqueta <- tarea.getEtiquetas()){
+                          <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+                        }
+                      }
+                    </td>
+                    <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tablero.getId())">
+                      <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+                      <a onmouseover="" style="cursor: pointer;"
+                      onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
+                </tr>
+              }
+            }
+
+              <tr>
+                  <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId(),tablero.getId())">
+                      <span class="glyphicon glyphicon-plus"/></a></td>
+            </tr>
+          </table>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+          <h3>Menu 1</h3>
+          <table class="table table-striped">
+            <tr>
+                <th>Título</th>
+                <th>Fecha Límite</th>
+                <th>Etiquetas</th>
+                <th>Acción</th>
+            </tr>
+            @for(tarea <- tareas) {
+
+              @if(tarea.getTerminada()){
+
+                @if(tarea.tareaCaducada()){
+                  <tr class="danger">
+                }else{
+                  <tr>
+                }
+                    <td>
+                      @tarea.getTitulo()
+
+                    </td>
+                    @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+                      <td>Sin fecha límite</td>
+                    } else {
+                      <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+                    }
+                    <td>
+                      @if(tarea.getEtiquetas().isEmpty()){
+                       Sin etiquetas
+                      } else {
+                        @for(etiqueta <- tarea.getEtiquetas()){
+                          <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+                        }
+                      }
+                    </td>
+                    <td>
+                      <a onmouseover="" style="cursor: pointer;"
+                      onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+                      <a onmouseover="" style="cursor: pointer;"
+                      onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
+                </tr>
+              }
+            }
+          </table>
+        </div>
+      </div>
+
 
       @if(mensaje != null) {
           <div class="alert alert-success">
@@ -150,6 +212,7 @@
                          Nueva etiqueta</a></td>
                 </tr>
               </table>
+
           </div>
           <br/>
           <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter"> Filtrado</button>
