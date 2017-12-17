@@ -10,17 +10,22 @@ import play.data.DynamicForm;
 import play.Logger;
 
 import java.util.List;
+//import java.
 
 import services.UsuarioService;
 import services.TareaService;
 import services.TableroService;
+import services.EtiquetaService;
+import services.EtiquetaServiceException;
 import services.TareaServiceException;
 import models.Usuario;
 import models.Tarea;
 import models.Comentario;
+import models.Etiqueta;
 import services.ComentarioService;
 import services.ComentarioServiceException;
 import models.Tablero;
+//import controllers.EtiquetasAsignadas;
 import security.ActionAuthenticator;
 
 public class GestionTareasController extends Controller{
@@ -30,6 +35,7 @@ public class GestionTareasController extends Controller{
   @Inject TareaService tareaService;
   @Inject TableroService tableroService;
   @Inject ComentarioService comentarioService;
+  @Inject EtiquetaService etiquetaService;
   //GestionTablerosController gestTab;
 
   // Comprobamos si hay alguien logeado con @Security.Authenticated(ActionAuthenticator.class)
@@ -135,19 +141,26 @@ public class GestionTareasController extends Controller{
       Long connectedUser =  Long.valueOf(connectedUserStr);
       Boolean participa = false ;
       if(tablero != null){
+
         for ( Usuario participante: tablero.getParticipantes()) {
-          if (participante.getId() == connectedUser)
+          if (participante.getId() == (long)connectedUser){
             participa=true;
+
+          }
+        }
+        if ((long)connectedUser != (long)tablero.getAdministrador().getId() && !participa) {
+        return unauthorized("Lo siento, no estás autorizado");
         }
       }
-      if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
-
+      else {
+        if ((long)connectedUser != (long)tarea.getUsuario().getId() && !participa) {
         return unauthorized("Lo siento, no estás autorizado");
-      } else {
-        List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
-
-        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,"", comentarios));
+        }
       }
+        List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
+        List<Etiqueta> etiqDisponibles = tareaService.allEtiquetasTareaSinAsignarDisponibles(idTarea);
+
+        return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,"", comentarios,etiqDisponibles));
     }
   }
 
@@ -166,8 +179,9 @@ public class GestionTareasController extends Controller{
       } catch (TareaServiceException e){
         tarea = tareaService.obtenerTarea(idTarea);
         List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
+        List<Etiqueta> etiqDisponibles = tareaService.allEtiquetasTareaSinAsignarDisponibles(idTarea);
 
-        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage(), comentarios));
+        return badRequest(formModificacionTarea.render(tarea.getUsuario().getId(),tarea,idTablero,e.getMessage(), comentarios,etiqDisponibles));
       }
     }
     return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(tarea.getUsuario().getId().toString(),0)) :
@@ -184,10 +198,7 @@ public class GestionTareasController extends Controller{
     Tarea tarea = tareaService.obtenerTarea(idTarea);
     Usuario usuario = usuarioService.findUsuarioPorId(connectedUser);
 
-
     Tablero tablero = tableroService.findTableroPorId(tarea.getTablero().getId());
-    Logger.info(usuario.getLogin());
-
 
     Boolean participa = false ;
     if(tablero != null){
@@ -207,12 +218,77 @@ public class GestionTareasController extends Controller{
           usuario = usuarioService.findUsuarioPorId(idUsuario);
         }
 
-      flash("aviso", "La tarea se ha grabado correctamente");
-
       return redirect(controllers.routes.GestionTareasController.formularioEditaTarea(tarea.getId(),tarea.getTablero().getId()));
 
-      //return ok(formModificacionTarea.render(tarea.getUsuario().getId(),tarea, tarea.getTablero().getId(),""));
     }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result asignaEtiquetaTarea(Long idTarea,Long idEtiqueta){
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    Tarea tarea=tareaService.obtenerTarea(idTarea);
+    Tablero tablero=null;
+    Long idTablero;
+    if(tarea.getTablero()!=null){
+      tablero=tableroService.findTableroPorId(tarea.getTablero().getId());
+      idTablero=tarea.getTablero().getId();
+    }
+    else{
+      idTablero=0L;
+    }
+
+    if(tablero!=null){
+      Boolean participa = false;
+      for ( Usuario participante: tablero.getParticipantes()) {
+        if (participante.getId() == (long)connectedUser){
+            participa=true;
+            break;
+        }
+      }
+      if ((long)connectedUser != (long)tablero.getAdministrador().getId() && !participa) {
+        return unauthorized("Lo siento, no estás autorizado");
+      }
+    }
+    else{
+      if ((long)connectedUser != (long)tarea.getUsuario().getId()) {
+        return unauthorized("Lo siento, no estás autorizado");
+      }
+    }
+    try{
+      tareaService.addEtiquetaATarea(idTarea,idEtiqueta);
+    } catch (TareaServiceException e){
+        List<Comentario> comentarios = comentarioService.allComentariosTarea(idTarea);
+        List<Etiqueta> etiqDisponibles = tareaService.allEtiquetasTareaSinAsignarDisponibles(idTarea);
+        return badRequest(formModificacionTarea.render(connectedUser,tarea,idTablero,e.getMessage(), comentarios,etiqDisponibles));
+    }
+    return ok();
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result borraEtiquetaTarea(Long idTarea,Long idEtiqueta){
+    tareaService.borraEtiquetaATarea(idTarea,idEtiqueta);
+    flash("aviso","Etiqueta borrada correctamente");
+    return ok();
+  }
+
+  public Result borraComentario(Long idComentario ,Long idUsu){
+    Long idUsuario = Long.valueOf(session("connected"));
+    Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
+    Comentario comentario = comentarioService.obtenerComentario(idComentario);
+    Tarea tarea = comentario.getTarea();
+    Long idTablero = tarea.getTablero().getId();
+    List<Comentario> comentarios = comentarioService.allComentariosTarea(tarea.getId());
+
+
+    if(usuario.getLogin().equals(comentario.getUsuario())){
+      comentarioService.borraComentario(idComentario);
+
+      return ok();
+
+    }
+    flash("aviso","Solo puedes eliminar comentarios tuyos.");
+    return ok();
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
@@ -242,4 +318,10 @@ public class GestionTareasController extends Controller{
     }
   }
 
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result reactivarTarea(Long idTarea){
+    tareaService.reactivarTareaTerminada(idTarea);
+    flash("aviso","La tarea se ha puesto a reactivado correctamente");
+    return ok();
+  }
 }

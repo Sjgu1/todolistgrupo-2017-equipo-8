@@ -55,3 +55,13 @@
   text-shadow: 2px 2px 7px #333333;
   color: #ffffff;
 }
+
+.etiquetaMini{
+  height: 15px;
+  width: 60px;
+  float: left;
+  border-width: 1px;
+  border-color: #7f7f7f;
+  border-style: solid;
+  border-radius: 10px;
+}

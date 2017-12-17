@@ -252,7 +252,7 @@ public class TareaServiceTest {
     tareaService.nuevaTarea(idUsuario,"Pagar la coca", null, null);
     tareaService.tareaTerminada(idTarea);
     assertEquals(1,tareaService.tareasTerminadas(1000L).size());
-    assertEquals(3,tareaService.allTareasUsuario(1000L).size());
+    assertEquals(4,tareaService.allTareasUsuario(1000L).size());
   }
 
   // Test : nuevaTareaUsuarioConDescripcion
@@ -634,6 +634,42 @@ public class TareaServiceTest {
     }
 
     @Test
+    public void listaEtiquetasDisponibleTarea(){
+      TableroService tableroService=newTableroService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      String color1="#ffffff";
+      String nombre1="testEspecial";
+      String color2="#000000";
+      String nombre2="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Etiqueta etiqueta=etiquetaService.creaEtiqueta(color1,nombre1);
+      Long idEtiqueta1=etiqueta.getId();
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color1,null);
+      Long idEtiqueta2=etiqueta.getId();
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      etiqueta=etiquetaService.creaEtiqueta(color2,nombre1);
+      Long idEtiqueta3=etiqueta.getId();
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta.getId());
+      int libres1=tareaService.allEtiquetasTareaSinAsignarDisponibles(tarea.getId()).size();
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),idEtiqueta1);
+      int libres2=tareaService.allEtiquetasTareaSinAsignarDisponibles(tarea.getId()).size();
+      assertTrue(libres1>libres2);
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),idEtiqueta2);
+      int libres3=tareaService.allEtiquetasTareaSinAsignarDisponibles(tarea.getId()).size();
+      assertTrue(libres2>libres3);
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),idEtiqueta3);
+      int libres4=tareaService.allEtiquetasTareaSinAsignarDisponibles(tarea.getId()).size();
+      assertTrue(libres3>libres4);
+
+    }
+
+    @Test
     public void asignarUsuarioTarea(){
       TareaService tareaService=newTareaService();
       SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
@@ -742,5 +778,24 @@ public class TareaServiceTest {
       long idTarea= 1000L;
       tareaService.addResponsableTarea(idTarea, idUsuario);
       tareaService.addResponsableTarea(idTarea, idUsuario);
+    }
+
+    @Test
+    public void reactivarTareaTerminada(){
+      TareaService tareaService=newTareaService();
+      long idTarea =1000L;
+      tareaService.tareaTerminada(idTarea);
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      assertTrue(tarea.getTerminada());
+      tareaService.reactivarTareaTerminada(idTarea);
+      tarea = tareaService.obtenerTarea(idTarea);
+      assertFalse(tarea.getTerminada());
+    }
+
+    @Test(expected = TareaServiceException.class)
+    public void reactivarTareaTerminadaNoExiste(){
+      TareaService tareaService=newTareaService();
+      long idTarea =10000L;
+      tareaService.reactivarTareaTerminada(idTarea);
     }
 }

@@ -25,6 +25,9 @@ import models.TareaRepository;
 import models.Etiqueta;
 import models.EtiquetaRepository;
 
+import models.Comentario;
+import models.ComentarioRepository;
+
 import play.Logger;
 
 
@@ -33,13 +36,15 @@ public class TareaService{
   TareaRepository tareaRepository;
   TableroRepository tableroRepository;
   EtiquetaRepository etiquetaRepository;
+  ComentarioRepository comentarioRepository;
 
   @Inject
-  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository,EtiquetaRepository etiquetaRepository){
+  public TareaService(UsuarioRepository usuarioRepository,TareaRepository tareaRepository, TableroRepository tableroRepository,EtiquetaRepository etiquetaRepository, ComentarioRepository comentarioRepository){
     this.usuarioRepository=usuarioRepository;
     this.tareaRepository=tareaRepository;
     this.tableroRepository=tableroRepository;
     this.etiquetaRepository=etiquetaRepository;
+    this.comentarioRepository = comentarioRepository;
   }
 
   //Devuelve la lista de tareas de un usuario, ordenadas por su id
@@ -52,7 +57,7 @@ public class TareaService{
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
     List<Tarea> result = new ArrayList<Tarea>();
     for(Tarea task: tareas){
-        if(!task.getTerminada() && task.getTablero()==null){
+        if( task.getTablero()==null){
           result.add(task);
         }
     }
@@ -85,7 +90,7 @@ public class TareaService{
     List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareas());
     List<Tarea> result = new ArrayList<Tarea>();
     for(Tarea task: tareas){
-        if(!task.getTerminada() && task.getTablero()==null){
+        if(task.getTablero()==null){
           result.add(task);
         }
     }
@@ -161,6 +166,12 @@ public class TareaService{
     Tarea tarea=tareaRepository.findById(idTarea);
     if(tarea==null)
       throw new TareaServiceException("No existe tarea");
+    Set<Comentario> comentarios= tarea.getComentarios();
+    if (comentarios.size()>0){
+      for (Comentario comentario : comentarios ) {
+        comentarioRepository.delete(comentario.getId());
+      }
+    }
     tareaRepository.delete(idTarea);
   }
 
@@ -172,6 +183,15 @@ public class TareaService{
     tareaRepository.update(tarea);
   }
 
+  public void reactivarTareaTerminada(Long idTarea){
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null)
+      throw new TareaServiceException("No existe tarea");
+    tarea.setTerminada(false);
+    tareaRepository.update(tarea);
+  }
+
+
   public Tarea addEtiquetaATarea(Long idTarea, Long idEtiqueta){
     Tarea tarea = tareaRepository.findById(idTarea);
     if (tarea==null){
@@ -182,12 +202,16 @@ public class TareaService{
       throw new TareaServiceException("Error. Etiqueta no existente");
     }
     Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    Set<Tarea> tareas=etiqueta.getTareas();
     Tablero tablero=tarea.getTablero();
     if(tablero!=null){
       if(tablero.getEtiquetas().contains(etiqueta)){
         etiquetas.add(etiqueta);
         tarea.setEtiquetas(etiquetas);
+        tareas.add(tarea);
+        etiqueta.setTareas(tareas);
         tarea=tareaRepository.update(tarea);
+        etiquetaRepository.update(etiqueta);
       }
       else{
         throw new TareaServiceException("Error. La etiqueta no pertenece al tablero de la tarea");
@@ -197,7 +221,10 @@ public class TareaService{
       if(tarea.getUsuario().getEtiquetas().contains(etiqueta)){
         etiquetas.add(etiqueta);
         tarea.setEtiquetas(etiquetas);
+        tareas.add(tarea);
+        etiqueta.setTareas(tareas);
         tarea=tareaRepository.update(tarea);
+        etiquetaRepository.update(etiqueta);
       }
       else{
         throw new TareaServiceException("Error. La etiqueta no pertenece al usuario de la tarea");
@@ -217,10 +244,14 @@ public class TareaService{
       throw new TareaServiceException("Error. Etiqueta no existente");
     }
     Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+    Set<Tarea> tareas=etiqueta.getTareas();
     boolean borrado=etiquetas.remove(etiqueta);
     if(borrado){
       tarea.setEtiquetas(etiquetas);
+      tareas.remove(tarea);
+      etiqueta.setTareas(tareas);
       tarea=tareaRepository.update(tarea);
+      etiquetaRepository.update(etiqueta);
       return tarea;
     }
     else {
@@ -267,6 +298,27 @@ public class TareaService{
     List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tarea.getEtiquetas());
     Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
     return etiquetas;
+  }
+
+  //Devuelve las etiquetas pendientes de insertar en una lista ordenada por color y nombre
+  public List<Etiqueta> allEtiquetasTareaSinAsignarDisponibles(Long idTarea){
+    List<Etiqueta> disponibles;
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null){
+      throw new TareaServiceException("Tarea no existente");
+    }
+    Tablero tablero=tarea.getTablero();
+    if(tablero!=null){
+      disponibles=new ArrayList<Etiqueta>(tablero.getEtiquetas());
+    }
+    else{
+      disponibles=new ArrayList<Etiqueta>(tarea.getUsuario().getEtiquetas());
+    }
+    List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tarea.getEtiquetas());
+    //elimino todas las etiquetas ya usadas en la tarea
+    disponibles.removeAll(etiquetas);
+    Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
+    return disponibles;
   }
 
   public boolean EtiquetaPerteneceTarea(Long idTarea,String color, String nombre){
