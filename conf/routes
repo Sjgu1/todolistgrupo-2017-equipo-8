@@ -34,6 +34,7 @@ POST    /comentarios/:id/:idUser      controllers.GestionTareasController.grabaC
 DELETE  /tareas/:id                   controllers.GestionTareasController.borraTarea(id: Long)
 PUT     /tareas/:id                   controllers.GestionTareasController.terminarTarea(id:Long)
 GET     /usuarios/:id/tareas/terminadas          controllers.GestionTareasController.listaTareasTerminadas(id: Long)
+PUT     /tareas/:id/usuario/:idUsu       controllers.GestionTareasController.asignarResponsableTarea(id: Long, idUsu: Long)
 
 GET     /usuarios/:id/tableros/nuevo  controllers.GestionTablerosController.formularioNuevoTablero(id: Long)
 POST    /usuarios/:id/tableros/nuevo  controllers.GestionTablerosController.creaNuevoTablero(id: Long)
@@ -45,6 +46,8 @@ DELETE  /etiquetas/:id                controllers.GestionEtiquetasController.bor
 GET     /usuarios/:id/tableros        controllers.GestionTablerosController.listaTableros(id: String)
 PUT     /usuarios/:id/tableros        controllers.GestionTablerosController.asignaParticipanteTablero(idTablero: Long, id: Long)
 GET     /tableros/:id/sesion/:idusu   controllers.GestionTablerosController.detalleTablero(id: Long, idusu: Long)
+
+
 
 
 # Map static resources from the /public folder to the /assets URL path
