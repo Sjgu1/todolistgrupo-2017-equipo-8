@@ -32,41 +32,71 @@
 }
 
 @main("Detalle de tablero",scripts){
-  <div class="main-content">
-  <div class="page-header">
-    <div class="row">
-      <div class="col-md-10">
-        <h1>Tablero @tablero.getNombre()</h1>
+  <div class="panel panel-default">
+      <div class="panel-heading"><h1>@tablero.getNombre()</h1></div>
+      <div class="panel-body">
+        <div class="col-md-8">
+        <h4>Administrador: <span class="label label-default">@tablero.getAdministrador().getLogin()</span></h4>
+        <h4>Participantes:</h4>
+
+          <div class="well well-sm ">
+            <div class="media">
+
+        @if(tablero.getParticipantes().isEmpty()){
+            <p>Este tablero todavía no tiene participantes</p>
+        } else{
+          @for(participante <- tablero.getParticipantes()) {
+
+              <div class="col-md-2 col-sm-2">
+                <img src="@routes.Assets.versioned("images/img_avatar3.png")" class="media-object" style="width:60px">
+                <h5><span class="label label-info">@participante.getLogin()</span></h5>
+              </div>
+          }
+      }
+      </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-10">
-      <div class="table-responsive">
-        <table class="table">
-          <tr>
-            <th>Nombre</th>
-            <th>Administrador</th>
-            <th>Participantes</th>
-          </tr>
-          <tr>
-            <td>@tablero.getNombre()</td>
-            <td>@tablero.getAdministrador().getLogin()</td>
-            <td>
-              @if(tablero.getParticipantes().isEmpty()){
-                  <td class="text-muted">Este tablero todavía no tiene participantes</td>
+      <div class="col-md-4">
+        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">
+            <small><b><span class="glyphicon glyphicon-cog"> Opciones</b></small>
+        </div>
+        <!-- Tab panes -->
+        <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag"> Etiquetas</button>
+        <div id="etiquetas" class="collapse in">
+            <hr class="transparent mx-3 my-0">
+            <table class="table table-condensed">
+              @if(tablero.getEtiquetas().isEmpty()){
+                <td class="text-muted">Sin etiquetas</td>
               } else{
-                <ul>
-                @for(participante <- tablero.getParticipantes()) {
-                  <li>@participante.getLogin()</li>
+                @for(etiqueta <- tablero.getEtiquetas()) {
+                  <tr>
+                    <td><p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
+                        <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),tablero.getId())">
+                        <span class="glyphicon glyphicon-pencil"/></a>
+                        <a onmouseover="" style="cursor: pointer;"
+                        onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),tablero.getId())')">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                    </td>
+                  </tr>
                 }
-              </ul>
-            }
-            </td>
-          </tr>
-        </table>
-      </div>
+              }
+                <tr>
+                  <td><a class="btn btn-primary pull-right"
+                         href="@routes.GestionEtiquetasController.formularioNuevaEtiqueta(usuario.getId(),tablero.getId())">
+                         Nueva etiqueta</a></td>
+                </tr>
+              </table>
 
+          </div>
+          <br/>
+          <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter"> Filtrado</button>
+          <div id="filtrado" class="collapse">
+              <hr class="transparent mx-3 my-0">
+          </div>
+
+        </div>
+
+<div class="col-md-12">
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
         <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
@@ -125,7 +155,7 @@
           </table>
         </div>
         <div id="menu1" class="tab-pane fade">
-          <h3>Menu 1</h3>
+          <h3>Terminadas</h3>
           <table class="table table-striped">
             <tr>
                 <th>Título</th>
@@ -165,7 +195,7 @@
                       onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
                       <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
                       <a onmouseover="" style="cursor: pointer;"
-                      onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+                      onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
                       <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
                 </tr>
               }
@@ -181,48 +211,6 @@
           </div>
       }
     </div>
-    <div class="col-md-2">
-      <aside class="aside-menu">
-        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">
-            <small><b><span class="glyphicon glyphicon-cog"> Opciones</b></small>
-        </div>
-        <!-- Tab panes -->
-        <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag"> Etiquetas</button>
-        <div id="etiquetas" class="collapse in">
-            <hr class="transparent mx-3 my-0">
-            <table class="table table-condensed">
-              @if(tablero.getEtiquetas().isEmpty()){
-                <td class="text-muted">Sin etiquetas</td>
-              } else{
-                @for(etiqueta <- tablero.getEtiquetas()) {
-                  <tr>
-                    <td><p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
-                        <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),tablero.getId())">
-                        <span class="glyphicon glyphicon-pencil"/></a>
-                        <a onmouseover="" style="cursor: pointer;"
-                        onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),tablero.getId())')">
-                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-                    </td>
-                  </tr>
-                }
-              }
-                <tr>
-                  <td><a class="btn btn-primary"
-                         href="@routes.GestionEtiquetasController.formularioNuevaEtiqueta(usuario.getId(),tablero.getId())">
-                         Nueva etiqueta</a></td>
-                </tr>
-              </table>
-
-          </div>
-          <br/>
-          <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter"> Filtrado</button>
-          <div id="filtrado" class="collapse">
-              <hr class="transparent mx-3 my-0">
-          </div>
-
-        </div>
-      </aside>
-    </div>
-  </div>
 </div>
+  </div>
 }
