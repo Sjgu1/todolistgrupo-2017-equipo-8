@@ -339,7 +339,7 @@ public class TareaService{
     if(usuario==null){
       throw new TareaServiceException("Usuario no existente");
     }
-    
+
     Set<Tarea> tareas=usuario.getTareasAsig();
     tareas.add(tarea);
     usuario.setTareasAsig(tareas);
@@ -370,6 +370,16 @@ public class TareaService{
     }
 
 
+  }
+
+  public List<Tarea> allTareasResponsable(Long idUsuario){
+    Usuario usuario=usuarioRepository.findById(idUsuario);
+    if(usuario==null){
+      throw new TareaServiceException("Usuario no existente");
+    }
+    List<Tarea> tareas=new ArrayList<Tarea>(usuario.getTareasAsig());
+    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tareas;
   }
 
 }

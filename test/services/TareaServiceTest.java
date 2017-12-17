@@ -807,4 +807,36 @@ public class TareaServiceTest {
       long idTarea =10000L;
       tareaService.reactivarTareaTerminada(idTarea);
     }
+
+    @Test
+    public void listarTareasTablero(){
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      long idUsuario=1000L;
+      long idTarea= 1000L;
+      long idTarea2= 1002L;
+      Tarea tarea=tareaService.addResponsableTarea(idTarea, idUsuario);
+      tarea=tareaService.addResponsableTarea(idTarea2, idUsuario);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario);
+      List<Tarea> tareas= tareaService.allTareasResponsable(idUsuario);
+      assertEquals("Juan", tarea.getResponsable().getNombre());
+      assertEquals(2,tareas.size());
+    }
+
+    @Test
+    public void crearYasignarTareasTablero(){
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      long idUsuario=1000L;
+      long idTarea= 1000L;
+      long idTarea2= 1002L;
+      tareaService.nuevaTarea(idUsuario,"Pagar el alquiler",null, null);
+      tareaService.nuevaTarea(idUsuario,"Pagar la boda",null, null);
+      Tarea tarea=tareaService.addResponsableTarea(idTarea, idUsuario);
+      tarea=tareaService.addResponsableTarea(idTarea2, idUsuario);
+      Usuario user=usuarioService.findUsuarioPorId(idUsuario);
+      List<Tarea> tareas= tareaService.allTareasResponsable(idUsuario);
+      assertEquals("Juan", tarea.getResponsable().getNombre());
+      assertEquals(2,tareas.size());
+    }
 }
