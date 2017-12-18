@@ -360,9 +360,12 @@ public class GestionTareasController extends Controller{
   }
 
     @Security.Authenticated(ActionAuthenticator.class)
-    public Result filtradoTareas(Long idUsuario,Long idTablero,String etiquetasSeleccionadas){
+    public Result filtradoTareas(Long idUsuario,Long idTablero){
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
+      DynamicForm requestData = formFactory.form().bindFromRequest();
+      String etiquetasSel = requestData.get("etiquetasSel");
+      Logger.debug("Etiquetas seleccionadas por formulario: "+etiquetasSel);
       /*Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
@@ -383,7 +386,7 @@ public class GestionTareasController extends Controller{
       }
       List<Tarea> tareasFiltradas=tareaService.filtradoTareas(idTablero,idUsuario,etiquetasFiltradas);
       Logger.debug("Número tareas filtradas: "+tareasFiltradas.size());*/
-      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSeleccionadas)) :
+      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSel)) :
       redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
     }
 }

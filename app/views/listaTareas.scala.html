@@ -1,5 +1,18 @@
-@(tareas: List[Tarea], tareasTab: List[Tarea], usuario: Usuario, mensaje: String) @scripts = {
+@(tareas: List[Tarea], tareasTab: List[Tarea], usuario: Usuario, mensaje: String)
+@main("Tareas del usuario @usuario.getLogin()") {
 <script type="text/javascript">
+  function asignarEtiquetas() {
+    var lista = document.getElementsByName('etiquetasSeleccionadas');
+    var etiq='';
+
+    for(var i=0;i<lista.length;i++){
+      if(lista[i].checked){
+        etiq+=("-"+lista[i].value.toString());
+      }
+    }
+    var x=document.getElementById("etiquetasSel");
+    x.value=etiq;
+  }
   function del(urlBorrar) {
     $.ajax({
       url: urlBorrar,
@@ -41,34 +54,6 @@
     var checks=$('input[type="checkbox"]').removeAttr("checked")
   }
 
-  function asignarEtiquetas() {
-    var lista = document.getElementsByName('etiquetasSeleccionadas');
-    var listaURL = document.getElementsByName('urlSeleccionada');
-    var etiq='';
-    var ruta='';
-    console.log(lista.length)
-    for(var i=0;i<lista.length;i++){
-      if(lista[i].checked){
-        etiq+=("-"+lista[i].value.toString());
-        ruta=listaURL[i].value;
-      }
-    }
-    if (ruta!=''){
-      $.ajax({
-          url: location.protocol + '//' + location.host+ruta+'?idTab=0&etiq='+etiq,
-          type: 'POST',
-          async: false,
-          success: function(results) {
-            //refresh the page
-            //location.reload();
-          },
-          error: function(results){
-            console.log(results)
-          }
-      });
-      //location.reload();
-    }
-  }
 
   function borrarFiltrado(){
     limpiachecks();
@@ -78,7 +63,6 @@
 
 
 </script>
-} @main("Tareas del usuario @usuario.getLogin()",scripts) {
 <div class="panel panel-default">
   <div class="panel-heading">
     <h1>Listado de tareas de @usuario.getLogin()</h1></div>
@@ -90,7 +74,6 @@
     </ul>
 
     <div class="tab-content">
-
       <div id="home" class="tab-pane fade in active">
         <div class="col-md-8">
 
@@ -169,9 +152,9 @@
         </div>
         <br/>
         <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter">Filtrado</button>
-        <div id="filtrado" class="collapse">
+        <div id="filtrado" class="collapse in">
           <hr class="transparent mx-3 my-0">
-          <form action= "#" method="post">
+          <form action= "@routes.GestionTareasController.filtradoTareas(usuario.getId(),0L)" method="post">
             <fieldset>
           <table class="table table-condensed">
             @if(usuario.getEtiquetas().isEmpty()){
@@ -180,15 +163,15 @@
               <tr>
                 <td>
                   <label class="checkboxinline etiqueta" style="background-color:@etiqueta.getColor()">
-                    <input name="etiquetasSeleccionadas" type="checkbox" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
-                    <input name="urlSeleccionada" type="hidden" value="/usuarios/@usuario.getId()/tareas/filtradas"/>
+                    <input name="etiquetasSeleccionadas" type="checkbox" onclick="asignarEtiquetas()" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
                   </label>
                 </td>
               </tr>
               } }
               <tr>
-                <td><button type="button" class="btn btn-primary" onclick="asignarEtiquetas()">Filtrar</button></td>
-                <td><button type="button" class="btn btn-warning" onclick="borrarFiltrado()">Deshacer filtrado</button></td>
+                <input id="etiquetasSel" name="etiquetasSel" type="hidden" value=""/>
+                <td><button type="submit" class="btn btn-primary">Filtrar</button></td>
+                <td><a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Cancelar filtrado</a></td>
               </tr>
             </table>
         </div>
