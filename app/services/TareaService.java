@@ -382,4 +382,39 @@ public class TareaService{
     return tareas;
   }
 
+  public List<Tarea> filtradoTareas(Long idTablero, Long idUsuario, List<Etiqueta> etiquetas){
+    List<Tarea> filtradas=new ArrayList<Tarea>();
+    if(idTablero!=0){
+      Tablero tablero = tableroRepository.findById(idTablero);
+      if (tablero==null){
+        throw new TareaServiceException("Error. Tablero no existente");
+      }
+      List<Tarea> tareas = new ArrayList<Tarea>(tablero.getTareas());
+      for(Tarea tarea : tareas){
+        List<Etiqueta> etiqTarea = new ArrayList<Etiqueta>(allEtiquetasTarea(tarea.getId()));
+        int numEtiqTarea = etiqTarea.size();
+        etiqTarea.removeAll(etiquetas);
+        if(etiqTarea.size()<numEtiqTarea){
+          filtradas.add(tarea);
+        }
+      }
+    }
+    else {
+      Usuario usuario=usuarioRepository.findById(idUsuario);
+      if(usuario==null){
+        throw new TareaServiceException("Error. Usuario no existente");
+      }
+      List<Tarea> tareas = new ArrayList<Tarea>(usuario.getTareas());
+      for(Tarea tarea : tareas){
+        List<Etiqueta> etiqTarea = new ArrayList<Etiqueta>(allEtiquetasTarea(tarea.getId()));
+        int numEtiqTarea = etiqTarea.size();
+        etiqTarea.removeAll(etiquetas);
+        if(etiqTarea.size()<numEtiqTarea){
+          filtradas.add(tarea);
+        }
+      }
+    }
+    return filtradas;
+  }
+
 }
