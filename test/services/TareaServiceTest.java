@@ -10,6 +10,7 @@ import org.dbunit.operation.*;
 import java.io.FileInputStream;
 
 import java.util.List;
+import java.util.ArrayList;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -838,5 +839,92 @@ public class TareaServiceTest {
       List<Tarea> tareas= tareaService.allTareasResponsable(idUsuario);
       assertEquals("Juan", tarea.getResponsable().getNombre());
       assertEquals(2,tareas.size());
+    }
+
+    @Test
+    public void filtrarTareasPorEtiquetasTablero(){
+      TableroService tableroService=newTableroService();
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      List <Etiqueta> etiquetasFiltrar=new ArrayList<Etiqueta>();
+      List <Tarea> tareasFiltradas=new ArrayList<Tarea>();
+      Long idTablero=1000L;
+      Long idTarea=1000L;
+      Long idTarea2=1001L;
+      String color1="#ffffff";
+      String nombre1="testEspecial";
+      String color2="#000000";
+      String nombre2="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Tarea tarea2=tareaService.obtenerTarea(idTarea2);
+      Tablero tablero=tableroService.findTableroPorId(idTablero);
+      Etiqueta etiqueta1=etiquetaService.creaEtiqueta(color1,nombre1);
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea.getId());
+      tablero=tableroService.addTareaTablero(tablero.getId(),tarea2.getId());
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta1.getId());
+      Etiqueta etiqueta2=etiquetaService.creaEtiqueta(color1,null);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta2.getId());
+      Etiqueta etiqueta3=etiquetaService.creaEtiqueta(color2,nombre1);
+      tablero=tableroService.addEtiquetaATablero(tablero.getId(),etiqueta3.getId());
+      tarea2=tareaService.addEtiquetaATarea(tarea2.getId(),etiqueta1.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta2.getId());
+      etiquetasFiltrar.add(etiqueta3);
+      tareasFiltradas=tareaService.filtradoTareas(idTablero,0L,etiquetasFiltrar);
+      assertEquals(0,tareasFiltradas.size());
+      etiquetasFiltrar.add(etiqueta2);
+      tareasFiltradas=tareaService.filtradoTareas(idTablero,0L,etiquetasFiltrar);
+      assertEquals(1,tareasFiltradas.size());
+      etiquetasFiltrar.add(etiqueta1);
+      tareasFiltradas=tareaService.filtradoTareas(idTablero,0L,etiquetasFiltrar);
+      assertEquals(2,tareasFiltradas.size());
+    }
+
+    @Test
+    public void filtrarTareasPorEtiquetasUsuario(){
+      EtiquetaService etiquetaService=newEtiquetaService();
+      TareaService tareaService=newTareaService();
+      UsuarioService usuarioService=newUsuarioService();
+      List <Etiqueta> etiquetasFiltrar=new ArrayList<Etiqueta>();
+      List <Tarea> tareasFiltradas=new ArrayList<Tarea>();
+      Long idTarea=1000L;
+      Long idTarea2=1001L;
+      Long idUsuario=1000L;
+      String color1="#ffffff";
+      String nombre1="testEspecial";
+      String color2="#000000";
+      String nombre2="testEspecial2";
+      Tarea tarea=tareaService.obtenerTarea(idTarea);
+      Tarea tarea2=tareaService.obtenerTarea(idTarea2);
+      Etiqueta etiqueta1=etiquetaService.creaEtiqueta(color1,nombre1);
+      usuarioService.addEtiquetaAUsuario(idUsuario,etiqueta1.getId());
+      Etiqueta etiqueta2=etiquetaService.creaEtiqueta(color1,null);
+      usuarioService.addEtiquetaAUsuario(idUsuario,etiqueta2.getId());
+      Etiqueta etiqueta3=etiquetaService.creaEtiqueta(color2,nombre1);
+      usuarioService.addEtiquetaAUsuario(idUsuario,etiqueta3.getId());
+      tarea2=tareaService.addEtiquetaATarea(tarea2.getId(),etiqueta1.getId());
+      tarea=tareaService.addEtiquetaATarea(tarea.getId(),etiqueta2.getId());
+      etiquetasFiltrar.add(etiqueta3);
+      tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltrar);
+      assertEquals(0,tareasFiltradas.size());
+      etiquetasFiltrar.add(etiqueta2);
+      tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltrar);
+      assertEquals(1,tareasFiltradas.size());
+      etiquetasFiltrar.add(etiqueta1);
+      tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltrar);
+      assertEquals(2,tareasFiltradas.size());
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void filtrarTareasPorEtiquetasNoExisteTableroExcepcion(){
+      TareaService tareaService=newTareaService();
+      List <Etiqueta> etiquetasFiltrar=new ArrayList<Etiqueta>();
+      tareaService.filtradoTareas(10000L,0L,etiquetasFiltrar);
+    }
+
+    @Test(expected=TareaServiceException.class)
+    public void filtrarTareasPorEtiquetasNoExisteUsuarioExcepcion(){
+      TareaService tareaService=newTareaService();
+      List <Etiqueta> etiquetasFiltrar=new ArrayList<Etiqueta>();
+      tareaService.filtradoTareas(0L,10000L,etiquetasFiltrar);
     }
 }
