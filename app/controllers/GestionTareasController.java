@@ -109,7 +109,9 @@ public class GestionTareasController extends Controller{
         tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
       else
         tareas = tareaService.allTareasUsuario(idUsuario);
-      return ok(listaTareas.render(tareas, usuario, aviso));
+        
+      List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
+      return ok(listaTareas.render(tareas, tareasTab,usuario, aviso));
     }
   }
 
