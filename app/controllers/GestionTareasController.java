@@ -96,10 +96,8 @@ public class GestionTareasController extends Controller{
   public Result listaTareas(String idUsuarioRecibida,Long ordenFecLimite) {
     Long idUsuario = Long.parseLong(idUsuarioRecibida);
     List<Tarea> tareas;
-    Logger.debug("Login con usuario:"+idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    Logger.debug("Usuario sesion:"+connectedUser);
     if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
@@ -129,6 +127,39 @@ public class GestionTareasController extends Controller{
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
       List<Tarea> tareas = tareaService.tareasTerminadas(idUsuario);
       return ok(listaTareasTerminadas.render(tareas, usuario, aviso));
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result listaTareasFiltradas(Long idUsuario,String listaTareas) {
+    Logger.info("Entro a tareas filtradas");
+    Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    if ((long)connectedUser != (long)idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      String[] etiquetasArray = listaTareas.split("-");
+      List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
+      for(String elemento:etiquetasArray){
+        try{
+          Long numEtiqueta=Long.parseLong(elemento);
+          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(elemento));
+          if(etiqaux!=null){
+            etiquetasFiltradas.add(etiqaux);
+          }
+        } catch (NumberFormatException e){
+          continue;
+        } catch (EtiquetaServiceException e){
+          continue;
+        }
+      }
+      String aviso = flash("aviso");
+      List<Tarea> tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltradas);
+      Logger.debug("Tareas filtradas: "+tareasFiltradas.size());
+      List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
+      Logger.debug("Aquí también llega...");
+      return ok(listaTareasFiltradas.render(tareasFiltradas, tareasTab, usuario, "Tareas filtradas"));
     }
   }
 
@@ -330,7 +361,9 @@ public class GestionTareasController extends Controller{
 
     @Security.Authenticated(ActionAuthenticator.class)
     public Result filtradoTareas(Long idUsuario,Long idTablero,String etiquetasSeleccionadas){
-      Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+      String connectedUserStr = session("connected");
+      Long connectedUser =  Long.valueOf(connectedUserStr);
+      /*Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
       String[] etiquetasArray = etiquetasSeleccionadas.split("-");
@@ -349,9 +382,8 @@ public class GestionTareasController extends Controller{
         }
       }
       List<Tarea> tareasFiltradas=tareaService.filtradoTareas(idTablero,idUsuario,etiquetasFiltradas);
-      Logger.debug("Número tareas filtradas: "+tareasFiltradas.size());
-      List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
-      return idTablero==0 ? ok(listaTareas.render(tareasFiltradas, tareasTab,usuario, "Tareas filtradas")) :
+      Logger.debug("Número tareas filtradas: "+tareasFiltradas.size());*/
+      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSeleccionadas)) :
       redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
     }
 }
