@@ -10,7 +10,7 @@ import play.data.DynamicForm;
 import play.Logger;
 
 import java.util.List;
-//import java.
+import java.util.ArrayList;
 
 import services.UsuarioService;
 import services.TareaService;
@@ -109,7 +109,7 @@ public class GestionTareasController extends Controller{
         tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
       else
         tareas = tareaService.allTareasUsuario(idUsuario);
-        
+
       List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
       return ok(listaTareas.render(tareas, tareasTab,usuario, aviso));
     }
@@ -327,4 +327,24 @@ public class GestionTareasController extends Controller{
     flash("aviso","La tarea se ha puesto a reactivado correctamente");
     return ok();
   }
+
+    @Security.Authenticated(ActionAuthenticator.class)
+    public Result filtradoTareas(Long idUsuario,Long idTablero,String etiquetasSeleccionadas){
+      Logger.debug("me llaman...");
+      String connectedUserStr = session("connected");
+      Long connectedUser =  Long.valueOf(connectedUserStr);
+      String[] etiquetas = etiquetasSeleccionadas.split("-");
+      List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
+      try{
+        for(String etiqueta: etiquetas){
+          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(etiqueta));
+          etiquetasFiltradas.add(etiqaux);
+        }
+      } catch (EtiquetaServiceException e){
+
+      }
+      List<Tarea> tareasFiltradas=tareaService.filtradoTareas(idTablero,idUsuario,etiquetasFiltradas);
+      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
+      redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
+    }
 }
