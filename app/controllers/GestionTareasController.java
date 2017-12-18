@@ -131,15 +131,14 @@ public class GestionTareasController extends Controller{
   }
 
   @Security.Authenticated(ActionAuthenticator.class)
-  public Result listaTareasFiltradas(Long idUsuario,String listaTareas) {
-    Logger.info("Entro a tareas filtradas");
+  public Result listaTareasFiltradas(Long idUsuario,String listaEtiquetas) {
     Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
     if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
-      String[] etiquetasArray = listaTareas.split("-");
+      String[] etiquetasArray = listaEtiquetas.split("-");
       List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
       for(String elemento:etiquetasArray){
         try{
@@ -156,9 +155,7 @@ public class GestionTareasController extends Controller{
       }
       String aviso = flash("aviso");
       List<Tarea> tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltradas);
-      Logger.debug("Tareas filtradas: "+tareasFiltradas.size());
       List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
-      Logger.debug("Aquí también llega...");
       return ok(listaTareasFiltradas.render(tareasFiltradas, tareasTab, usuario, "Tareas filtradas"));
     }
   }
@@ -360,33 +357,11 @@ public class GestionTareasController extends Controller{
   }
 
     @Security.Authenticated(ActionAuthenticator.class)
-    public Result filtradoTareas(Long idUsuario,Long idTablero){
+    public Result filtradoTareas(Long idUsuario){
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
       DynamicForm requestData = formFactory.form().bindFromRequest();
       String etiquetasSel = requestData.get("etiquetasSel");
-      Logger.debug("Etiquetas seleccionadas por formulario: "+etiquetasSel);
-      /*Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
-      String connectedUserStr = session("connected");
-      Long connectedUser =  Long.valueOf(connectedUserStr);
-      String[] etiquetasArray = etiquetasSeleccionadas.split("-");
-      List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
-      for(String elemento:etiquetasArray){
-        try{
-          Long numEtiqueta=Long.parseLong(elemento);
-          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(elemento));
-          if(etiqaux!=null){
-            etiquetasFiltradas.add(etiqaux);
-          }
-        } catch (NumberFormatException e){
-          continue;
-        } catch (EtiquetaServiceException e){
-          continue;
-        }
-      }
-      List<Tarea> tareasFiltradas=tareaService.filtradoTareas(idTablero,idUsuario,etiquetasFiltradas);
-      Logger.debug("Número tareas filtradas: "+tareasFiltradas.size());*/
-      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSel)) :
-      redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
+      return redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSel));
     }
 }

@@ -39,7 +39,7 @@ DELETE  /tareas/:id                       controllers.GestionTareasController.bo
 PUT     /tareas/:id                       controllers.GestionTareasController.terminarTarea(id:Long)
 PUT     /tareas/:id/reactivar             controllers.GestionTareasController.reactivarTarea(id:Long)
 GET     /usuarios/:id/tareas/terminadas   controllers.GestionTareasController.listaTareasTerminadas(id: Long)
-POST    /usuarios/:id/tareas/filtradas    controllers.GestionTareasController.filtradoTareas(id: Long,idTab: Long)
+POST    /usuarios/:id/tareas/filtradas    controllers.GestionTareasController.filtradoTareas(id: Long)
 GET     /usuarios/:id/tareas/filtradas    controllers.GestionTareasController.listaTareasFiltradas(id: Long,etiq: String)
 PUT     /tareas/:id/usuario/:idUsu        controllers.GestionTareasController.asignarResponsableTarea(id: Long, idUsu: Long)
 DELETE  /tareas/:id/usuario/:idUsu        controllers.GestionTareasController.borrarResponsableTarea(id: Long, idUsu: Long)
@@ -54,6 +54,8 @@ DELETE  /etiquetas/:id                    controllers.GestionEtiquetasController
 GET     /usuarios/:id/tableros            controllers.GestionTablerosController.listaTableros(id: String)
 PUT     /usuarios/:id/tableros            controllers.GestionTablerosController.asignaParticipanteTablero(idTablero: Long, id: Long)
 GET     /tableros/:id/sesion/:idusu       controllers.GestionTablerosController.detalleTablero(id: Long, idusu: Long)
+POST    /tableros/:id/filtrado       controllers.GestionTablerosController.filtradoTareas(id: Long)
+GET     /tableros/:id/filtrado      controllers.GestionTablerosController.detalleTableroFiltrado(id: Long, idusu: Long,listaEtiquetas: String)
 
 
 # Map static resources from the /public folder to the /assets URL path

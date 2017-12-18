@@ -150,7 +150,7 @@
         <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter">Filtrado</button>
         <div id="filtrado" class="collapse in">
           <hr class="transparent mx-3 my-0">
-          <form action= "@routes.GestionTareasController.filtradoTareas(usuario.getId(),0L)" method="post">
+          <form action= "@routes.GestionTareasController.filtradoTareas(usuario.getId())" method="post">
             <fieldset>
           <table class="table table-condensed">
             @if(usuario.getEtiquetas().isEmpty()){
