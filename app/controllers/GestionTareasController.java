@@ -11,7 +11,7 @@ import play.Logger;
 
 import java.util.List;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import services.UsuarioService;
 import services.TareaService;
 import services.TableroService;
@@ -330,21 +330,28 @@ public class GestionTareasController extends Controller{
 
     @Security.Authenticated(ActionAuthenticator.class)
     public Result filtradoTareas(Long idUsuario,Long idTablero,String etiquetasSeleccionadas){
-      Logger.debug("me llaman...");
+      Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
       String connectedUserStr = session("connected");
       Long connectedUser =  Long.valueOf(connectedUserStr);
-      String[] etiquetas = etiquetasSeleccionadas.split("-");
+      String[] etiquetasArray = etiquetasSeleccionadas.split("-");
       List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
-      try{
-        for(String etiqueta: etiquetas){
-          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(etiqueta));
-          etiquetasFiltradas.add(etiqaux);
+      for(String elemento:etiquetasArray){
+        try{
+          Long numEtiqueta=Long.parseLong(elemento);
+          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(elemento));
+          if(etiqaux!=null){
+            etiquetasFiltradas.add(etiqaux);
+          }
+        } catch (NumberFormatException e){
+          continue;
+        } catch (EtiquetaServiceException e){
+          continue;
         }
-      } catch (EtiquetaServiceException e){
-
       }
       List<Tarea> tareasFiltradas=tareaService.filtradoTareas(idTablero,idUsuario,etiquetasFiltradas);
-      return idTablero==0 ? redirect(controllers.routes.GestionTareasController.listaTareas(idUsuario.toString(),0)) :
+      Logger.debug("Número tareas filtradas: "+tareasFiltradas.size());
+      List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
+      return idTablero==0 ? ok(listaTareas.render(tareasFiltradas, tareasTab,usuario, "Tareas filtradas")) :
       redirect(controllers.routes.GestionTablerosController.detalleTablero(idTablero,connectedUser));
     }
 }

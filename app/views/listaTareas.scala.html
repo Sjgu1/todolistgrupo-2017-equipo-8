@@ -53,28 +53,25 @@
         ruta=listaURL[i].value;
       }
     }
-    console.log(ruta);
-    console.log(etiq);
     if (ruta!=''){
       $.ajax({
-          url: location.protocol + '//' + location.host+ruta+etiq,
+          url: location.protocol + '//' + location.host+ruta+'?idTab=0&etiq='+etiq,
           type: 'POST',
           async: false,
           success: function(results) {
             //refresh the page
-            //console.log("entra id: "+lista[i].value)
-
           },
           error: function(results){
-            //console.log("no puedo con "+lista[i].value+" ruta "+listaURL[i].value)
+            console.log(results)
           }
       });
-      location.reload();
+      //location.reload();
     }
   }
 
   function borrarFiltrado(){
     limpiachecks();
+    location.reload();
 
   }
 
@@ -183,7 +180,7 @@
                 <td>
                   <label class="checkboxinline etiqueta" style="background-color:@etiqueta.getColor()">
                     <input name="etiquetasSeleccionadas" type="checkbox" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
-                    <input name="urlSeleccionada" type="hidden" value="/usuarios/@usuario.getId()/tareas/filtradas/"/>
+                    <input name="urlSeleccionada" type="hidden" value="/usuarios/@usuario.getId()/tareas/filtradas"/>
                   </label>
                 </td>
               </tr>

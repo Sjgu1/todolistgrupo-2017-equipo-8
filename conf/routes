@@ -28,7 +28,7 @@ POST    /usuarios/:id/editarPass          controllers.UsuarioController.modifica
 GET     /usuarios/:id/tareas/nueva        controllers.GestionTareasController.formularioNuevaTarea(id: Long, idTab:Long)
 POST    /usuarios/:id/tareas/nueva        controllers.GestionTareasController.creaNuevaTarea(id: Long, idTab: Long)
 GET     /usuarios/:id/tareas              controllers.GestionTareasController.listaTareas(id: String,orden: Long)
-POST    /usuarios/:id/tareas/filtradas/etiq    controllers.GestionTareasController.filtradoTareas(id: Long,idTab: Long,etiq: String)
+POST    /usuarios/:id/tareas/filtradas    controllers.GestionTareasController.filtradoTareas(id: Long,idTab: Long,etiq: String)
 GET     /tareas/:id/editar                controllers.GestionTareasController.formularioEditaTarea(id: Long, idTab:Long)
 POST    /tareas/:id/editar                controllers.GestionTareasController.grabaTareaModificada(id: Long, idTab: Long)
 DELETE  /tareas/:id/editar                controllers.GestionTareasController.borraComentario(id: Long, idUsuario: Long)

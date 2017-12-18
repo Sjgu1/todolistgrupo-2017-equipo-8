@@ -46,6 +46,7 @@
     for(var i=0;i<lista.length;i++){
       if(lista[i].checked){
         //console.log(lista[i].value + " "+listaURL[i].value)
+        console.log(location.protocol + '//' + location.host+listaURL[i].value)
         $.ajax({
               url: location.protocol + '//' + location.host+listaURL[i].value,
               type: 'PUT',
