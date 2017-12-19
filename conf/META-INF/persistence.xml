@@ -11,6 +11,8 @@
       <class>models.Usuario</class>
       <class>models.Tarea</class>
       <class>models.Tablero</class>
+      <class>models.Comentario</class>
+      <class>models.Etiqueta</class>
       <properties>
          <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
          <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -25,6 +27,8 @@
         <class>models.Usuario</class>
         <class>models.Tarea</class>
         <class>models.Tablero</class>
+        <class>models.Comentario</class>
+        <class>models.Etiqueta</class>
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
@@ -39,6 +43,8 @@
      <class>models.Usuario</class>
      <class>models.Tarea</class>
      <class>models.Tablero</class>
+     <class>models.Comentario</class>
+     <class>models.Etiqueta</class>
      <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
       <property name="hibernate.hbm2ddl.auto" value="validate"/>

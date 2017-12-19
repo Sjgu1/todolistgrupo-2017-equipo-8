@@ -16,6 +16,26 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `Comentario`
+--
+
+DROP TABLE IF EXISTS `Comentario`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Comentario` (
+  `id` bigint(20) NOT NULL,
+  `comentario` varchar(255) DEFAULT NULL,
+  `fechaCreacion` datetime DEFAULT NULL,
+  `fechaModificacion` datetime DEFAULT NULL,
+  `usuario` varchar(255) DEFAULT NULL,
+  `tareaId` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKqaf2c0nv49vyle281btvqbluw` (`tareaId`),
+  CONSTRAINT `FKqaf2c0nv49vyle281btvqbluw` FOREIGN KEY (`tareaId`) REFERENCES `Tarea` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Etiqueta`
 --
 
