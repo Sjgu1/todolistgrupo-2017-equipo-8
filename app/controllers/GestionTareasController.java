@@ -10,8 +10,8 @@ import play.data.DynamicForm;
 import play.Logger;
 
 import java.util.List;
-//import java.
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import services.UsuarioService;
 import services.TareaService;
 import services.TableroService;
@@ -96,10 +96,8 @@ public class GestionTareasController extends Controller{
   public Result listaTareas(String idUsuarioRecibida,Long ordenFecLimite) {
     Long idUsuario = Long.parseLong(idUsuarioRecibida);
     List<Tarea> tareas;
-    Logger.debug("Login con usuario:"+idUsuario);
     String connectedUserStr = session("connected");
     Long connectedUser =  Long.valueOf(connectedUserStr);
-    Logger.debug("Usuario sesion:"+connectedUser);
     if ((long)connectedUser != (long)idUsuario) {
       return unauthorized("Lo siento, no estás autorizado");
     } else {
@@ -109,7 +107,7 @@ public class GestionTareasController extends Controller{
         tareas = tareaService.allTareasUsuarioOrdenadasFechaLimite(idUsuario);
       else
         tareas = tareaService.allTareasUsuario(idUsuario);
-        
+
       List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
       return ok(listaTareas.render(tareas, tareasTab,usuario, aviso));
     }
@@ -129,6 +127,36 @@ public class GestionTareasController extends Controller{
       Usuario usuario = usuarioService.findUsuarioPorId(idUsuario);
       List<Tarea> tareas = tareaService.tareasTerminadas(idUsuario);
       return ok(listaTareasTerminadas.render(tareas, usuario, aviso));
+    }
+  }
+
+  @Security.Authenticated(ActionAuthenticator.class)
+  public Result listaTareasFiltradas(Long idUsuario,String listaEtiquetas) {
+    Usuario usuario=usuarioService.findUsuarioPorId(idUsuario);
+    String connectedUserStr = session("connected");
+    Long connectedUser =  Long.valueOf(connectedUserStr);
+    if ((long)connectedUser != (long)idUsuario) {
+      return unauthorized("Lo siento, no estás autorizado");
+    } else {
+      String[] etiquetasArray = listaEtiquetas.split("-");
+      List<Etiqueta> etiquetasFiltradas = new ArrayList<Etiqueta>();
+      for(String elemento:etiquetasArray){
+        try{
+          Long numEtiqueta=Long.parseLong(elemento);
+          Etiqueta etiqaux= etiquetaService.obtenerEtiqueta(Long.parseLong(elemento));
+          if(etiqaux!=null){
+            etiquetasFiltradas.add(etiqaux);
+          }
+        } catch (NumberFormatException e){
+          continue;
+        } catch (EtiquetaServiceException e){
+          continue;
+        }
+      }
+      String aviso = flash("aviso");
+      List<Tarea> tareasFiltradas=tareaService.filtradoTareas(0L,idUsuario,etiquetasFiltradas);
+      List<Tarea> tareasTab = tareaService.allTareasResponsable(idUsuario);
+      return ok(listaTareasFiltradas.render(tareasFiltradas, tareasTab, usuario, "Tareas filtradas"));
     }
   }
 
@@ -327,4 +355,13 @@ public class GestionTareasController extends Controller{
     flash("aviso","La tarea se ha puesto a reactivado correctamente");
     return ok();
   }
+
+    @Security.Authenticated(ActionAuthenticator.class)
+    public Result filtradoTareas(Long idUsuario){
+      String connectedUserStr = session("connected");
+      Long connectedUser =  Long.valueOf(connectedUserStr);
+      DynamicForm requestData = formFactory.form().bindFromRequest();
+      String etiquetasSel = requestData.get("etiquetasSel");
+      return redirect(controllers.routes.GestionTareasController.listaTareasFiltradas(idUsuario,etiquetasSel));
+    }
 }

@@ -1,5 +1,5 @@
 @(tareas: List[Tarea], tareasTab: List[Tarea], usuario: Usuario, mensaje: String)
-@main("Tareas del usuario @usuario.getLogin()") {
+@main("Tareas del usuario @usuario.getLogin() filtradas") {
 <script type="text/javascript">
   function asignarEtiquetas() {
     var lista = document.getElementsByName('etiquetasSeleccionadas');
@@ -65,7 +65,7 @@
 </script>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h1>Listado de tareas de @usuario.getLogin()</h1></div>
+    <h1>Listado de tareas de @usuario.getLogin() filtradas</h1></div>
   <div class="panel-body">
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
@@ -78,10 +78,6 @@
         <div class="col-md-8">
 
           <h3>Tareas</h3>
-          <p>
-            <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
-            <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),1)">Tareas ordenadas fecha límite</a>
-          </p>
           <table class="table table-striped">
             <tr>
               <th>Título</th>
@@ -162,7 +158,7 @@
             } else{ @for(etiqueta <- usuario.getEtiquetas()) {
               <tr>
                 <td>
-                  <label class="checkboxinline etiqueta" style="background-color:@etiqueta.getColor()">
+                  <label class="etiqueta" style="background-color:@etiqueta.getColor()">
                     <input name="etiquetasSeleccionadas" type="checkbox" onclick="asignarEtiquetas()" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
                   </label>
                 </td>
