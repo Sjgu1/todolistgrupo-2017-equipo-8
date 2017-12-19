@@ -8,9 +8,12 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import java.text.SimpleDateFormat;
+import java.util.Set;
+import java.util.HashSet;
 
 import play.data.format.*;
+import play.Logger;
+
 
 @Entity
 public class Tarea{
@@ -19,18 +22,34 @@ public class Tarea{
   private Long id;
   private String titulo;
   private Boolean terminada;
+  private String descripcion;
   //Relación muchos-a-uno entre tareas y usuario
   @ManyToOne
   //Nombre de la columna en la BD que guarda físicamente
   //ei ID del usuario con el que está asociado una tarea
   @JoinColumn(name="usuarioId")
   public Usuario usuario;
+  //Relación muchos-a-uno entre tareas y usuario
+  @ManyToOne
+  @JoinColumn(name="tableroId")
+  public Tablero tablero;
+  @ManyToOne
+  @JoinColumn(name="usuarioTareaId")
+  public Usuario responsable;
 
   // Variable para guardar fecha creación tarea
   private LocalDateTime fechaCreacion;
   @Formats.DateTime(pattern="dd-MM-yyyy")
   @Temporal(TemporalType.DATE)
   private Date fechaLimite;
+  @ManyToMany(fetch=FetchType.EAGER)
+  @JoinTable(name="Etiqueta_Tarea")
+  private Set<Etiqueta> etiquetas = new HashSet<Etiqueta>();
+  //Relación uno-a-muchos entre usuario y comentario
+  @OneToMany(mappedBy="tarea", fetch=FetchType.EAGER)
+  public Set<Comentario> comentarios=new HashSet<Comentario>();
+
+
   public Tarea() {}
 
   public Tarea(Usuario usuario,String titulo){
@@ -40,19 +59,11 @@ public class Tarea{
       this.usuario=usuario;
       this.titulo=titulo;
       this.fechaCreacion=LocalDateTime.now();
+      this.descripcion = "";
       this.fechaLimite=fechaaux;
       this.terminada=false;
     }catch (Exception e) {}
   }
-
-  public Tarea(Usuario usuario,String titulo,Date fechaLimite){
-    this.usuario=usuario;
-    this.titulo=titulo;
-    this.fechaCreacion=LocalDateTime.now();
-    this.fechaLimite=fechaLimite;
-    this.terminada=false;
-  }
-
   //Getters y setters necesarios para JPA
 
   public Long getId(){
@@ -102,6 +113,50 @@ public class Tarea{
 
   public void setFechaLimite(Date fechaLimite){
     this.fechaLimite=fechaLimite;
+  }
+
+  public String getDescripcion(){
+    return this.descripcion;
+  }
+  public void setDescripcion(String descripcion){
+    if(descripcion == null){
+      this.descripcion = "";
+    }else{
+      this.descripcion=descripcion;
+    }
+  }
+
+  public Tablero getTablero(){
+    return this.tablero;
+  }
+
+  public void setTablero(Tablero tablero){
+    this.tablero=tablero;
+  }
+
+  public Set<Etiqueta> getEtiquetas() {
+    return etiquetas;
+  }
+
+  public void setEtiquetas(Set<Etiqueta> etiquetas) {
+    this.etiquetas = etiquetas;
+  }
+
+
+  public Set<Comentario> getComentarios(){
+    return comentarios;
+  }
+
+  public void setComentarios(Set<Comentario> comentarios){
+    this.comentarios=comentarios;
+}
+  public Usuario getResponsable(){
+    return responsable;
+  }
+
+  public void setResponsable(Usuario usuario){
+    this.responsable=usuario;
+
   }
 
   public boolean tareaCaducada(){

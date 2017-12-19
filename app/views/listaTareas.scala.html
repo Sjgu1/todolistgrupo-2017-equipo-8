@@ -1,78 +1,270 @@
-@(tareas: List[Tarea], usuario: Usuario, mensaje: String)
-@scripts = {
-    <script type="text/javascript">
-        function del(urlBorrar) {
-            $.ajax({
-                url: urlBorrar,
-                type: 'DELETE',
-                success: function(results) {
-                  //refresh the page
-                    location.reload();
-                }
-            });
-        }
-        function ter(urlTer) {
-            $.ajax({
-                url: urlTer,
-                type: 'PUT',
-                success: function(results) {
-                  //refresh the page
-                    location.reload();
-                }
-            });
-        }
-    </script>
-}
+@(tareas: List[Tarea], tareasTab: List[Tarea], usuario: Usuario, mensaje: String)
+@main("Tareas del usuario @usuario.getLogin()") {
+<script type="text/javascript">
+  function asignarEtiquetas() {
+    var lista = document.getElementsByName('etiquetasSeleccionadas');
+    var etiq='';
 
-@main("Tareas del usuario @usuario.getLogin()",scripts) {
-    <h2> Listado de tareas de @usuario.getLogin()</h2>
-    </br>
-    <p>
-      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
-      <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),1)">Tareas ordenadas fecha límite</a>
-    </p>
-    <table class="table table-striped">
-        <tr>
-            <th>Título</th>
-            <th>Fecha Límite</th>
-            <th>Acción</th>
-        </tr>
-    @for(tarea <- tareas) {
-      @if(tarea.tareaCaducada()){
-        <tr class="danger">
-      } else {
-        <tr>
-        }
-            <td>@tarea.getTitulo()</td>
-            @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
-              <td>Sin fecha límite</td>
-            } else {
-              <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
-            }
-            <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId())">
-              <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-              <a onmouseover="" style="cursor: pointer;"
-              onclick="del('@routes.GestionTareasController.borraTarea(tarea.getId())')">
-              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
-              <a onmouseover="" style="cursor: pointer;"
-              onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
-              <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
-        </tr>
+    for(var i=0;i<lista.length;i++){
+      if(lista[i].checked){
+        etiq+=("-"+lista[i].value.toString());
       }
-
-      <tr>
-          <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId())">
-              <span class="glyphicon glyphicon-plus"/></a></td>
-    </tr>
-
-  </table>
-
-  <p><a href="@routes.GestionTareasController.listaTareasTerminadas(usuario.getId())">Tareas terminadas</a></p>
-
-
-  @if(mensaje != null) {
-      <div class="alert alert-success">
-          @mensaje
-      </div>
+    }
+    var x=document.getElementById("etiquetasSel");
+    x.value=etiq;
   }
+  function del(urlBorrar) {
+    $.ajax({
+      url: urlBorrar,
+      type: 'DELETE',
+      success: function(results) {
+        //refresh the page
+        location.reload();
+      }
+    });
+  }
+
+  function ter(urlTer) {
+    $.ajax({
+      url: urlTer,
+      type: 'PUT',
+      success: function(results) {
+        //refresh the page
+        location.reload();
+      }
+    });
+  }
+
+  function confirmar(ideti) {
+    var txt = ideti;
+    var r = confirm("Se eliminara la etiqueta del usuario y de todas las tareas que la tengan asignada, ¿está seguro de ello?");
+    if (r == true) {
+      del(ideti)
+    }
+  }
+  function confirmarTarea(ideti) {
+    var txt=ideti;
+    var r = confirm("Se eliminará la tarea, ¿está seguro de ello?");
+    if (r == true) {
+      del(ideti)
+    }
+  }
+  //función para limpiarchecks
+  function limpiachecks(){
+    var checks=$('input[type="checkbox"]').removeAttr("checked")
+  }
+
+
+  function borrarFiltrado(){
+    limpiachecks();
+    location.reload();
+
+  }
+
+
+</script>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h1>Listado de tareas de @usuario.getLogin()</h1></div>
+  <div class="panel-body">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#home">Pendientes</a></li>
+      <li><a data-toggle="tab" href="#menu1">Terminadas</a></li>
+      <li><a data-toggle="tab" href="#menu2">Tableros</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+        <div class="col-md-8">
+
+          <h3>Tareas</h3>
+          <p>
+            <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Tareas ordenadas fecha creación</a>
+            <a class="btn btn-link" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),1)">Tareas ordenadas fecha límite</a>
+          </p>
+          <table class="table table-striped">
+            <tr>
+              <th>Título</th>
+              <th>Fecha Límite</th>
+              <th>Etiquetas</th>
+              <th>Acción</th>
+            </tr>
+            @for(tarea
+            <- tareas) { @if(!tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
+              }else{
+              <tr>
+                }
+                <td>
+                  @tarea.getTitulo()
+
+                </td>
+                @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+                <td>Sin fecha límite</td>
+                } else {
+                <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+                }
+
+                <td>
+                  @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
+                  <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+        } }
+        </td>
+        <td><a href="@routes.GestionTareasController.formularioEditaTarea(tarea.getId(),0)">
+                                <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+          <a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.terminarTarea(tarea.getId())')">
+                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
+        </tr>
+        } }
+
+        <tr>
+          <td><a href="@routes.GestionTareasController.formularioNuevaTarea(usuario.getId(), 0)">
+                                <span class="glyphicon glyphicon-plus"/></a></td>
+        </tr>
+        </table>
+      </div>
+      <div class="col-md-4">
+        <div class="callout m-0 py-2 text-muted text-center bg-light text-uppercase">
+          <small><b><span class="glyphicon glyphicon-cog">Opciones</b></small>
+        </div>
+        <!-- Tab panes -->
+        <button type="button" class="btn" data-toggle="collapse" data-target="#etiquetas"><span class="glyphicon glyphicon-tag">Etiquetas</button>
+        <div id="etiquetas" class="collapse in">
+          <hr class="transparent mx-3 my-0">
+          <table class="table table-condensed">
+            @if(usuario.getEtiquetas().isEmpty()){
+            <td class="text-muted">Sin etiquetas</td>
+            } else{ @for(etiqueta <- usuario.getEtiquetas()) {
+              <tr>
+                <td>
+                  <p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b></p>
+                  <a href="@routes.GestionEtiquetasController.formularioEditaEtiqueta(etiqueta.getId(),0L)">
+                                          <span class="glyphicon glyphicon-pencil"/></a>
+                  <a onmouseover="" style="cursor: pointer;" onclick="confirmar('@routes.GestionEtiquetasController.borraEtiqueta(etiqueta.getId(),0L)')">
+                                          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                </td>
+              </tr>
+              } }
+              <tr>
+                <td><a class="btn btn-primary" href="@routes.GestionEtiquetasController.formularioNuevaEtiqueta(usuario.getId(),0)">
+                                           Nueva etiqueta</a></td>
+              </tr>
+          </table>
+        </div>
+        <br/>
+        <button type="button" class="btn" data-toggle="collapse" data-target="#filtrado"><span class="glyphicon glyphicon-filter">Filtrado</button>
+        <div id="filtrado" class="collapse in">
+          <hr class="transparent mx-3 my-0">
+          <form action= "@routes.GestionTareasController.filtradoTareas(usuario.getId())" method="post">
+            <fieldset>
+          <table class="table table-condensed">
+            @if(usuario.getEtiquetas().isEmpty()){
+            <td class="text-muted">Sin etiquetas</td>
+            } else{ @for(etiqueta <- usuario.getEtiquetas()) {
+              <tr>
+                <td>
+                  <label class="checkboxinline etiqueta" style="background-color:@etiqueta.getColor()">
+                    <input name="etiquetasSeleccionadas" type="checkbox" onclick="asignarEtiquetas()" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
+                  </label>
+                </td>
+              </tr>
+              } }
+              <tr>
+                <input id="etiquetasSel" name="etiquetasSel" type="hidden" value=""/>
+                <td><button type="submit" class="btn btn-primary">Filtrar</button></td>
+                <td><a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(usuario.getId().toString(),0)">Cancelar filtrado</a></td>
+              </tr>
+            </table>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div id="menu1" class="tab-pane fade">
+      <h3>Terminadas</h3>
+      <table class="table table-striped">
+        <tr>
+          <th>Título</th>
+          <th>Fecha Límite</th>
+          <th>Etiquetas</th>
+          <th>Acción</th>
+        </tr>
+        @for(tarea
+        <- tareas) { @if(tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
+          }else{
+          <tr>
+            }
+            <td>
+              @tarea.getTitulo()
+
+            </td>
+            @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+            <td>Sin fecha límite</td>
+            } else {
+            <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+            }
+            <td>
+              @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
+              <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+    } }
+    </td>
+    <td>
+      <a onmouseover="" style="cursor: pointer;" onclick="confirmarTarea('@routes.GestionTareasController.borraTarea(tarea.getId())')">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>&nbsp;
+      <a onmouseover="" style="cursor: pointer;" onclick="ter('@routes.GestionTareasController.reactivarTarea(tarea.getId())')">
+                                <span class="glyphicon glyphicon-check" aria-hidden="true"></span></a></td>
+    </tr>
+    } }
+    </table>
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Tareas de tableros</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Título</th>
+        <th>Fecha Límite</th>
+        <th>Etiquetas</th>
+        <th>Tablero</th>
+      </tr>
+      @for(tarea
+      <- tareasTab) { @if(!tarea.getTerminada()){ @if(tarea.tareaCaducada()){ <tr class="danger">
+        }else{
+        <tr>
+          }
+          <td>
+            @tarea.getTitulo()
+
+          </td>
+          @if(tarea.getFechaLimite().format("dd-MM-yyyy").toString().equals("01-01-1900")){
+          <td>Sin fecha límite</td>
+          } else {
+          <td>@tarea.getFechaLimite().format("dd-MM-yyyy").toString()</td>
+          }
+
+          <td>
+            @if(tarea.getEtiquetas().isEmpty()){ Sin etiquetas } else { @for(etiqueta
+            <- tarea.getEtiquetas()){ <div class="etiquetaMini" style="background-color:@etiqueta.getColor()"></div>
+      } }
+      </td>
+      <td>
+        <a href="@routes.GestionTablerosController.detalleTablero(tarea.getTablero().getId(),usuario.getId())">@tarea.getTablero().getNombre()</a>
+      </td>
+      </tr>
+  }}
+  </table>
+  </div>
+</div>
+</div>
+</div>
+
+@if(mensaje != null) {
+<div class="alert alert-success">
+  @mensaje
+</div>
+}
+</div>
+</div>
+</div>
+
+
 }

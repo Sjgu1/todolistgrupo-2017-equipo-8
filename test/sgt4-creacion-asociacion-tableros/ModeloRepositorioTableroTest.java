@@ -23,8 +23,10 @@ import java.io.FileInputStream;
 
 import models.Usuario;
 import models.Tablero;
+import models.Etiqueta;
 import models.TableroRepository;
 import models.UsuarioRepository;
+import models.EtiquetaRepository;
 
 public class ModeloRepositorioTableroTest {
   static private Injector injector;
@@ -40,6 +42,18 @@ public class ModeloRepositorioTableroTest {
     db = injector.instanceOf(Database.class);
   }
 
+  private TableroRepository newTableroRepository(){
+    return injector.instanceOf(TableroRepository.class);
+  }
+
+  private UsuarioRepository newUsuarioRepository(){
+    return injector.instanceOf(UsuarioRepository.class);
+  }
+
+  private EtiquetaRepository newEtiquetaRepository(){
+    return injector.instanceOf(EtiquetaRepository.class);
+  }
+
    @Test
    public void testCrearTablero() {
       Usuario usuario = new Usuario("juangutierrez", "juangutierrez@gmail.com");
@@ -52,7 +66,7 @@ public class ModeloRepositorioTableroTest {
 
   @Test
   public void testObtenerTableroRepository() {
-    TableroRepository tableroRepository = injector.instanceOf(TableroRepository.class);
+    TableroRepository tableroRepository = newTableroRepository();
     assertNotNull(tableroRepository);
   }
 
@@ -70,8 +84,8 @@ public class ModeloRepositorioTableroTest {
 
   @Test
   public void testAddTableroInsertsDatabase() {
-    UsuarioRepository usuarioRepository = injector.instanceOf(UsuarioRepository.class);
-    TableroRepository tableroRepository = injector.instanceOf(TableroRepository.class);
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    TableroRepository tableroRepository = newTableroRepository();
     Usuario administrador = new Usuario("juangutierrez", "juangutierrez@gmail.com");
     administrador = usuarioRepository.add(administrador);
     Tablero tablero = new Tablero(administrador, "Tablero 1");
@@ -94,8 +108,8 @@ public class ModeloRepositorioTableroTest {
 
   @Test
   public void testUsuarioAdministraVariosTableros() {
-    UsuarioRepository usuarioRepository = injector.instanceOf(UsuarioRepository.class);
-    TableroRepository tableroRepository = injector.instanceOf(TableroRepository.class);
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    TableroRepository tableroRepository = newTableroRepository();
     Usuario administrador = new Usuario("juangutierrez", "juangutierrez@gmail.com");
     administrador = usuarioRepository.add(administrador);
     Tablero tablero1 = new Tablero(administrador, "Tablero 1");
@@ -119,8 +133,8 @@ public class ModeloRepositorioTableroTest {
   @Test
   public void testUsuarioParticipaEnVariosTableros() throws Exception {
     initDataSet();
-    UsuarioRepository usuarioRepository = injector.instanceOf(UsuarioRepository.class);
-    TableroRepository tableroRepository = injector.instanceOf(TableroRepository.class);
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    TableroRepository tableroRepository = newTableroRepository();
     Usuario admin = usuarioRepository.findById(1000L);
     Usuario usuario = usuarioRepository.findById(1001L);
     Set<Tablero> tableros = admin.getAdministrados();
@@ -148,8 +162,8 @@ public class ModeloRepositorioTableroTest {
   @Test
   public void testTableroTieneVariosUsuarios() throws Exception {
     initDataSet();
-    UsuarioRepository usuarioRepository = injector.instanceOf(UsuarioRepository.class);
-    TableroRepository tableroRepository = injector.instanceOf(TableroRepository.class);
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    TableroRepository tableroRepository = newTableroRepository();
     // Obtenemos datos del dataset
     Tablero tablero = tableroRepository.findById(1000L);
     Usuario usuario1 = usuarioRepository.findById(1000L);
@@ -169,5 +183,41 @@ public class ModeloRepositorioTableroTest {
     assertEquals(1, usuario1.getTableros().size());
     assertTrue(tablero.getParticipantes().contains(usuario1));
     assertTrue(usuario1.getTableros().contains(tablero));
+  }
+
+  @Test
+  public void testAddEtiquetaTablero() {
+    TableroRepository tableroRepository = newTableroRepository();
+    EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+
+    Tablero tablero = tableroRepository.findById(1000L);
+    Etiqueta etiqueta=new Etiqueta("#ffffff");
+    etiquetaRepository.add(etiqueta);
+    int numEtiquetas=tablero.getEtiquetas().size();
+    tablero.getEtiquetas().add(etiqueta);
+    tableroRepository.update(tablero);
+    tablero = tableroRepository.findById(1000L);
+    assertTrue(numEtiquetas<tablero.getEtiquetas().size());
+    assertTrue(tablero.getEtiquetas().contains(etiqueta));
+  }
+
+  @Test
+  public void testAddVariasEtiquetasTablero() {
+    TableroRepository tableroRepository = newTableroRepository();
+    EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+
+    Tablero tablero = tableroRepository.findById(1000L);
+    Etiqueta etiqueta1=new Etiqueta("#ffffff");
+    Etiqueta etiqueta2=new Etiqueta("#000000");
+    etiquetaRepository.add(etiqueta1);
+    etiquetaRepository.add(etiqueta2);
+    int numEtiquetas=tablero.getEtiquetas().size();
+    tablero.getEtiquetas().add(etiqueta1);
+    tablero.getEtiquetas().add(etiqueta2);
+    tableroRepository.update(tablero);
+    tablero = tableroRepository.findById(1000L);
+    assertTrue(numEtiquetas<tablero.getEtiquetas().size());
+    assertTrue(tablero.getEtiquetas().contains(etiqueta1));
+    assertTrue(tablero.getEtiquetas().contains(etiqueta2));
   }
 }

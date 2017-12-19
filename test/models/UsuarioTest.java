@@ -24,7 +24,9 @@ import play.inject.guice.GuiceInjectorBuilder;
 import play.Environment;
 
 import models.Usuario;
+import models.Etiqueta;
 import models.UsuarioRepository;
+import models.EtiquetaRepository;
 import models.JPAUsuarioRepository;
 
 public class UsuarioTest{
@@ -66,6 +68,10 @@ public class UsuarioTest{
 
    private UsuarioRepository newUsuarioRepository(){
      return injector.instanceOf(UsuarioRepository.class);
+   }
+
+   private EtiquetaRepository newEtiquetaRepository(){
+     return injector.instanceOf(EtiquetaRepository.class);
    }
 
   //Test 1: testCrearUsuario
@@ -151,5 +157,41 @@ public class UsuarioTest{
     Usuario usuario3 = new Usuario("antoniolopez", "antoniolopez@gmail.com");
     assertEquals(usuario1, usuario2);
     assertNotEquals(usuario1, usuario3);
+  }
+
+  @Test
+  public void testAddEtiquetaUsuario() {
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+
+    Usuario usuario=usuarioRepository.findById(1000L);
+    Etiqueta etiqueta=new Etiqueta("#ffffff");
+    etiquetaRepository.add(etiqueta);
+    int numEtiquetas=usuario.getEtiquetas().size();
+    usuario.getEtiquetas().add(etiqueta);
+    usuarioRepository.modify(usuario);
+    usuario = usuarioRepository.findById(1000L);
+    assertTrue(numEtiquetas<usuario.getEtiquetas().size());
+    assertTrue(usuario.getEtiquetas().contains(etiqueta));
+  }
+
+  @Test
+  public void testAddVariasEtiquetasUsuario() {
+    UsuarioRepository usuarioRepository = newUsuarioRepository();
+    EtiquetaRepository etiquetaRepository = newEtiquetaRepository();
+
+    Usuario usuario=usuarioRepository.findById(1000L);
+    Etiqueta etiqueta1=new Etiqueta("#ffffff");
+    Etiqueta etiqueta2=new Etiqueta("#000000");
+    etiquetaRepository.add(etiqueta1);
+    etiquetaRepository.add(etiqueta2);
+    int numEtiquetas=usuario.getEtiquetas().size();
+    usuario.getEtiquetas().add(etiqueta1);
+    usuario.getEtiquetas().add(etiqueta2);
+    usuarioRepository.modify(usuario);
+    usuario = usuarioRepository.findById(1000L);
+    assertTrue(numEtiquetas<usuario.getEtiquetas().size());
+    assertTrue(usuario.getEtiquetas().contains(etiqueta1));
+    assertTrue(usuario.getEtiquetas().contains(etiqueta2));
   }
 }

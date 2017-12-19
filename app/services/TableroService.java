@@ -20,14 +20,23 @@ import models.UsuarioRepository;
 import models.Tablero;
 import models.TableroRepository;
 
+import models.Tarea;
+import models.TareaRepository;
+import models.Etiqueta;
+import models.EtiquetaRepository;
+
 public class TableroService{
   UsuarioRepository usuarioRepository;
   TableroRepository tableroRepository;
+  TareaRepository tareaRepository;
+  EtiquetaRepository etiquetaRepository;
 
   @Inject
-  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository){
+  public TableroService(UsuarioRepository usurepository,TableroRepository tabrepository, TareaRepository tareaRepository,EtiquetaRepository etrepository){
     this.usuarioRepository=usurepository;
     this.tableroRepository=tabrepository;
+    this.tareaRepository=tareaRepository;
+    this.etiquetaRepository=etrepository;
   }
 
   public Tablero creaTablero(long idUsuario, String titulo){
@@ -39,12 +48,20 @@ public class TableroService{
     if(tablero!=null){
       throw new TableroServiceException("Nombre de tablero duplicado");
     }
+
+    if(titulo == null || titulo.isEmpty()){
+        throw new TableroServiceException("El titulo es obligatorio");
+    }
     //haciendo uso del método declarado en service
     /*if(nombreTableroDuplicado(titulo)){
       throw new TableroServiceException("Nombre de tablero duplicado");
     }*/
     tablero=new Tablero(usuario,titulo);
     return tableroRepository.add(tablero);
+  }
+
+  public Tablero findTableroPorId(Long id){
+    return tableroRepository.findById(id);
   }
 
   public Tablero addParticipanteaTablero(Long idTablero,Long idUsuario){
@@ -99,6 +116,145 @@ public class TableroService{
     tableros.removeAll(this.allTablerosParticipanteUsuario(idUsuario));
     Collections.sort(tableros,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
     return tableros;
+  }
+
+  public Tablero obtenerTablero(Long idTablero){
+    return tableroRepository.findById(idTablero);
+  }
+
+  public Tablero addTareaTablero(Long idTablero,Long idTarea){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+    Tarea tarea=tareaRepository.findById(idTarea);
+    if(tarea==null){
+      throw new TableroServiceException("Tarea no existente");
+    }
+    Set<Tarea> tareas=tablero.getTareas();
+    tareas.add(tarea);
+    tablero.setTareas(tareas);
+    tarea.setTablero(tablero);
+    tablero=tableroRepository.update(tablero);
+    tareaRepository.update(tarea);
+    return tablero;
+  }
+
+  public Tablero addEtiquetaATablero(Long idTablero, Long idEtiqueta){
+    Tablero tablero = tableroRepository.findById(idTablero);
+    if (tablero==null){
+      throw new TableroServiceException("Error. Tablero no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TableroServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tablero.getEtiquetas();
+    etiquetas.add(etiqueta);
+    tablero.setEtiquetas(etiquetas);
+    etiqueta.setTablero(tablero);
+    tablero=tableroRepository.update(tablero);
+    etiquetaRepository.update(etiqueta);
+    return tablero;
+  }
+
+  public Tablero borraEtiquetaATablero(Long idTablero, Long idEtiqueta){
+    Tablero tablero = tableroRepository.findById(idTablero);
+    if (tablero==null){
+      throw new TableroServiceException("Error. Tablero no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TableroServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tablero.getEtiquetas();
+    boolean borrado=etiquetas.remove(etiqueta);
+    if(borrado){
+      borraEtiquetasTareasPerteneceTablero(tablero.getId(),etiqueta.getId());
+      tablero.setEtiquetas(etiquetas);
+      tablero=tableroRepository.update(tablero);
+      etiquetaRepository.delete(etiqueta.getId());
+      return tablero;
+    }
+    else {
+      throw new TableroServiceException("Error, la etiqueta a borrar no pertenece al tablero");
+    }
+  }
+
+  public Tablero modificaEtiquetaATablero(Long idTablero, Long idEtiqueta,String color,String nombre){
+    Tablero tablero = tableroRepository.findById(idTablero);
+    if (tablero==null){
+      throw new TableroServiceException("Error. Tablero no existente");
+    }
+    Etiqueta etiqueta= etiquetaRepository.findById(idEtiqueta);
+    if (etiqueta==null){
+      throw new TableroServiceException("Error. Etiqueta no existente");
+    }
+    Set<Etiqueta> etiquetas=tablero.getEtiquetas();
+    if(etiquetas.contains(etiqueta)){
+      try{
+        if(color!=null){
+          etiqueta.setColor(color);
+        }
+        if(nombre!=null){
+          etiqueta.setNombre(nombre);
+        }
+        etiquetaRepository.update(etiqueta);
+      } catch (IllegalArgumentException e){
+        throw new TableroServiceException("Error, el color no es válido");
+      }
+    }
+    else{
+      throw new TableroServiceException("Error, la etiqueta a modificar no pertenece al tablero");
+    }
+    tablero = tableroRepository.findById(idTablero);
+    return tablero;
+  }
+
+  //Devuelve las etiquetas en una lista ordenada por color y nombre
+  public List<Etiqueta> allEtiquetasTablero(Long idTablero){
+    Tablero tablero = tableroRepository.findById(idTablero);
+    List<Etiqueta> etiquetas=new ArrayList<Etiqueta>(tablero.getEtiquetas());
+    Collections.sort(etiquetas,(a,b) -> (a.getColor().compareTo(b.getColor())<0 || (a.getColor().equals(b.getColor()) && a.getNombre().compareTo(b.getNombre())<0)) ? -1 : (a.getColor().equals(b.getColor()) && a.getNombre().equals(b.getNombre())) ? 0 : 1);
+    return etiquetas;
+  }
+
+  public boolean EtiquetaPerteneceTablero(Long idTablero,String color, String nombre){
+    Tablero tablero = tableroRepository.findById(idTablero);
+    if (tablero==null){
+      throw new TableroServiceException("Error. Tablero no existente");
+    }
+    Set<Etiqueta> etiquetas=tablero.getEtiquetas();
+    return etiquetas.stream().filter(etiqueta -> etiqueta.getColor().equals(color) && etiqueta.getNombre().equals(nombre)).count()>0;
+  }
+
+  public List<Tarea> allTareasTablero(Long idTablero){
+    Tablero tablero=tableroRepository.findById(idTablero);
+    if(tablero==null){
+      throw new TableroServiceException("Tablero no existente");
+    }
+
+    List<Tarea> tareas=new ArrayList<Tarea>(tablero.getTareas());
+    List<Tarea> result = new ArrayList<Tarea>();
+    //for(Tarea task: tareas){
+    //    if(!task.getTerminada()){
+    //      result.add(task);
+    //    }
+    //}
+    Collections.sort(tareas,(a,b) -> a.getId() < b.getId() ? -1 : a.getId()==b.getId() ? 0 : 1);
+    return tareas;
+  }
+
+  private void borraEtiquetasTareasPerteneceTablero(Long idTablero,Long idEtiqueta){
+      Tablero tablero=tableroRepository.findById(idTablero);
+      Etiqueta etiqueta=etiquetaRepository.findById(idEtiqueta);
+      Set<Tarea> tareas=tablero.getTareas();
+      for(Tarea tarea : tareas){
+        Set<Etiqueta> etiquetas=tarea.getEtiquetas();
+        etiquetas.remove(etiqueta);
+        tarea.setEtiquetas(etiquetas);
+        tareaRepository.update(tarea);
+      }
   }
 
   /*

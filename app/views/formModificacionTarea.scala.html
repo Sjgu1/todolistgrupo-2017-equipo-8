@@ -1,23 +1,201 @@
-@(idUsuario: Long, tarea: Tarea, mensaje: String)
-@main("Modificar Tarea") {
-  @if(mensaje != "") {
-      <div class="alert alert-danger">
-         @mensaje
-      </div>
-   }
-   <h1>Modificar tarea</h1>
-   @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId())) {
-      <fieldset>
-         <legend>Tarea</legend>
-         Título:  <input type="text" size=70 name="titulo" value= "@tarea.getTitulo()">
-         <p/>
-         Fecha límite:  <input type="text" name="fechaLimite" value= "@tarea.getFechaLimite().format("dd-MM-yyyy").toString()">
+@(idUsuario: Long, tarea: Tarea, idTablero:Long, mensaje: String, comentarios: List[Comentario],etiquetasDisp: List[Etiqueta])
 
+
+@main("Modificar Tarea") {
+
+<style>
+  .comentarios-Div {
+    overflow-y: scroll;
+    height: 300px;
+  }
+</style>
+<script type="text/javascript">
+    function del(urlBorrar) {
+      console.log(urlBorrar)
+
+        $.ajax({
+            url: urlBorrar,
+            type: 'DELETE',
+            success: function(results) {
+              //refresh the page
+                location.reload();
+            }
+        });
+    }
+</script>
+<script>
+  function del(urlBorrar) {
+    $.ajax({
+        url: urlBorrar,
+        type: 'DELETE',
+        success: function(results) {
+          //refresh the page
+            location.reload();
+        }
+    });
+  }
+  //función para limpiarchecks
+  function limpiachecks(){
+    var checks=$('input[type="checkbox"]').removeAttr("checked")
+  }
+
+  function asignarEtiquetas() {
+    var lista = document.getElementsByName('etiquetasSeleccionadas');
+    var listaURL = document.getElementsByName('urlSeleccionada');
+    console.log(lista.length)
+    for(var i=0;i<lista.length;i++){
+      if(lista[i].checked){
+        //console.log(lista[i].value + " "+listaURL[i].value)
+        console.log(location.protocol + '//' + location.host+listaURL[i].value)
+        $.ajax({
+              url: location.protocol + '//' + location.host+listaURL[i].value,
+              type: 'PUT',
+              async: false,
+              success: function(results) {
+                //refresh the page
+                //console.log("entra id: "+lista[i].value)
+
+              },
+              error: function(results){
+                //console.log("no puedo con "+lista[i].value+" ruta "+listaURL[i].value)
+              }
+          });
+      }
+    }
+    //limpiamos checks marcados
+    limpiachecks();
+    location.reload();
+  }
+
+  $(function() {
+    $("#fechaLimite").datepicker({
+      dateFormat: "dd-mm-yy",
+      minDate: "today"
+    });
+  });
+</script>
+<h1>Modificar tarea</h1>
+<div class="row">
+  <div class="col-md-6">
+    @helper.form(action = routes.GestionTareasController.grabaTareaModificada(tarea.getId(),idTablero)) {
+    <fieldset>
+      <legend>Tarea</legend>
+      Título: <input type="text" size=70 name="titulo" value="@tarea.getTitulo()">
+      <p/> Descripción:
+      </br>
+      <textarea type="text" cols="75" rows="5" name="descripcion">@tarea.getDescripcion()</textarea>
+      <p>Fecha límite:</br>
+        <input type="text" id="fechaLimite" name="fechaLimite" _label="fechaLimite" value="@tarea.getFechaLimite().format(" dd-MM-yyyy ").toString()">
     </fieldset>
-      <p/>
-      <p>
-         <input type="submit" class="btn btn-primary" value="Guardar">
-         <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(idUsuario.toString(),0)">Cancelar</a>
-      </p>
-   }
+    <p/>
+    <p>
+      <input type="submit" class="btn btn-primary" value="Guardar">
+      @if(idTablero==0){
+        <a class="btn btn-warning" href="@routes.GestionTareasController.listaTareas(idUsuario.toString(),0)">Cancelar</a>
+      } else {
+        <a class="btn btn-warning" href="@routes.GestionTablerosController.detalleTablero(idTablero,Long.parseLong(session.get("connected")))">Cancelar</a>
+      }
+    </p>
+  </div>
+  }
+  @if(idTablero != 0){
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Comentarios</div>
+
+      <div class="panel-body comentarios-Div" id="scrollDiv">
+        @for(comentario<- comentarios) {
+          <div class="well well-sm">
+              <b>@comentario.getUsuario() </b>
+              <span class="label label-default pull-right">Enviado: @comentario.getFechaCreacion()</span>
+                <span type="button" onClick="del('@routes.GestionTareasController.borraComentario(comentario.getId(), idUsuario)')" class="btn btn-xs glyphicon glyphicon-trash"></span>
+              <hr style=" border-style: inset;margin-top: 0;"/>
+              <p>
+                @comentario.getComentario()
+              </p>
+          </div>
+        }
+        </div>
+        <form action= "/comentarios/@tarea.getId()/@idUsuario" method="post">
+          <fieldset>
+            <div class="panel-footer input-group ">
+              <input id="msg" type="text" class="form-control" name="msg" placeholder="Mensaje...">
+              <span class="input-group-addon"><button type="submit" class="button button-primary">Enviar</button></span>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  }
+  </div>
+  <div class="row">
+    <h3>Etiquetas asignadas a la tarea @tarea.getId()</h3>
+    @if(tarea.getEtiquetas().isEmpty()){
+      <p> Tarea sin etiquetas, pulse el botón para añadir nuevas etiquetas</p>
+    } else {
+      @for(etiqueta <- tarea.getEtiquetas()){
+        <div class="col-md-2">
+          <p class="etiqueta" style="background-color:@etiqueta.getColor()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
+            <a onmouseover="" style="cursor: pointer;"
+            onclick="del('@routes.GestionTareasController.borraEtiquetaTarea(tarea.getId(),etiqueta.getId())')">
+            <span class="glyphicon glyphicon-remove" style="background: white" aria-hidden="true"></span></a></p>
+        </div>
+      }
+    }
+    </div>
+    <!-- Button to Open the Modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#asignaEtiquetas">
+      Añadir más etiquetas
+    </button>
+
+
+  <!-- The Modal -->
+  <form action="#" method="post">
+    <fieldset>
+      <div class="modal fade" id="asignaEtiquetas">
+        <div class="modal-dialog" style="width: 80%">
+          <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Asignación de etiquetas</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body" style="overflow:hidden;height:1%;">
+              <div class="container">
+                <div Class="row">
+                  @if(etiquetasDisp.isEmpty()){
+                    <p> Ya has usado todas las etiquetas disponibles</p>
+                  } else {
+                    @for(etiqueta <- etiquetasDisp){
+                      <div class="col-md-2">
+                        <label class="checkboxinline etiqueta" style="background-color:@etiqueta.getColor()">
+                          <input name="etiquetasSeleccionadas" type="checkbox" value="@etiqueta.getId()"><b>@if(etiqueta.getNombre().equals("")){Sin nombre}else{@etiqueta.getNombre()}</b>
+                          <input name="urlSeleccionada" type="hidden" value="@routes.GestionTareasController.asignaEtiquetaTarea(tarea.getId(),etiqueta.getId())"/>
+                        </label>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" onclick="asignarEtiquetas()">Asignar</button>
+              <button type="button" class="btn btn-warning" data-dismiss="modal" onclick="limpiachecks()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <script>
+    var element = document.getElementById("scrollDiv");
+    element.scrollTop = element.scrollHeight;
+  </script>
+}
+@if(flash.containsKey("aviso")) {
+  <div class="alert alert-danger">
+      @flash.get("aviso")
+  </div>
 }

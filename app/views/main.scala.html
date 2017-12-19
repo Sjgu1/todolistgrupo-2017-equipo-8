@@ -14,7 +14,14 @@
         <link href="@routes.Assets.versioned("bootstrap/css/bootstrap.min.css")" rel="stylesheet" media="screen">
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/ui-icons_444444_256x240.png")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/img_avatar3.png")">
         <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+        <link rel="stylesheet"  href="@routes.Assets.versioned("/stylesheets/jquery-ui.css")">
+        <script src="@routes.Assets.versioned("javascripts/jquery.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/jquery-ui.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.versioned("javascripts/jscolor.js")" type="text/javascript"></script>
     </head>
     <body>
          @if(session.get("connected")) {
@@ -70,8 +77,6 @@
       <div class="container">
         @content
       </div>
-        <script src="@routes.Assets.versioned("javascripts/jquery.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.versioned("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
         @scripts
     </body>
 </html>
