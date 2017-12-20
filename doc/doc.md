@@ -17,8 +17,8 @@ Como usuario quiero poder `etiquetar` mis tareas y las tareas de los tableros en
 
 ### [SGT-5 Descripción y selector de fecha en tareas](https://github.com/mads-ua/todolistgrupo-2017-equipo-8/wiki/SGT-5-Descripci%C3%B3n-y-selector-de-fecha-en-tareas)
 #### Descripción
-Las tareas deben de tener una `descripción`, a parte de el `título` y la `fecha límite`, para poder tener más información sobre las tareas. 
-Además, el selector de `fecha límite` ha de ser un calendario desplegable, para facilitar el uso de este campo. 
+Las tareas deben de tener una `descripción`, a parte de el `título` y la `fecha límite`, para poder tener más información sobre las tareas.
+Además, el selector de `fecha límite` ha de ser un calendario desplegable, para facilitar el uso de este campo.
 #### COS - Condiciones de Satisfacción
 
 **Descripción**
@@ -53,9 +53,9 @@ Los comentarios escritos por un usuario, al visualizarlos deben mostrar y permit
 
 #### Descripción
 
-* Las tareas ya no pueden ser eliminadas desde las tareas pendientes, únicamente se pueden finalizar con el fin de evitar borrados accidentales. 
-* Las tareas finalizadas pueden volver a pendientes, para poder reutilizarlas, o modificar sus datos. 
-* Las tareas finalizadas pueden ser eliminadas previo mensaje de confirmación. 
+* Las tareas ya no pueden ser eliminadas desde las tareas pendientes, únicamente se pueden finalizar con el fin de evitar borrados accidentales.
+* Las tareas finalizadas pueden volver a pendientes, para poder reutilizarlas, o modificar sus datos.
+* Las tareas finalizadas pueden ser eliminadas previo mensaje de confirmación.
 
 #### COS - Condiciones de Satisfacción
 
@@ -97,7 +97,7 @@ Permitir que el usuario tenga la posibilidad de poder crear tareas dentro de cad
 
 ### [SGT-10 Asignar usuarios a tareas](https://github.com/mads-ua/todolistgrupo-2017-equipo-8/wiki/SGT-10-Asignar-usuarios-a-tareas)
 
-#### Descripción 
+#### Descripción
 Añadir la funcionalidad de que un usuario pueda ponerse como responsable de la tarea.
 
 #### COS - Condiciones de satisfacción
@@ -112,27 +112,27 @@ Añadir la funcionalidad de que un usuario pueda ponerse como responsable de la 
 #### USUARIO.
 > Las tareas pueden tener una o más etiquetas asignadas. Se pueden crear etiquetas en `Mis tareas` o `Mis tableros`. Las etiquetas de cada uno de estos apartados estarán disponibles para las tareas que pertenezcan a este apartado (una etiqueta creada en un tablero solo estará disponible para las tareas del tablero). Se pueden agregar etiquetas desde el apartado de modificación de etiquetas.
 
-> Las etiquetas pueden ser modificadas en cualquier momento pero dicho cambio afectará a su relación con las tareas, si a una tarea le cambiamos el color, dicho cambio será repercutido en todas las tareas en las que esté asignada esa etiqueta. Se mostrarán las etiquetas de las tareas a la que acompañan tanto en las lista de tareas, como en el panel de modificar tarea. Al eliminar una etiqueta, desaparecerá de todos las tareas a los que estaba asignada. 
+> Las etiquetas pueden ser modificadas en cualquier momento pero dicho cambio afectará a su relación con las tareas, si a una tarea le cambiamos el color, dicho cambio será repercutido en todas las tareas en las que esté asignada esa etiqueta. Se mostrarán las etiquetas de las tareas a la que acompañan tanto en las lista de tareas, como en el panel de modificar tarea. Al eliminar una etiqueta, desaparecerá de todos las tareas a los que estaba asignada.
 
-> La asignación de etiquetas a una tarea, se realiza desde la modificación de la tarea, para las existentes existirá una "X" dentro de la etiqueta asignada para poder borrarla de la tarea y dispondremos de una selección múltiple con la que poder seleccionar varias etiquetas para añadirlas de una sola vez a la tarea. 
+> La asignación de etiquetas a una tarea, se realiza desde la modificación de la tarea, para las existentes existirá una "X" dentro de la etiqueta asignada para poder borrarla de la tarea y dispondremos de una selección múltiple con la que poder seleccionar varias etiquetas para añadirlas de una sola vez a la tarea.
 
 #### DESARROLLADOR.
 > Se crea un nuevo modelo de etiquetas que para mayor flexibilidad puede funcionar por el mísmo, no depende de ninguna otra entidad. Hay una posible relación uno a muchos con usuarios y tableros además de una muchos a muchos con tareas. La idea es que una etiqueta solo puede estar en un usuario o en un tablero determinado, pero que se pueda relacionar con muchas tareas (de ese usuario o tablero).
 
 > Además del modelo, repository, servicio y controlador de la entidad etiquetas, se han tenido que realizar métodos de servicio y controlador en usuarios, tableros y tareas para gestionar toda esa relación. Por último, se han modificado las vistas de `Mis tareas` y `Mis tableros` para poder disponer de las operaciones de CRUD de etiquetas en un menú opciones y se puede ver una miniatura de las etiquetas asignadas a una tarea en el listado de tareas disponibles (en el caso de tableros, esta opción estaría en el `detalle tablero`), así como de `Modificación tareas` desde donde se pueden ver las etiquetas asignadas y se pueden desasignar desde ahí con un click, así como poder asignar de una sola vez varias etiquetas a la tarea).
 
-> Para realizar más atractiva la asignación de etiquetas a una tarea, se ha jugado con el componente Modal, con el que se puede ver una determinada funcionalidad en primer plano, dejando en segundo plano la página de la que proviene. La asignación de etiquetas a la tarea se hace mediante AJAX en un bucle que va asignando las etiquetas una a una. 
+> Para realizar más atractiva la asignación de etiquetas a una tarea, se ha jugado con el componente Modal, con el que se puede ver una determinada funcionalidad en primer plano, dejando en segundo plano la página de la que proviene. La asignación de etiquetas a la tarea se hace mediante AJAX en un bucle que va asignando las etiquetas una a una.
 
 ### Descripción y selector de fecha en tareas
 #### USUARIO.
 > Se puede agregar una descripción a las tareas, de esta manera se puede ampliar la información referente a la tarea, siendo limitada con el título y la fecha. Esta información está disponible en los detalles de la tarea.
 
-> Además, las fechas ahora se seleccionan con un calendario desplegable, facilitando el uso de este campo. 
+> Además, las fechas ahora se seleccionan con un calendario desplegable, facilitando el uso de este campo.
 
 #### DESARROLLADOR.
-> Las tareas tienes un nuevo atributo del tipo `String`. En la parte de las vistas hay un `textarea` para facilitar la entrada de texto. 
+> Las tareas tienes un nuevo atributo del tipo `String`. En la parte de las vistas hay un `textarea` para facilitar la entrada de texto.
 
-> Se hace uso del calendario de `Jquery`, por lo que ha sido agregado al proyecto. Se hace uso de javascript para no permitir fechas anteriores al día actual. 
+> Se hace uso del calendario de `Jquery`, por lo que ha sido agregado al proyecto. Se hace uso de javascript para no permitir fechas anteriores al día actual.
 ### Comentarios en tareas
 #### USUARIO.
 > Las tareas que pertenecen a los tableros tiene la opción de dejar comentarios por parte de los usuarios. Estos comentarios tiene el fin de dar información, o crear opinión sobre el estado de una tarea. En ellos, aparece reflejado el usuario y el momento en el que se creó el comentario. Se pueden eliminar los comentarios siempre y cuando el usuario que lo elimina sea el mismo que lo escribió.
@@ -140,7 +140,7 @@ Añadir la funcionalidad de que un usuario pueda ponerse como responsable de la 
 
 
 #### DESARROLLADOR.
-> Los comentarios son un nuevo modelo de la aplicación, con todas sus clases y métodos correspondientes. La posibilidad de agregar comentarios en las tareas de los `tableros` solo se diferencia de `mis tareas` a nivel visual, no son distintos tipos de tareas. 
+> Los comentarios son un nuevo modelo de la aplicación, con todas sus clases y métodos correspondientes. La posibilidad de agregar comentarios en las tareas de los `tableros` solo se diferencia de `mis tareas` a nivel visual, no son distintos tipos de tareas.
 
 > Eliminar una tarea hace que se eliminen todos los comentarios que tenga la tarea antes de proceder a eliminar la misma.  
 
@@ -149,7 +149,7 @@ Añadir la funcionalidad de que un usuario pueda ponerse como responsable de la 
 > Las tareas ahora no se pueden borrar si no se han finalizado. De esta forma se evitan borrados accidentales. Del mismo modo, las tareas finalizadas se pueden reactivar, en caso de querer reutilizarla. Al eliminar una tarea, se nos mostrará un mensaje de confirmación antes de borrarla.
 
 #### DESARROLLADOR.
-> Los cambios son a nivel visual, además de incluir el método que reactive la tarea. 
+> Los cambios son a nivel visual, además de incluir el método que reactive la tarea.
 
 ### Filtrado de tareas
 #### USUARIO.
@@ -164,7 +164,7 @@ Añadir la funcionalidad de que un usuario pueda ponerse como responsable de la 
 
 ### Asignar tareas a tableros
 #### USUARIO.
-> Los tableros pueden tener tareas, con todas sus funcionalidades y algunas extra (comentarios). Están disponibles a modos de listas en el tablero correspondiente. Se pueden crear, borrar, modificar, eliminar, consultar, comentar, finalizar y reactivar. 
+> Los tableros pueden tener tareas, con todas sus funcionalidades y algunas extra (comentarios). Están disponibles a modos de listas en el tablero correspondiente. Se pueden crear, borrar, modificar, eliminar, consultar, comentar, finalizar y reactivar.
 
 #### DESARROLLADOR.
 > A nivel técnico implica diferenciar las tareas que pertenecen a un tablero y las que son personales del usuario, es decir, las que aparecen en el apartado `misTareas`. Cuando se crea una tarea dentro de un tablero, primero se crea la tarea con sus parámetros y luego se le asigna al tablero.
@@ -193,17 +193,17 @@ Se puede ver como las tareas etiquetadas como SGT-5 están completamente termina
 
 #### Tercera semana de desarrollo.
 
-Para esta tercera semana se esperaban terminadas todas las historias de usuario que se encontraban en `En marcha` en Trello. En la reunion de sprint se verá que esta semana hubo algún problema, pero a pesar de ello el tablero evolucionó de la siguiente manera. 
+Para esta tercera semana se esperaban terminadas todas las historias de usuario que se encontraban en `En marcha` en Trello. En la reunion de sprint se verá que esta semana hubo algún problema, pero a pesar de ello el tablero evolucionó de la siguiente manera.
 ![enter image description here](https://i.imgur.com/CjaaNli.png)
 
-Con su correspondiente tablero de GitHub actualizado, con los nuevos issues pendientes que pertenecen a las historias de usuario en marcha. 
+Con su correspondiente tablero de GitHub actualizado, con los nuevos issues pendientes que pertenecen a las historias de usuario en marcha.
 ![enter image description here](https://i.imgur.com/CjaaNli.png)
 
 
 En el siguiente gráfico se puede ver en puntos historia lo que estaba planeado tener para cada semana de desarrollo y lo que hemos conseguido completar. Como hay diferencia, queda claro que hay algún problema en la planificación, por lo que esto será analizado en la reunión de restrospectiva y ya está reflejado en las reuniones diarias.  
 ![enter image description here](https://i.imgur.com/7IFb8Oa.png)
 
-Por otro lado, se ha calculado una gráfica Burndown a partir de los pull request realizados que básicamente lo que indican es la finalización de una issue. No es una gráfica exacta, pues no se están teniendo en cuenta los commits entre pull requests y asignando el mismo peso a todas las issues de la misma historia de usuario, pero nos da una idea general de cómo ha ido la evolución del trabajo. 
+Por otro lado, se ha calculado una gráfica Burndown a partir de los pull request realizados que básicamente lo que indican es la finalización de una issue. No es una gráfica exacta, pues no se están teniendo en cuenta los commits entre pull requests y asignando el mismo peso a todas las issues de la misma historia de usuario, pero nos da una idea general de cómo ha ido la evolución del trabajo.
 ![enter image description here](https://i.imgur.com/22YlpoC.png)
 
 Además, hay que tener en cuenta que dicho gráfico está realizado a partir de los puntos asignados en primera instancia a las historias de usuario, parte de la desviación, también se debe a que algunas historias tenían un peso superior al que realmente se asignó inicialmente. Aún así se ve como no hemos podido finalizar todo lo planificado, se profundizará en este aspecto en la retrospectiva.
@@ -259,3 +259,24 @@ Estas dos reuniones desarrolladas en la semana 1 y 3 fueron documentadas, en ell
 > Adel: comenta que ha sido más complejo de lo esperado manejar las relaciones entre el nuevo modelo etiquetas de la historia de usuario 4 y que realmente ha habido un problema de estimación del tamaño de dicha historia, se calculó que sería una historia mediana, pero realmente es grande, eso afectará a la historia de usuario mediana que le queda pendiente.
 
 > Para esta semana, aunque una historia grande ocuparía 4 semanas, estima que esta en este momento al 80% de la finalización de la historia 4 y aunque no todo, podrá hacer parte de la historia de filtrado.  (historia 8)
+
+
+#### Retrospectiva(20/12/2017)
+
+
+>  **Aspectos que han ido bien:**
+
+>  El control que hemos tenido del trabajo usando Github, tanto a nivel de código como de tareas realizadas, en proceso y por realizar ha sido bastante positivo.
+El grupo ha funcionado muy bien, nos hemos entendido perfectamente y el reparto del trabajo ha sido equilibrado. Hemos aprovechado la tecnología móvil para comunicarnos de forma más ágil y el tablero de Kanban también ha ayudado.
+La metodología nos ha obligado a trabajar de forma más o menos continua, teniendo en cuenta, que cada uno de los integrantes tiene otras obligaciones y no se trata de un trabajo con horario concreto.
+
+>  **Aspectos a mejorar:**
+
+>  Hemos visto que el tener que esperar en los Pull Request a que confirmen ambos integrantes provocaba cuellos de botella, ya que, no coincidimos normalmente en horario y ha provocado que un recurso tuviera que estar parado mientras tanto. Sería un punto a mejorar, flexibilizando dicho aspecto.
+>  Ha habido un problema de estimación de algunas historias que ha provocado retrasos que se pueden comprobar en la gráfica burndown, esos problemas de estimación, han provocado que no finalicemos todo lo pactado con el cliente. Debemos aprender de las desviaciones que estamos teniendo para estimar mejor en futuros sprints.
+
+>  **Para el futuro:**
+
+>  Completar la funcionalidad de filtrado.
+>  Realizar un dashboard con datos significativos y navegables respecto a tableros y tareas.
+>  Realizar columnas para trabajo por estados y rediseñar el aspecto de las tareas que podrían etiquetas.
